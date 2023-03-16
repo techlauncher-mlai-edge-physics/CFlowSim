@@ -2,7 +2,7 @@
   "name": "physics_in_the_browser",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lutra-fs.github.io/physics-in-the-browser-website",
+  "homepage": "https://techlauncher-mlai-edge-physics.github.io/website",
   "dependencies": {
     "@react-three/fiber": "^8.11.9",
     "@testing-library/jest-dom": "^5.16.5",
