@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import {Inter} from 'next/font/google'
 import styles from 'styles/Home.module.css'
-import NavBar from "./Components/NavBar";
+import NavBar from "../Components/NavBar";
 import {Button} from "antd";
 
 const inter = Inter({subsets: ['latin']})
@@ -19,8 +19,6 @@ export default function Home() {
             <main>
                 <div className={styles.navBar}>
                     <NavBar/>
-                    <a href="/simDraft"><Button type="dashed" className={styles.theme_btn}>[SIMULATOR TEAM USE ONLY]
-                        simulation draft</Button></a>
                 </div>
             </main>
         </>

@@ -1,5 +1,5 @@
 // import "../../styles/Navbar.module.css";
-import styles from '../../styles/Navbar.module.css'
+import styles from '../styles/Navbar.module.css'
 import {Button} from 'antd';
 import Image from 'next/image';
 
