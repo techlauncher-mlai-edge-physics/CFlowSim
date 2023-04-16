@@ -1,5 +1,5 @@
-import * as ort from 'onnxruntime-web';
-import { reshape } from 'mathjs';
+import * as ort from 'onnxruntime-web'
+import { reshape } from 'mathjs'
 
 /**
  * The physics simulation core performing the simulation induction via neural network model.
@@ -8,35 +8,31 @@ export class PhysicsCore {
   /**
    * Constructor for PhysicsCore
    * @param {string} modelPath Path to the ONNX model
-   * @param {number} modelBatchSize ONNX model trainning batch size
    * @param {string} dataPath Path to the initial state data in JSON format
-   * @param {number} dataBatchSize The initial data batch size
+   * @param {number} batchSize The initial data batch size
    * @param {number} gridSizeX The model simulation grid size on x axis
    * @param {number} gridSizeY The model simulation grid size on y axis
    */
-  constructor(modelPath, modelBatchSize, dataPath, dataBatchSize, gridSizeX = 64, gridSizeY = 64) {
+  constructor(modelPath, dataPath, batchSize, gridSizeX = 64, gridSizeY = 64) {
 
-    this.batchSize = dataBatchSize
-    this.modelBatchSize = modelBatchSize
+    this.batchSize = batchSize
     this.gridSizeX = gridSizeX
     this.gridSizeY = gridSizeY
 
-    this.tensorShape = [modelBatchSize, gridSizeX, gridSizeY, 5]
-    this.tensorSize = modelBatchSize * gridSizeX * gridSizeY * 5
+    this.tensorShape = [batchSize, gridSizeX, gridSizeY, 5]
+    this.tensorSize = batchSize * gridSizeX * gridSizeY * 5
+    this.pvShape = [batchSize, gridSizeX, gridSizeY, 3]
     this.X = new ort.Tensor('float32', new Float32Array(this.tensorSize), this.tensorShape)
 
-    this.particalShape = [modelBatchSize, gridSizeX, gridSizeY, 1]
-    this.velocityShape = [modelBatchSize, gridSizeX, gridSizeY, 2]
-    this.forceShape = [modelBatchSize, gridSizeX, gridSizeY, 2]
-
     this.session = undefined
-
-    this.#initSession(modelPath)
+    this.isSessionReady = false
+    this.modelPath = modelPath
     this.#initData(dataPath)
   }
 
-  async #initSession(modelPath) {
-    this.session = await ort.InferenceSession.create(modelPath)
+  async #initSession() {
+    this.session = await ort.InferenceSession.create(this.modelPath)
+    this.isSessionReady = true
   }
 
   /**
@@ -47,10 +43,8 @@ export class PhysicsCore {
     fetch(dataPath)
       .then((response) => response.json())
       .then((json) => {
-        let data = Float32Array.from(json.flat())
-        let dataExtended = new Float32Array(this.tensorSize)
-        dataExtended.set(data)
-        this.X = new ort.Tensor('float32', dataExtended, this.tensorShape)
+        let data = Float32Array.from(json.flat(Infinity))
+        this.X = new ort.Tensor('float32', data, this.tensorShape)
       })
   }
 
@@ -60,7 +54,7 @@ export class PhysicsCore {
    * @param {Array} range The range of last dimension to override by data
    */
   #setData(data, range) {
-    let X = reshape(Array.from(this.X.data()), this.tensorShape)
+    let X = reshape(Array.from(this.X.data), this.tensorShape)
     for (let batch = 0; batch < this.batchSize; batch++) {
       for (let x = 0; x < this.gridSizeX; x++) {
         for (let y = 0; y < this.gridSizeY; y++) {
@@ -70,7 +64,7 @@ export class PhysicsCore {
         }
       }
     }
-    this.X = new ort.Tensor('float32', Float32Array.from(X.flat()), this.tensorShape)
+    this.X = new ort.Tensor('float32', Float32Array.from(X.flat(Infinity)), this.tensorShape)
   }
 
   /**
@@ -79,17 +73,26 @@ export class PhysicsCore {
    * @returns {Object} The object similar to the initial state.
    */
   #decomposeOutput(output) {
+    // TODO
     // return { partical: particals, velocity: velocities }
   }
 
   /**
-   * run one step simulation inference
+   * Tun one step simulation inference and save the pv state for following inference.
    * @returns {ort.Tensor} output tensor
    */
   async runOneStep() {
+    if (!this.isSessionReady) {
+      await this.#initSession()
+    }
+
     let feeds = { Input: this.X }
-    result = await this.session.run(feeds)
-    return (result['Output'])
+    let result = await this.session.run(feeds)
+
+    let resultData = reshape(Array.from(result.Output.data), this.pvShape)
+    this.#setData(resultData, [0, 3])
+
+    return (result.Output)
   }
 
 }
