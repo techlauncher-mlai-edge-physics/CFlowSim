@@ -41,7 +41,7 @@ Or once you have finished your commit message, you can run the following command
 
 ```bash
 echo "your commit message" | npx commitlint
-or 
+or
 echo "your commit message" | commitlint
 ```
 
@@ -53,10 +53,7 @@ Add the following to your `settings.json` file:
 
 ```json
 {
-    "git-commit-plugin.CustomCommitType": [
-        "ci",
-        "build"
-    ]
+  "git-commit-plugin.CustomCommitType": ["ci", "build"]
 }
 ```
 
@@ -70,4 +67,4 @@ When you create a pull request, make sure you add the following information:
 - How to test the pull request
 - What the reviewer should look for
 - What the reviewer should test
-Please write the title using the [commit message format](#commit-messages).
+  Please write the title using the [commit message format](#commit-messages).

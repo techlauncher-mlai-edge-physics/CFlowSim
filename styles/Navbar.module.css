@@ -1,40 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Pixels&family=Sedgwick+Ave+Display&family=Source+Code+Pro:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Pixels&family=Sedgwick+Ave+Display&family=Source+Code+Pro:wght@400;600&display=swap");
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 80px;
-    padding: 0 2rem;
-    background-color: #000000;
-    color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 2rem;
+  background-color: #000000;
+  color: #eee;
 }
 
 .nav a {
-    margin: 0 1rem;
-    color: #eee;
-    text-decoration: none;
-    align-items: center;
-
+  margin: 0 1rem;
+  color: #eee;
+  text-decoration: none;
+  align-items: center;
 }
 
 .header .nav-btn {
-    padding: 5px;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #eee;
-    visibility: hidden;
-    opacity: 0;
-    font-size: 1.8rem;
+  padding: 5px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eee;
+  visibility: hidden;
+  opacity: 0;
+  font-size: 1.8rem;
 }
 
 .btn {
-    color: #eeeeee;
-    background-color: #686DE0FF;
-    height: 3.2rem;
-    width: 8rem;
+  color: #eeeeee;
+  background-color: #686de0ff;
+  height: 3.2rem;
+  width: 8rem;
 }
 
 /*.btn :hover{*/
@@ -42,26 +41,26 @@
 /*}*/
 
 .theme_btn {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 0.8rem;
-    color: #000000;
-    background-color: #f3f3f3;
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  color: #000000;
+  background-color: #f3f3f3;
 }
 
 .logo {
-    border: 1px solid #000000;
-    filter: invert(100%);
-    position: absolute;
-    width: 65px;
-    height: 65px;
-    left: 0.95rem;
-    top: 0.95rem;
+  border: 1px solid #000000;
+  filter: invert(100%);
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  left: 0.95rem;
+  top: 0.95rem;
 }
 
 .description {
-    border: 1px solid #000000;
-    position: absolute;
-    left: 7rem;
-    font-family: 'Sedgwick Ave Display', cursive;
-    font-size: 2rem;
+  border: 1px solid #000000;
+  position: absolute;
+  left: 7rem;
+  font-family: "Sedgwick Ave Display", cursive;
+  font-size: 2rem;
 }
