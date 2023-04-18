@@ -1,4 +1,3 @@
-// import "../../styles/Navbar.module.css";
 import styles from "../styles/Navbar.module.css";
 import { Button } from "antd";
 import Image from "next/image";
@@ -11,7 +10,7 @@ export default function NavBar() {
           <Image
             className={styles.logo}
             src="/physics.svg"
-            alt="Next.js Logo"
+            alt="Physics in the Browser Logo"
             width={50}
             height={50}
             priority
