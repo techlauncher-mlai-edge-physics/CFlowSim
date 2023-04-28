@@ -20,6 +20,14 @@ const nextConfig = {
             to: "static/chunks/pages",
           },
           {
+            from: "./node_modules/onnxruntime-web/dist/ort-wasm-threaded.wasm",
+            to: "static/chunks/pages",
+          },
+          {
+            from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
+            to: "static/chunks/pages",
+          },
+          {
             from: "./model",
             to: "static/chunks/pages/model",
           },
@@ -29,8 +37,11 @@ const nextConfig = {
     return config;
   },
   env: {
-    BASE_PATH: process.env.NODE_ENV === "production" ? "": "http://localhost:3000",
-  }
+    BASE_PATH:
+      process.env.NODE_ENV === "production"
+        ? "http://localhost:8000"
+        : "http://localhost:3000",
+  },
 };
 
 module.exports = nextConfig;
