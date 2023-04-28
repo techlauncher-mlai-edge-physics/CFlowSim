@@ -20,8 +20,10 @@
     "@types/three": "^0.149.0",
     "eslint-config-next": "13.2.4",
     "next": "13.2.4",
+    "onnxruntime-web": "^1.14.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "copy-webpack-plugin": "^8.1.1",
     "three": "^0.150.1"
   },
   "devDependencies": {
@@ -45,5 +47,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "volta": {
+    "node": "18.15.0"
   }
 }
