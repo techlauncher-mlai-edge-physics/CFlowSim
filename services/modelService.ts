@@ -20,6 +20,7 @@ export default class ModelService {
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
   private continueSimulation: boolean;
+
   private constructor() {
     this.session = null;
     this.matrixArray = new Float32Array();
@@ -32,31 +33,28 @@ export default class ModelService {
   }
 
   // static async method to create an instance
-  static async createModelServices(
+  static async createModelService(
     modelPath: string,
     gridSize: [number, number] = [64, 64],
     batchSize: number = 1
   ) {
-    console.log("createModelServices called");
+    console.log("createModelService called");
     const modelServices = new ModelService();
-    console.log("createModelServices constructor called");
+    console.log("createModelService constructor called");
     await modelServices.init(modelPath, gridSize, batchSize);
-    console.log("createModelServices finished");
+    console.log("createModelService finished");
     return modelServices;
   }
 
-  initMatrixFromPath(path: string) {
+  async initMatrixFromPath(path: string) {
     // check if the path is a relative path
     if (path[0] === "/" && process.env.BASE_PATH != null) {
       path = `${process.env.BASE_PATH}/${path}`;
     }
     console.log(`initMatrixFromPath called with path: ${path}`);
-    void fetch(path).then((r) => {
-      void r.json().then((data) => {
-        this.initMatrixFromJSON(data);
-        console.log("initMatrixFromPath finished");
-      });
-    });
+    this.initMatrixFromJSON(
+      await fetch(path).then(async (res) => await res.json())
+    );
   }
 
   bindOutput(callback: (data: Float32Array) => void) {
@@ -105,6 +103,8 @@ export default class ModelService {
         "session is null, createModelServices() must be called at first"
       );
     }
+    console.log("iterate called");
+    console.log("this.matrixArray", this.matrixArray);
     const inputTensor = new ort.Tensor(
       "float32",
       this.matrixArray,
@@ -145,7 +145,7 @@ export default class ModelService {
       toIndex++;
       cntOffset++;
     }
-    if (toIndex !== this.matrixArray.length) {
+    if (toIndex + 2 !== this.matrixArray.length) {
       throw new Error(
         `toIndex ${toIndex} does not match matrixArray length ${this.matrixArray.length}`
       );
