@@ -7,6 +7,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+<<<<<<< Updated upstream
   webpack(config, options) {
     config.plugins.push(
       new CopyPlugin({
@@ -41,6 +42,17 @@ const nextConfig = {
       process.env.NODE_ENV === "production"
         ? "http://localhost:8000"
         : "http://localhost:3000",
+=======
+
+  webpack: ( config, {} ) => {
+    config.module.rules.push({
+      test: /\.(glsl|vs|fs|vert|frag)$/,
+      use: {
+          loader: 'raw-loader'
+      }
+    })
+    return config
+>>>>>>> Stashed changes
   },
 };
 
