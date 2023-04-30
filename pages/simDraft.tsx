@@ -1,7 +1,7 @@
 import css from "../styles/Home.module.css";
 import { Canvas } from "@react-three/fiber";
 import { MapControls } from "@react-three/drei";
-import { DiffusionPlane } from "@components/Simulation"
+import { DiffusionPlane } from "@components/Simulation";
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
         shadows
         className={css.canvas}
         camera={{
-          position: [1, 10, 1]
+          position: [1, 10, 1],
         }}
       >
         <ambientLight />

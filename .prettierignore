@@ -3,3 +3,5 @@ next-env.d.ts
 node_modules
 package-lock.json
 public
+out
+build

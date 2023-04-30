@@ -21,11 +21,9 @@
     "strict": true,
     "target": "es2018",
     "incremental": true,
-    "paths" : {
-      "@components/*" : [
-        "./components/*"
-      ]
-    },
+    "paths": {
+      "@components/*": ["./components/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

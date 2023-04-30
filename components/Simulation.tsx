@@ -1,16 +1,16 @@
-import * as t from 'three';
+import * as t from "three";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
-import React, { useRef } from 'react';
-import vertexShader from "../shaders/vert.glsl"
-import fragmentShader from "../shaders/frag.glsl"
-import ModelService from '../services/modelService';
+import React, { useRef } from "react";
+import vertexShader from "../shaders/vert.glsl";
+import fragmentShader from "../shaders/frag.glsl";
+import ModelService from "../services/modelService";
 
-export function DiffusionPlane(props: ThreeElements['mesh']) {
+export function DiffusionPlane(props: ThreeElements["mesh"]) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ref = useRef<t.Mesh>(null!);
   useFrame((state) => {
     // potential performance issue?
-    state.camera.setRotationFromAxisAngle(new t.Vector3(1, 0, 0), -Math.PI/2);
+    state.camera.setRotationFromAxisAngle(new t.Vector3(1, 0, 0), -Math.PI / 2);
     ref.current.lookAt(0, 99, 0);
   });
 
@@ -20,17 +20,17 @@ export function DiffusionPlane(props: ThreeElements['mesh']) {
 
   // TODO: make config a property and be able to change it later
   //       when changing shader
-  const renderConfig : Record<string, string> = {
-    segX: '63.0',
-    segY: '63.0',
-    width: '2.0',
-    height: '2.0',
-    segXInt: '64',
-    segArea: '4096', // TODO:
-    densityRangeLow: '0.0',
-    densityRangeHigh: '100.0',
-    densityRangeSize: '100.0',
-  }
+  const renderConfig: Record<string, string> = {
+    segX: "63.0",
+    segY: "63.0",
+    width: "2.0",
+    height: "2.0",
+    segXInt: "64",
+    segArea: "4096", // TODO:
+    densityRangeLow: "0.0",
+    densityRangeHigh: "100.0",
+    densityRangeSize: "100.0",
+  };
 
   const sm = new t.ShaderMaterial();
   sm.vertexShader = vertexShader
@@ -39,12 +39,12 @@ export function DiffusionPlane(props: ThreeElements['mesh']) {
       if (renderConfig[varName] !== undefined) {
         return renderConfig[varName];
       }
-      return '1.0';
-    })
-  sm.fragmentShader = fragmentShader
+      return "1.0";
+    });
+  sm.fragmentShader = fragmentShader;
   sm.uniforms = {
-    density: { value: null }
-  }
+    density: { value: null },
+  };
 
   const modelPath = "../_next/static/chunks/pages/model/bno_small.onnx";
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -60,14 +60,14 @@ export function DiffusionPlane(props: ThreeElements['mesh']) {
 
   return (
     <mesh {...props} ref={ref} material={sm}>
-      <planeGeometry args={[2, 2, 9, 9]}/>
+      <planeGeometry args={[2, 2, 9, 9]} />
     </mesh>
   );
 
   function output(data: Float32Array) {
     sm.uniforms.density.value = data;
     sm.uniformsNeedUpdate = true;
-     console.log(data)
+    console.log(data);
     // data = data1
   }
 }

@@ -75,7 +75,6 @@ export default class ModelService implements Model {
     gridSize: [number, number],
     batchSize: number
   ) {
-    // ort.env.wasm.wasmPaths = "http://localhost:8000/_next/static/chunks/pages";
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
       executionProviders: ["wasm"],
