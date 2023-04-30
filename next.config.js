@@ -11,9 +11,9 @@ const nextConfig = {
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,
       use: {
-          loader: 'raw-loader'
-      }
-    })
+        loader: "raw-loader",
+      },
+    });
     config.plugins.push(
       new CopyPlugin({
         patterns: [
@@ -44,9 +44,9 @@ const nextConfig = {
   },
   env: {
     BASE_PATH:
-      process.env.NODE_ENV === "production"
+      process.env.NODE_ENV === "development"
         ? "http://localhost:8000"
-        : "http://localhost:3000",
+        : "https://techlauncher-mlai-edge-physics.github.io",
   },
 };
 
