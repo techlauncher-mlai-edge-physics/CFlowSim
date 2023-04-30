@@ -10,7 +10,9 @@ export default class TestModel implements Model {
     this.advectionSize = size;
   }
 
-  updateForce(pos: Vector2, forceDelta: Vector2): void {}
+  updateForce(pos: Vector2, forceDelta: Vector2): void {
+    // placeholder for test code
+  }
 
   async startSimulation(): Promise<void> {
     const x = new Float32Array(this.advectionSize * this.advectionSize);

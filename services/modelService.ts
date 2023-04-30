@@ -9,9 +9,7 @@ export default class ModelService implements Model {
 
   private tensorShape: [number, number, number, number];
   private tensorSize: number;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  private outputCallback: (data: Float32Array) => void;
+  private outputCallback!: (data: Float32Array) => void;
   private matrixArray: Float32Array;
   // 0: partial density
   // 1, 2: partial velocity
@@ -38,7 +36,7 @@ export default class ModelService implements Model {
     modelPath: string,
     gridSize: [number, number] = [64, 64],
     batchSize: number = 1
-  ) {
+  ): Promise<ModelService> {
     console.log("createModelService called");
     const modelServices = new ModelService();
     console.log("createModelService constructor called");
@@ -47,26 +45,28 @@ export default class ModelService implements Model {
     return modelServices;
   }
 
-  async initMatrixFromPath(path: string) {
+  async initMatrixFromPath(path: string): Promise<void> {
     // check if the path is a relative path
     if (path[0] === "/" && process.env.BASE_PATH != null) {
       path = `${process.env.BASE_PATH}/${path}`;
     }
     console.log(`initMatrixFromPath called with path: ${path}`);
-    this.initMatrixFromJSON(
-      await fetch(path).then(async (res) => await res.json())
-    );
+    const matrix = await fetch(path).then(async (res) => await res.json());
+    if (matrix == null) {
+      throw new Error(`The matrix from ${path} is null`);
+    }
+    this.initMatrixFromJSON(matrix);
   }
 
-  bindOutput(callback: (data: Float32Array) => void) {
+  bindOutput(callback: (data: Float32Array) => void): void {
     this.outputCallback = callback;
   }
 
-  async startSimulation() {
+  async startSimulation(): Promise<void> {
     await this.iterate();
   }
 
-  pauseSimulation() {
+  pauseSimulation(): void {
     this.continueSimulation = false;
   }
 
@@ -74,7 +74,7 @@ export default class ModelService implements Model {
     modelPath: string,
     gridSize: [number, number],
     batchSize: number
-  ) {
+  ): Promise<void> {
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
       executionProviders: ["wasm"],
@@ -87,7 +87,7 @@ export default class ModelService implements Model {
     this.tensorSize = batchSize * gridSize[0] * gridSize[1] * 5;
   }
 
-  private initMatrixFromJSON(data: any) {
+  private initMatrixFromJSON(data: any): void {
     console.log("initMatrixFromJSON called");
     this.matrixArray = new Float32Array(data.flat(Infinity));
     if (this.matrixArray.length !== this.tensorSize) {
@@ -97,7 +97,7 @@ export default class ModelService implements Model {
     }
   }
 
-  private async iterate() {
+  private async iterate(): Promise<void> {
     if (this.session == null) {
       throw new Error(
         "session is null, createModelServices() must be called at first"
@@ -112,23 +112,21 @@ export default class ModelService implements Model {
     );
     const feeds: Record<string, ort.Tensor> = {};
     feeds[this.session.inputNames[0]] = inputTensor;
-    this.session
-      .run(feeds)
-      .then((outputs) => {
-        if (outputs.Output.data instanceof Float32Array) {
-          this.outputCallback(outputs.Output.data);
-          this.copyOutputToMatrix(outputs.Output.data);
-          if (this.continueSimulation) {
-            void this.iterate();
-          }
+    try {
+      const outputs = await this.session.run(feeds);
+      if (outputs.Output.data instanceof Float32Array) {
+        this.outputCallback(outputs.Output.data);
+        this.copyOutputToMatrix(outputs.Output.data);
+        if (this.continueSimulation) {
+          void this.iterate();
         }
-      })
-      .catch((e) => {
-        console.error("error in session.run", e);
-      });
+      }
+    } catch (e) {
+      console.error("error in session.run", e);
+    }
   }
 
-  private copyOutputToMatrix(outputs: Float32Array) {
+  private copyOutputToMatrix(outputs: Float32Array): void {
     if (this.matrixArray.length === 0) {
       throw new Error("matrixArray is empty");
     }
@@ -139,11 +137,21 @@ export default class ModelService implements Model {
       if (cntOffset >= 3) {
         cntOffset = 0;
         toIndex += 2;
+        if (toIndex >= this.matrixArray.length) {
+          throw new Error(
+            `toIndex ${toIndex} exceeds matrixArray length ${this.matrixArray.length}`
+          );
+        }
       }
       this.matrixArray[toIndex] = outputs[fromIndex];
       fromIndex++;
       toIndex++;
       cntOffset++;
+    }
+    if (fromIndex !== outputs.length) {
+      throw new Error(
+        `fromIndex ${fromIndex} does not match outputs length ${outputs.length}`
+      );
     }
     if (toIndex + 2 !== this.matrixArray.length) {
       throw new Error(
@@ -152,13 +160,13 @@ export default class ModelService implements Model {
     }
   }
 
-  updateForce(pos: Vector2, forceDelta: Vector2) {
-    const index = this.getIndex(pos);
+  updateForce(pos: Vector2, forceDelta: Vector2): void {
+    const index: number = this.getIndex(pos);
     this.matrixArray[index + 3] += forceDelta.x;
     this.matrixArray[index + 4] += forceDelta.y;
   }
 
-  private getIndex(pos: Vector2, batchIndex = 0) {
+  private getIndex(pos: Vector2, batchIndex: number = 0): number {
     return (
       batchIndex * this.gridSize[0] * this.gridSize[1] +
       pos.y * this.gridSize[0] +

@@ -17,7 +17,14 @@
   },
   "plugins": ["react"],
   "rules": {
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/consistent-type-definitions": "off"
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      {
+        "allowNumber": true,
+        // the environment variable is used to detect the path
+        // disable the rule to allow the use of the environment variable
+        "allowNullish": true
+      }
+    ]
   }
 }

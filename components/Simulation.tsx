@@ -5,7 +5,7 @@ import vertexShader from "../shaders/vert.glsl";
 import fragmentShader from "../shaders/frag.glsl";
 import ModelService from "../services/modelService";
 
-export function DiffusionPlane(props: ThreeElements["mesh"]) {
+export function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ref = useRef<t.Mesh>(null!);
   useFrame((state) => {
@@ -64,7 +64,7 @@ export function DiffusionPlane(props: ThreeElements["mesh"]) {
     </mesh>
   );
 
-  function output(data: Float32Array) {
+  function output(data: Float32Array): void {
     sm.uniforms.density.value = data;
     sm.uniformsNeedUpdate = true;
     console.log(data);

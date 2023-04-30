@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { MapControls } from "@react-three/drei";
 import { DiffusionPlane } from "@components/Simulation";
 
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <div className={css.scene}>
       <Canvas
