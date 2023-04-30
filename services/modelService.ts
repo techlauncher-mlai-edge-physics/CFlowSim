@@ -1,7 +1,8 @@
 import * as ort from "onnxruntime-web";
 import { type Vector2 } from "three";
+import type Model from "./model";
 
-export default class ModelService {
+export default class ModelService implements Model {
   session: ort.InferenceSession | null;
   gridSize: [number, number];
   batchSize: number;
