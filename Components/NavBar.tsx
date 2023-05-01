@@ -1,12 +1,13 @@
 import styles from "../styles/Navbar.module.css";
 import { Button } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function NavBar() {
   return (
     <header className={styles.header}>
       <div>
-        <a href="/">
+        <Link href="/">
           <Image
             className={styles.logo}
             src="/physics.svg"
@@ -15,7 +16,7 @@ export default function NavBar() {
             height={50}
             priority
           />
-        </a>
+        </Link>
       </div>
       <div className={styles.description}>Physics in the Browser</div>
       <nav className={styles.nav}>
@@ -24,11 +25,11 @@ export default function NavBar() {
             Simulations
           </Button>
         </a>
-        <a href="/#">
+        <Link href="/AboutPage">
           <Button type="primary" className={styles.btn}>
             About
           </Button>
-        </a>
+        </Link>
         <a href="/#">
           <Button type="primary" className={styles.theme_btn}>
             THEMEs
