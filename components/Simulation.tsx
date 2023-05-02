@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import vertexShader from "../shaders/vert.glsl";
 import fragmentShader from "../shaders/frag.glsl";
 import ModelService from "../services/modelService";
+// import TestModel from '../services/testModelService';
 
 export function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -20,17 +21,17 @@ export function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
 
   // TODO: make config a property and be able to change it later
   //       when changing shader
-  const renderConfig: Record<string, string> = {
-    segX: "63.0",
-    segY: "63.0",
-    width: "2.0",
-    height: "2.0",
-    segXInt: "64",
-    segArea: "4096", // TODO:
-    densityRangeLow: "0.0",
-    densityRangeHigh: "100.0",
-    densityRangeSize: "100.0",
-  };
+  const renderConfig : Record<string, string> = {
+    segX: '9.0',
+    segY: '9.0',
+    width: '2.0',
+    height: '2.0',
+    segXInt: '10',
+    segArea: '4096', // TODO:
+    densityRangeLow: '0.0',
+    densityRangeHigh: '100.0',
+    densityRangeSize: '100.0',
+  }
 
   const sm = new t.ShaderMaterial();
   sm.vertexShader = vertexShader
@@ -58,16 +59,21 @@ export function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
     }
   );
 
+  // we'll create a deliberately larger advection to test slicing on the CPU
+  // const tm = new TestModel(64) 
+  // tm.bindOutput(output)
+  // void tm.startSimulation()
+
   return (
     <mesh {...props} ref={ref} material={sm}>
       <planeGeometry args={[2, 2, 9, 9]} />
     </mesh>
   );
 
-  function output(data: Float32Array): void {
-    sm.uniforms.density.value = data;
+  function output(data: Float32Array) {
+    // we'll truncate the density map for now until we optimise the render
+    const chop = data.slice(0, 10*10*3); 
+    sm.uniforms.density.value = chop;
     sm.uniformsNeedUpdate = true;
-    console.log(data);
-    // data = data1
   }
 }

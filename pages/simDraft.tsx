@@ -1,7 +1,7 @@
 import css from "../styles/Home.module.css";
 import { Canvas } from "@react-three/fiber";
-import { MapControls } from "@react-three/drei";
-import { DiffusionPlane } from "@components/Simulation";
+import { MapControls, Stats } from "@react-three/drei";
+import { DiffusionPlane } from "@components/Simulation"
 
 export default function Home(): JSX.Element {
   return (
@@ -14,6 +14,7 @@ export default function Home(): JSX.Element {
         }}
       >
         <ambientLight />
+        <Stats />
         <DiffusionPlane position={[0, 0, 0]} />
         <MapControls />
       </Canvas>
