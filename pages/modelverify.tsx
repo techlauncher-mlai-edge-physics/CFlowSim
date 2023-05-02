@@ -1,28 +1,53 @@
 import css from "../styles/Home.module.css";
-import ModelService from "../services/modelService";
+import { useEffect, useState } from "react";
+
 export default function Home(): JSX.Element {
-  const modelPath = "../_next/static/chunks/pages/model/bno_small.onnx";
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  const dataPath = `${process.env.BASE_PATH}/pvf_incomp_44.json`;
-  const outputCallback = (output: Float32Array): void => {
-    console.log(output);
-  };
-  void ModelService.createModelService(modelPath, [64, 64], 10).then(
-    (modelService) => {
-      modelService.bindOutput(outputCallback);
-      void modelService.initMatrixFromPath(dataPath).then(() => {
-        void modelService.startSimulation();
+  const [paused, setPaused] = useState(true);
+  const [worker, setWorker] = useState<Worker | null>(null);
+  useEffect(() => {
+    void (async () => {
+      const worker = new Worker(new URL("../workers/modelWorker", import.meta.url)
+        , {
+        type: "module",
       });
-    }
-  );
+      worker.postMessage({ type: "init" });
+      worker.onmessage = (e) => {
+        console.log(e.data);
+      };
+      worker.onerror = (e) => {
+        console.log(e);
+      };
+      setWorker(worker);
+      console.log("worker created");
+    })();
+  }, []);
+
   return (
-    <div className={css.scene}>
-      {/* write a simple discreption here */}
-      <h1 className={css.title}>Model Verification</h1>
-      <div className={css.description}>
-        <p> simulation draft </p>
-        <p> Get started by opening console</p>
-      </div>
+    // write a simple article to guide user to console
+    <div className={css.container}>
+      <main className={css.main}>
+        <h1 className={css.title}>Model Verification</h1>
+        <p className={css.description}>
+          This page is used to verify the model. See console for output.
+        </p>
+        <button
+          onClick={() => {
+            setPaused(!paused);
+            if (paused && worker != null) {
+              console.log("start");
+              worker.postMessage({ type: "start" });
+            } else if (!paused && worker != null) {
+              console.log("pause");
+              worker.postMessage({ type: "pause" });
+            } else {
+              console.log("worker is null");
+            }
+          }}
+          className={css.button}
+        >
+          {paused ? "Resume" : "Pause"}
+        </button>
+      </main>
     </div>
   );
 }

@@ -14,6 +14,9 @@ const nextConfig = {
         loader: "raw-loader",
       },
     });
+    if (process.env.NODE_ENV === "development") {
+      config.optimization.minimize = false;
+    }
     config.plugins.push(
       new CopyPlugin({
         patterns: [

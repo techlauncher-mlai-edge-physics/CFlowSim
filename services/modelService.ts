@@ -63,7 +63,12 @@ export default class ModelService implements Model {
   }
 
   async startSimulation(): Promise<void> {
-    await this.iterate();
+    // start iterate() in a new thread
+    this.continueSimulation = true;
+    this.iterate().catch((e) => {
+      console.error("error in iterate", e);
+      this.continueSimulation = false;
+    });
   }
 
   pauseSimulation(): void {
@@ -103,26 +108,33 @@ export default class ModelService implements Model {
         "session is null, createModelServices() must be called at first"
       );
     }
-    console.log("iterate called");
-    console.log("this.matrixArray", this.matrixArray);
-    const inputTensor = new ort.Tensor(
-      "float32",
-      this.matrixArray,
-      this.tensorShape
-    );
-    const feeds: Record<string, ort.Tensor> = {};
-    feeds[this.session.inputNames[0]] = inputTensor;
-    try {
-      const outputs = await this.session.run(feeds);
-      if (outputs.Output.data instanceof Float32Array) {
-        this.outputCallback(outputs.Output.data);
-        this.copyOutputToMatrix(outputs.Output.data);
-        if (this.continueSimulation) {
-          void this.iterate();
+    while (this.continueSimulation) {
+      console.log("iterate called");
+      console.log("this.matrixArray", this.matrixArray);
+      const inputTensor = new ort.Tensor(
+        "float32",
+        this.matrixArray,
+        this.tensorShape
+      );
+      const feeds: Record<string, ort.Tensor> = {};
+      feeds[this.session.inputNames[0]] = inputTensor;
+      try {
+        const outputs = await this.session.run(feeds);
+        console.log("outputs type", typeof outputs);
+        // check if the output canbe downcasted to Float32Array
+        if (outputs.Output.data instanceof Float32Array) {
+          this.outputCallback(outputs.Output.data);
+          this.copyOutputToMatrix(outputs.Output.data);
+          // eslint-disable-next-line no-debugger
+          debugger;
+          if (!this.continueSimulation) {
+            break;
+          }
         }
+      } catch (e) {
+        console.error("error in session.run", e);
+        this.continueSimulation = false;
       }
-    } catch (e) {
-      console.error("error in session.run", e);
     }
   }
 
