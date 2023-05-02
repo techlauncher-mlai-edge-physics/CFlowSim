@@ -48,7 +48,7 @@ export function onmessage(this: any, event: MessageEvent): void {
 self.onmessage = onmessage;
 
 async function initModelService(): Promise<ModelService> {
-  const modelPath = "../_next/static/chunks/pages/model/bno_small.onnx";
+  const modelPath = "../chunks/pages/model/bno_small.onnx";
   const dataPath = `${process.env.BASE_PATH}/pvf_incomp_44.json`;
   const outputCallback = (output: Float32Array): void => {
     postMessage({ type: "output", output });

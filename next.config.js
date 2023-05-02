@@ -22,19 +22,15 @@ const nextConfig = {
         patterns: [
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm-threaded.wasm",
-            to: "static/chunks/pages",
-          },
-          {
-            from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./model",
