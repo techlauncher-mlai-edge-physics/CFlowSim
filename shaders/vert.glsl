@@ -1,13 +1,13 @@
 // VERTEX SHADER
 varying lowp vec4 vColor;
 
-uniform float density[4096]
+uniform float density[300]; //the size of one chunk 
 
 int getIndexFromPoint(vec3 pos)
 {
   int ix = int((pos.x + (${width} / 2.0)) * ${segX} / ${width});
   int iy = int((-pos.y + (${height} / 2.0)) * ${segY} / ${height});
-  return ix + iy * ${segXInt};
+  return (ix + iy * ${segXInt})*3; // skip the other 2 elements
 }
 
 vec4 getColourFromDensity(float density)

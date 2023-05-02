@@ -104,7 +104,7 @@ export default class ModelService implements Model {
       );
     }
     console.log("iterate called");
-    console.log("this.matrixArray", this.matrixArray);
+    // console.log("this.matrixArray", this.matrixArray);
     const inputTensor = new ort.Tensor(
       "float32",
       this.matrixArray,
