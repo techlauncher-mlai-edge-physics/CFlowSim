@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik+Pixels&family=Sedgwick+Ave+Display&family=Source+Code+Pro:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Source+Code+Pro:wght@400;600&display=swap");
 
 .header {
   display: flex;
@@ -62,7 +62,8 @@
 .description {
   border: 1px solid #000000;
   position: absolute;
-  left: 7rem;
-  font-family: "Sedgwick Ave Display", cursive;
-  font-size: 2rem;
+  left: 6.5rem;
+  top: 0.5rem;
+  font-family: 'Darumadrop One', cursive;
+  font-size: 2.3rem;
 }

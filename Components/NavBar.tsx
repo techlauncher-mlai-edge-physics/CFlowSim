@@ -2,6 +2,7 @@ import styles from "../styles/Navbar.module.css";
 import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
+// import btn_styles from "../styles/Button.module.scss";
 
 export default function NavBar() {
   return (
