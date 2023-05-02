@@ -9,7 +9,8 @@ export default function Home(): JSX.Element {
       const worker = new Worker(new URL("../workers/modelWorker", import.meta.url)
         , {
         type: "module",
-      });
+        });
+      console.log("worker created", worker);
       worker.postMessage({ type: "init" });
       worker.onmessage = (e) => {
         console.log(e.data);
@@ -22,7 +23,7 @@ export default function Home(): JSX.Element {
     })();
   }, []);
 
-  return (
+  return ( 
     // write a simple article to guide user to console
     <div className={css.container}>
       <main className={css.main}>

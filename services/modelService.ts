@@ -125,8 +125,6 @@ export default class ModelService implements Model {
         if (outputs.Output.data instanceof Float32Array) {
           this.outputCallback(outputs.Output.data);
           this.copyOutputToMatrix(outputs.Output.data);
-          // eslint-disable-next-line no-debugger
-          debugger;
           if (!this.continueSimulation) {
             break;
           }

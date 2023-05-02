@@ -4,7 +4,7 @@ import ModelService from "../services/modelService";
 
 let modelService: ModelService | null = null;
 
-export function onmessage(this: Worker, event: MessageEvent): void {
+export function onmessage(this: any, event: MessageEvent): void {
   const data = event.data;
   if (data == null) {
     throw new Error("data is null");
@@ -44,6 +44,8 @@ export function onmessage(this: Worker, event: MessageEvent): void {
       
   }
 }
+
+self.onmessage = onmessage;
 
 async function initModelService(): Promise<ModelService> {
   const modelPath = "../_next/static/chunks/pages/model/bno_small.onnx";
