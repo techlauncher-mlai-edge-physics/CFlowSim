@@ -6,6 +6,7 @@ export default class ModelService implements Model {
   session: ort.InferenceSession | null;
   gridSize: [number, number];
   batchSize: number;
+  channelSize: number;
 
   private tensorShape: [number, number, number, number];
   private tensorSize: number;
@@ -15,6 +16,8 @@ export default class ModelService implements Model {
   // 1, 2: partial velocity
   // 3, 4: Force (currently not used)
 
+  private readonly stdArray: number[];
+  private readonly meanArray: number[];
   // hold constructor private to prevent direct instantiation
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
@@ -29,18 +32,22 @@ export default class ModelService implements Model {
     this.tensorShape = [0, 0, 0, 0];
     this.tensorSize = 0;
     this.isPaused = true;
+    this.stdArray = [];
+    this.meanArray = [];
+    this.channelSize = 0;
   }
 
   // static async method to create an instance
   static async createModelService(
     modelPath: string,
     gridSize: [number, number] = [64, 64],
-    batchSize: number = 1
+    batchSize: number = 1,
+    channelSize: number = 5
   ): Promise<ModelService> {
     console.log("createModelService called");
     const modelServices = new ModelService();
     console.log("createModelService constructor called");
-    await modelServices.init(modelPath, gridSize, batchSize);
+    await modelServices.init(modelPath, gridSize, batchSize, channelSize);
     console.log("createModelService finished");
     return modelServices;
   }
@@ -55,7 +62,8 @@ export default class ModelService implements Model {
     if (matrix == null) {
       throw new Error(`The matrix from ${path} is null`);
     }
-    this.initMatrixFromJSON(matrix);
+
+    this.initMatrixFromJSON(this.normalizeMatrix(matrix));
   }
 
   bindOutput(callback: (data: Float32Array) => void): void {
@@ -78,7 +86,8 @@ export default class ModelService implements Model {
   private async init(
     modelPath: string,
     gridSize: [number, number],
-    batchSize: number
+    batchSize: number,
+    channelSize: number,
   ): Promise<void> {
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
@@ -86,10 +95,11 @@ export default class ModelService implements Model {
       graphOptimizationLevel: "all",
     });
     console.log("init session created");
+    this.channelSize = channelSize;
     this.gridSize = gridSize;
     this.batchSize = batchSize;
-    this.tensorShape = [batchSize, gridSize[0], gridSize[1], 5];
-    this.tensorSize = batchSize * gridSize[0] * gridSize[1] * 5;
+    this.tensorShape = [batchSize, gridSize[0], gridSize[1], channelSize];
+    this.tensorSize = batchSize * gridSize[0] * gridSize[1] * channelSize;
   }
 
   private initMatrixFromJSON(data: any): void {
@@ -139,6 +149,41 @@ export default class ModelService implements Model {
         console.error("error in session.run", e);
         this.isPaused = true;
       });
+  }
+
+  private normalizeMatrix(matrix: any[]): any[]{
+    for (let channel = 0; channel < this.channelSize; channel++) {
+      // calculate mean
+      let sum = 0;
+      for (let batch = 0; batch < this.batchSize; batch++) {
+        for (let x = 0; x < this.gridSize[0]; x++) {
+          for (let y = 0; y < this.gridSize[1]; y++) {
+            sum += matrix[batch][x][y][channel];
+          }
+        }
+      }
+      this.meanArray.push(Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1])));
+      // calculate standard deviation, subtract mean
+      sum = 0;
+      for (let batch = 0; batch < this.batchSize; batch++) {
+        for (let x = 0; x < this.gridSize[0]; x++) {
+          for (let y = 0; y < this.gridSize[1]; y++) {
+            matrix[batch][x][y][channel] -= this.meanArray[channel];
+            sum += matrix[batch][x][y][channel] ** 2;
+          }
+        }
+      }
+      this.stdArray.push(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]));
+      // normalize
+      for (let batch = 0; batch < this.batchSize; batch++) {
+        for (let x = 0; x < this.gridSize[0]; x++) {
+          for (let y = 0; y < this.gridSize[1]; y++) {
+            matrix[batch][x][y][channel] /= this.stdArray[channel]
+          }
+        }
+      }
+    }
+    return matrix
   }
 
   private copyOutputToMatrix(outputs: Float32Array): void {
