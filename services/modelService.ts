@@ -18,7 +18,7 @@ export default class ModelService implements Model {
   // hold constructor private to prevent direct instantiation
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
-  private continueSimulation: boolean;
+  private isPaused: boolean;
 
   private constructor() {
     this.session = null;
@@ -28,7 +28,7 @@ export default class ModelService implements Model {
     this.batchSize = 0;
     this.tensorShape = [0, 0, 0, 0];
     this.tensorSize = 0;
-    this.continueSimulation = true;
+    this.isPaused = true;
   }
 
   // static async method to create an instance
@@ -64,15 +64,15 @@ export default class ModelService implements Model {
 
   async startSimulation(): Promise<void> {
     // start iterate() in a new thread
-    this.continueSimulation = true;
+    this.isPaused = false;
     this.iterate().catch((e) => {
       console.error("error in iterate", e);
-      this.continueSimulation = false;
+      this.isPaused = true;
     });
   }
 
   pauseSimulation(): void {
-    this.continueSimulation = false;
+    this.isPaused = true;
   }
 
   private async init(
@@ -108,32 +108,37 @@ export default class ModelService implements Model {
         "session is null, createModelServices() must be called at first"
       );
     }
-    while (this.continueSimulation) {
-      console.log("iterate called");
-      console.log("this.matrixArray", this.matrixArray);
-      const inputTensor = new ort.Tensor(
-        "float32",
-        this.matrixArray,
-        this.tensorShape
-      );
-      const feeds: Record<string, ort.Tensor> = {};
-      feeds[this.session.inputNames[0]] = inputTensor;
-      try {
-        const outputs = await this.session.run(feeds);
+    console.log("iterate called");
+    console.log("this.matrixArray", this.matrixArray);
+    const inputTensor = new ort.Tensor(
+      "float32",
+      this.matrixArray,
+      this.tensorShape
+    );
+    const feeds: Record<string, ort.Tensor> = {};
+    feeds[this.session.inputNames[0]] = inputTensor;
+    this.session
+      .run(feeds)
+      .then((outputs) => {
         console.log("outputs type", typeof outputs);
         // check if the output canbe downcasted to Float32Array
         if (outputs.Output.data instanceof Float32Array) {
           this.outputCallback(outputs.Output.data);
           this.copyOutputToMatrix(outputs.Output.data);
-          if (!this.continueSimulation) {
-            break;
-          }
+          setTimeout(() => {
+            if (!this.isPaused) {
+              this.iterate().catch((e) => {
+                console.error("error in iterate", e);
+                this.isPaused = true;
+              });
+            }
+          });
         }
-      } catch (e) {
+      })
+      .catch((e) => {
         console.error("error in session.run", e);
-        this.continueSimulation = false;
-      }
-    }
+        this.isPaused = true;
+      });
   }
 
   private copyOutputToMatrix(outputs: Float32Array): void {

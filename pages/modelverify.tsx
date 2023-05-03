@@ -6,10 +6,12 @@ export default function Home(): JSX.Element {
   const [worker, setWorker] = useState<Worker | null>(null);
   useEffect(() => {
     void (async () => {
-      const worker = new Worker(new URL("../workers/modelWorker", import.meta.url)
-        , {
-        type: "module",
-        });
+      const worker = new Worker(
+        new URL("../workers/modelWorker", import.meta.url),
+        {
+          type: "module",
+        }
+      );
       console.log("worker created", worker);
       worker.postMessage({ type: "init" });
       worker.onmessage = (e) => {
@@ -23,7 +25,7 @@ export default function Home(): JSX.Element {
     })();
   }, []);
 
-  return ( 
+  return (
     // write a simple article to guide user to console
     <div className={css.container}>
       <main className={css.main}>
@@ -35,10 +37,8 @@ export default function Home(): JSX.Element {
           onClick={() => {
             setPaused(!paused);
             if (paused && worker != null) {
-              console.log("start");
               worker.postMessage({ type: "start" });
             } else if (!paused && worker != null) {
-              console.log("pause");
               worker.postMessage({ type: "pause" });
             } else {
               console.log("worker is null");
