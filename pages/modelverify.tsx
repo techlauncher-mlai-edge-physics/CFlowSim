@@ -1,5 +1,6 @@
 import css from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 
 export default function Home(): JSX.Element {
   const [paused, setPaused] = useState(true);
@@ -27,7 +28,13 @@ export default function Home(): JSX.Element {
 
   return (
     // write a simple article to guide user to console
-    <div className={css.container}>
+    <>
+      <Head>
+        <title>Model Verification</title>
+        <meta name="description" content="Model Verification" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main className={css.main}>
         <h1 className={css.title}>Model Verification</h1>
         <p className={css.description}>
@@ -49,6 +56,6 @@ export default function Home(): JSX.Element {
           {paused ? "Resume" : "Pause"}
         </button>
       </main>
-    </div>
+    </>
   );
 }
