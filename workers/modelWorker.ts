@@ -9,11 +9,11 @@ export function onmessage(this: any, event: MessageEvent): void {
   if (data == null) {
     throw new Error("data is null");
   }
-  if (data.type == null) {
+  if (data.func == null) {
     throw new Error("data.type is null");
   }
   console.log("worker received message", data);
-  switch (data.type) {
+  switch (data.func) {
     case "init":
       if (modelService == null) {
         initModelService()
@@ -29,8 +29,8 @@ export function onmessage(this: any, event: MessageEvent): void {
     case "start":
       if (modelService == null) {
         throw new Error("modelService is null");
-        }
-        
+      }
+
       modelService.startSimulation().catch((e) => {
         console.error("error in startSimulation", e);
       });
@@ -40,8 +40,12 @@ export function onmessage(this: any, event: MessageEvent): void {
         throw new Error("modelService is null");
       }
       modelService.pauseSimulation();
-          break;
-      
+      break;
+    case "updateForce":
+      if (modelService == null) {
+        throw new Error("modelService is null");
+      }
+      modelService.updateForce(data.args.loc, data.args.forceDelta);
   }
 }
 

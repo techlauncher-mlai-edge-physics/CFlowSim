@@ -13,7 +13,7 @@ export default function Home(): JSX.Element {
         }
       );
       console.log("worker created", worker);
-      worker.postMessage({ type: "init" });
+      worker.postMessage({ func: "init" });
       worker.onmessage = (e) => {
         console.log(e.data);
       };
@@ -37,9 +37,9 @@ export default function Home(): JSX.Element {
           onClick={() => {
             setPaused(!paused);
             if (paused && worker != null) {
-              worker.postMessage({ type: "start" });
+              worker.postMessage({ func: "start" });
             } else if (!paused && worker != null) {
-              worker.postMessage({ type: "pause" });
+              worker.postMessage({ func: "pause" });
             } else {
               console.log("worker is null");
             }
