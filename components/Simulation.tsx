@@ -49,7 +49,7 @@ export function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
 
   const modelPath = "../_next/static/chunks/pages/model/bno_small.onnx";
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  const dataPath = `${process.env.BASE_PATH}/pvf_incomp_44.json`;
+  const dataPath = `${process.env.BASE_PATH}/initData/pvf_incomp_44_0.json`;
   void ModelService.createModelService(modelPath, [64, 64], 10).then(
     (modelService) => {
       modelService.bindOutput(output);
