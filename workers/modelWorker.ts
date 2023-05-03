@@ -60,7 +60,7 @@ async function initModelService(): Promise<ModelService> {
   const modelService = await ModelService.createModelService(
     modelPath,
     [64, 64],
-    10
+    1
   );
   modelService.bindOutput(outputCallback);
   await modelService.initMatrixFromPath(dataPath);
