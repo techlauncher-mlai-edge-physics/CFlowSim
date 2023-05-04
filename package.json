@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development next build && http-server out -p 8000",
+    "dev": "cross-env NODE_ENV=development next build --profile && http-server out -p 8000 -c-1",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

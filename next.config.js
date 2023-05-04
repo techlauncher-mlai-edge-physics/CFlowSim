@@ -14,24 +14,23 @@ const nextConfig = {
         loader: "raw-loader",
       },
     });
+    if (process.env.NODE_ENV === "development") {
+      config.optimization.minimize = false;
+    }
     config.plugins.push(
       new CopyPlugin({
         patterns: [
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./node_modules/onnxruntime-web/dist/ort-wasm-threaded.wasm",
-            to: "static/chunks/pages",
-          },
-          {
-            from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
-            to: "static/chunks/pages",
+            to: "public",
           },
           {
             from: "./model",
