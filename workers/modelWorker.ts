@@ -55,7 +55,11 @@ async function initModelService(): Promise<ModelService> {
   const modelPath = "../chunks/pages/model/bno_small.onnx";
   const dataPath = `${process.env.BASE_PATH}/initData/pvf_incomp_44_0.json`;
   const outputCallback = (output: Float32Array): void => {
-    postMessage({ type: "output", output });
+    const density = new Float32Array(output.length / 3);
+    for (let i = 0; i < density.length; i++) {
+      density[i] = output[i * 3];
+    }
+    postMessage({ type: "output", density });
   };
   const modelService = await ModelService.createModelService(
     modelPath,
