@@ -16,7 +16,7 @@ export function onmessage(this: any, event: MessageEvent): void {
   switch (data.func) {
     case "init":
       if (modelService == null) {
-        initModelService()
+        initModelService(this)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: "init" });
@@ -51,7 +51,7 @@ export function onmessage(this: any, event: MessageEvent): void {
 
 self.onmessage = onmessage;
 
-async function initModelService(): Promise<ModelService> {
+async function initModelService(event: any): Promise<ModelService> {
   const modelPath = "../chunks/pages/model/bno_small.onnx";
   const dataPath = `${process.env.BASE_PATH}/initData/pvf_incomp_44_0.json`;
   const outputCallback = (output: Float32Array): void => {
@@ -59,7 +59,7 @@ async function initModelService(): Promise<ModelService> {
     for (let i = 0; i < density.length; i++) {
       density[i] = output[i * 3];
     }
-    postMessage({ type: "output", density });
+    event.postMessage({ type: "output", density });
   };
   const modelService = await ModelService.createModelService(
     modelPath,
