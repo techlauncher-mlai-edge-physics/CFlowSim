@@ -7,7 +7,7 @@ int getIndexFromPoint(vec3 pos)
 {
   int ix = int((pos.x + (${width} / 2.0)) * ${segX} / ${width});
   int iy = int((-pos.y + (${height} / 2.0)) * ${segY} / ${height});
-  return (ix + iy * ${segXInt})*3; // skip the other 2 elements
+  return (ix + iy * ${segXInt});
 }
 
 vec4 getColourFromDensity(float density)
