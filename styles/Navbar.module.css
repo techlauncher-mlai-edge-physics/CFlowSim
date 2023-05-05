@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Source+Code+Pro:wght@400;600&display=swap");
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 2rem;
+  background-color: #000000;
+  color: #eee;
+}
+
+.nav a {
+  margin: 0 1rem;
+  color: #eee;
+  text-decoration: none;
+  align-items: center;
+}
+
+.header .nav-btn {
+  padding: 5px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eee;
+  visibility: hidden;
+  opacity: 0;
+  font-size: 1.8rem;
+}
+
+.btn {
+  color: #eeeeee;
+  background-color: #686de0ff;
+  height: 3.2rem;
+  width: 8rem;
+}
+
+/*.btn :hover{*/
+/*    background-color: #FFFFFF;*/
+/*}*/
+
+.theme_btn {
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  color: #000000;
+  background-color: #f3f3f3;
+  height: 2.7rem;
+  width: 6.5rem;
+}
+
+.logo {
+  border: 1px solid #000000;
+  filter: invert(100%);
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.description {
+  border: 1px solid #000000;
+  position: absolute;
+  left: 6.5rem;
+  top: 0.5rem;
+  font-family: 'Darumadrop One', cursive;
+  font-size: 2.3rem;
+}

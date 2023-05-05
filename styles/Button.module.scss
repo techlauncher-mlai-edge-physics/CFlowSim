@@ -1,0 +1,51 @@
+$color: black;
+$color2: pink;
+$radius: .35rem;
+$border-width: 2px;
+$color-bg: white;
+$offset: .5rem;
+$transition: .3s;
+
+// An interactive button style
+.btn {
+  font-weight: 600;
+  border: solid $border-width $color;
+  outline: 0;
+  padding: 1rem 4rem;
+  font-size: 1.5rem;
+  letter-spacing: .08rem;
+  background-color: $color-bg;
+  border-radius: $radius;
+  position: relative;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $color2;
+    z-index: -1;
+    border-radius: $radius;
+    border: solid $border-width $color;
+    transition: all $transition ease-in-out;
+  }
+
+  &::after {
+    border: 0;
+    box-shadow: 0 0 0 $border-width $color;
+    top: $offset;
+    left: $offset;
+  }
+
+  &:hover {
+    background-color: $color2;
+    border: 0;
+    &::after {
+      background-color: $color;
+      box-shadow: none;
+    }
+  }
+}
