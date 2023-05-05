@@ -1,8 +1,8 @@
 import Head from "next/head";
 // import { Inter } from "next/font/google";
 import styles from "styles/Home.module.css";
-import NavBar from "../Components/NavBar";
-import ParBar from "../Components/ParametersBar";
+import NavBar from "@components/NavBar";
+import ParBar from "@components/ParametersBar";
 
 
 export default function Home(): JSX.Element {
