@@ -1,18 +1,22 @@
 import css from "../styles/Home.module.css";
 import { Canvas } from "@react-three/fiber";
-import Floor from "../components/Floor";
+import { MapControls, Stats } from "@react-three/drei";
+import { DiffusionPlane } from "@components/Simulation"
 
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <div className={css.scene}>
       <Canvas
         shadows
         className={css.canvas}
         camera={{
-          position: [-6, 7, 7],
+          position: [1, 10, 1],
         }}
       >
-        <Floor />
+        <ambientLight />
+        <Stats />
+        <DiffusionPlane position={[0, 0, 0]} />
+        <MapControls />
       </Canvas>
     </div>
   );
