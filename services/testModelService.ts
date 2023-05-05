@@ -1,28 +1,27 @@
 import { type Vector2 } from "three"
 import type Model from "./model";
+import { randFloat } from "three/src/math/MathUtils";
 
 export default class TestModel implements Model {
   callback: (data: Float32Array) => void;
   advectionSize: number;
+  advection : Float32Array 
 
   constructor(size: number) {
     this.callback = () => {};
     this.advectionSize = size;
+    this.advection = new Float32Array(this.advectionSize*this.advectionSize)
   }
 
   updateForce(pos: Vector2, forceDelta: Vector2): void {
-    // placeholder for test code
   }
 
   async startSimulation(): Promise<void> {
-    const x = new Float32Array(this.advectionSize*this.advectionSize*3)
-    for (let i = 0; i < this.advectionSize*this.advectionSize; i+=3) 
+    for (let i = 0; i < this.advectionSize*this.advectionSize; i++) 
     {
-      x[i] = i; 
-      x[i+1] = i; 
-      x[i+2] = i; 
+      this.advection[i] = randFloat(-1,3); 
     }
-    this.callback(x)
+    this.callback(this.advection)
   }
 
   bindOutput(callback: (data: Float32Array) => void): void {

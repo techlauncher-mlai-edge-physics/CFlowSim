@@ -40,35 +40,53 @@ function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
 
   // TODO: make config a property and be able to change it later
   //       when changing shader
-  const renderConfig : Record<string, string> = {
-    segX: '9.0',
-    segY: '9.0',
-    width: '2.0',
-    height: '2.0',
-    segXInt: '10',
-    segArea: '4096', // TODO:
-    densityRangeLow: '0.0',
-    densityRangeHigh: '2.0',
-    densityRangeSize: '100.0',
-  }
 
-  // create the shader
-   const sm = new t.ShaderMaterial();
-   sm.vertexShader = vertexShader
-     // match `${varName}` in shader and replace with values
-     .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
-       if (renderConfig[varName] !== undefined) {
-         return renderConfig[varName];
-       }
-       return "1.0";
-     });
-   sm.fragmentShader = fragmentShader;
-   sm.uniforms = {
-     density: { value: null },
-   };
+
+   /*
+   const tm = new TestModel(32)
+   tm.bindOutput(output)
+
+   useFrame((s,d) => { void tm.startSimulation() })
+   */
+
+      const renderConfig : Record<string, string> = {
+        segX: '31.0',
+        segY: '31.0',
+        width: '2.0',
+        height: '2.0',
+        segXInt: '32',
+        segArea: '1024', 
+        densityRangeLow: '0.0',
+        densityRangeHigh: '3.0',
+        densityRangeSize: '3.0',
+      }
+      // create the shader
+    const sm = new t.ShaderMaterial();
+    sm.vertexShader = vertexShader
+      // match `${varName}` in shader and replace with values
+      .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
+        if (renderConfig[varName] !== undefined) {
+          return renderConfig[varName];
+        }
+        return "1.0";
+      });
+    sm.fragmentShader = fragmentShader;
+    sm.uniforms = {
+      density: { value: null },
+    };
 
   // create a worker and assign it the model computations
   useEffect(() => {
+
+
+      function output(data: Float32Array): void {
+        console.log(data)
+        if (data == null)
+          return
+        sm.uniforms.density.value = data.slice(32*32);
+        sm.uniformsNeedUpdate = true;
+      }
+
     void (async () => {
       const worker = new Worker(
         new URL("../workers/modelWorker", import.meta.url),
@@ -86,9 +104,7 @@ function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
             break;
 
           case "output":
-            console.log(e.data);
-            sm.uniforms.density.value = e.data;
-            sm.uniformsNeedUpdate = true;
+            output(e.data.density)
             break;
         }
 
