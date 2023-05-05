@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && next export",
+    "dev": "cross-env NODE_ENV=development next build --profile && http-server out -p 8000 -c-1",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "check-format": "prettier --check .",
@@ -12,14 +12,19 @@
     "commit": "cz"
   },
   "dependencies": {
+    "@react-three/drei": "^9.64.0",
     "@react-three/fiber": "^8.12.0",
     "@types/node": "18.15.10",
-    "@types/react": "18.0.29",
+    "@types/react": "^18.2.0",
     "@types/react-dom": "18.0.11",
-    "@types/three": "^0.149.0",
     "antd": "^5.4.0",
-    "eslint-config-next": "13.2.4",
-    "next": "13.2.4",
+    "@types/three": "^0.151.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "eslint-config-next": "13.3.2",
+    "glslify-loader": "^2.0.0",
+    "next": "^13.3.2||>=13.3.0",
+    "onnxruntime-web": "^1.14.0",
+    "raw-loader": "^4.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
@@ -32,6 +37,7 @@
     "@next/eslint-plugin-next": "^13.2.4",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "commitizen": "^4.3.0",
+    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
@@ -40,12 +46,16 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
-    "prettier": "2.8.7",
+    "http-server": "^13.0.1",
+    "prettier": "^2.8.8",
     "typescript": "^5.0.2"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "volta": {
+    "node": "18.15.0"
   }
 }

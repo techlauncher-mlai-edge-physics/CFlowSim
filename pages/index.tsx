@@ -5,7 +5,7 @@ import NavBar from "../Components/NavBar";
 import ParBar from "../Components/ParametersBar";
 
 
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <>
       <Head>
