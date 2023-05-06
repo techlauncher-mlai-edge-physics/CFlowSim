@@ -2,9 +2,8 @@ import styles from "../styles/Navbar.module.css";
 import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-// import btn_styles from "../styles/Button.module.scss";
 
-export default function NavBar() {
+export default function NavBar(): JSX.Element {
   return (
     <header className={styles.header}>
       <div>
@@ -21,26 +20,26 @@ export default function NavBar() {
       </div>
       <div className={styles.description}>Physics in the Browser</div>
       <nav className={styles.nav}>
-        <a href="/#">
+        <Link href="/#">
           <Button type="primary" className={styles.btn}>
             Simulations
           </Button>
-        </a>
-        <Link href="/AboutPage">
+        </Link>
+        <Link href="/about">
           <Button type="primary" className={styles.btn}>
             About
           </Button>
         </Link>
-        <a href="/#">
+        <Link href="/#">
           <Button type="primary" className={styles.theme_btn}>
             THEMEs
           </Button>
-        </a>
-        <a href="/#">
+        </Link>
+        <Link href="/#">
           <Button type="primary" className={styles.theme_btn}>
             Night Mode
           </Button>
-        </a>
+        </Link>
       </nav>
     </header>
   );
