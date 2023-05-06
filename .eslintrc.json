@@ -7,7 +7,8 @@
     "plugin:react/recommended",
     "standard-with-typescript",
     "next",
-    "prettier"
+    "prettier",
+    "plugin:jsx-a11y/recommended"
   ],
   "overrides": [],
   "parserOptions": {
@@ -15,7 +16,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "jsx-a11y"],
   "rules": {
     "@typescript-eslint/restrict-template-expressions": [
       "error",
