@@ -3,7 +3,14 @@ import { Canvas } from "@react-three/fiber";
 import { MapControls, Stats } from "@react-three/drei";
 import { DiffusionPlane } from "@components/Simulation"
 
+import { useEffect, useState } from 'react'
+
 export default function Home(): JSX.Element {
+  const [enableMapControls, setEnableMapControls] = useState(true)
+  useEffect(() => {
+    (window as any).testMapControlsToggle = setEnableMapControls
+  })
+  
   return (
     <div className={css.scene}>
       <Canvas
@@ -16,7 +23,7 @@ export default function Home(): JSX.Element {
         <ambientLight />
         <Stats />
         <DiffusionPlane position={[0, 0, 0]} />
-        <MapControls />
+        <MapControls enabled={enableMapControls} />
       </Canvas>
     </div>
   );

@@ -72,7 +72,7 @@ function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
       });
     sm.fragmentShader = fragmentShader;
     sm.uniforms = {
-      density: { value: null },
+      density: { value: new Float32Array(parseInt(renderConfig.segArea)) },
     };
 
   // create a worker and assign it the model computations
