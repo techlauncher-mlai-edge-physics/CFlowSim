@@ -23,6 +23,7 @@ function colToVec3(col: t.Color): t.Vector3 { return new t.Vector3(col.r, col.g,
 function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element {
   // INITIALISATION
 
+
   // reference to the parent mesh
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ref = useRef<t.Mesh>(null!);
@@ -52,11 +53,15 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
         return "1.0";
       });
     shaderMat.fragmentShader = fragmentShader;
-    // it looks like the uniform is bound to the colours
-    // so we dont have to manually resend the uniform every time the colour changes...
-    // still needs more experimentation done
+
+    // provide a dummy density field first
+
+    // TODO: until we standardise parameters a bit more we'll hardcode
+    // an advection size of 32*32
+    const initDensity = new Float32Array(new Array(32*32).fill(1))
+
     shaderMat.uniforms = {
-      density: { value: null },
+      density: { value: initDensity },
       hiCol:  { value: colToVec3(props.params.densityHighColour) }, 
       lowCol: { value: colToVec3(props.params.densityLowColour)  }, 
     };
