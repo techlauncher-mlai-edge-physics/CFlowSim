@@ -16,8 +16,6 @@ export default class ModelService implements Model {
   // 1, 2: partial velocity
   // 3, 4: Force (currently not used)
 
-  private readonly stdArray: number[];
-  private readonly meanArray: number[];
   // hold constructor private to prevent direct instantiation
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
@@ -32,8 +30,6 @@ export default class ModelService implements Model {
     this.tensorShape = [0, 0, 0, 0];
     this.tensorSize = 0;
     this.isPaused = true;
-    this.stdArray = [];
-    this.meanArray = [];
     this.channelSize = 0;
   }
 
@@ -86,7 +82,7 @@ export default class ModelService implements Model {
     modelPath: string,
     gridSize: [number, number],
     batchSize: number,
-    channelSize: number,
+    channelSize: number
   ): Promise<void> {
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
@@ -102,7 +98,7 @@ export default class ModelService implements Model {
   }
 
   private initMatrixFromJSON(data: any): void {
-    data = this.normalizeMatrix(data)
+    data = this.normalizeMatrix(data);
     console.log("initMatrixFromJSON called");
     this.matrixArray = new Float32Array(data.flat(Infinity));
     if (this.matrixArray.length !== this.tensorSize) {
@@ -162,28 +158,29 @@ export default class ModelService implements Model {
           }
         }
       }
-      this.meanArray.push(Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1])));
+      const mean= Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]));
       // calculate standard deviation, subtract mean
       sum = 0;
       for (let batch = 0; batch < this.batchSize; batch++) {
         for (let x = 0; x < this.gridSize[0]; x++) {
           for (let y = 0; y < this.gridSize[1]; y++) {
-            matrix[batch][x][y][channel] -= this.meanArray[channel];
+            matrix[batch][x][y][channel] -= mean;
             sum += matrix[batch][x][y][channel] ** 2;
           }
         }
       }
-      this.stdArray.push(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]));
+      const sqr =
+        sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]);
       // normalize
       for (let batch = 0; batch < this.batchSize; batch++) {
         for (let x = 0; x < this.gridSize[0]; x++) {
           for (let y = 0; y < this.gridSize[1]; y++) {
-            matrix[batch][x][y][channel] /= this.stdArray[channel]
+            matrix[batch][x][y][channel] /= sqr;
           }
         }
       }
     }
-    return matrix
+    return matrix;
   }
 
   private copyOutputToMatrix(outputs: Float32Array): void {
