@@ -28,7 +28,7 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
   const ref = useRef<t.Mesh>(null!);
 
   // create the shader
-  const sm = useMemo(() => {
+  const shaderMat = useMemo(() => {
     // TODO: move the rest of renderConfig to SimulationParams
     const renderConfig : Record<string, string> = {
       segX: '31.0',
@@ -42,8 +42,8 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
       densityRangeSize: '3.0',
     }
 
-    const sm = new t.ShaderMaterial();
-    sm.vertexShader = vertexShader
+    const shaderMat = new t.ShaderMaterial();
+    shaderMat.vertexShader = vertexShader
       // match `${varName}` in shader and replace with values
       .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
         if (renderConfig[varName] !== undefined) {
@@ -51,17 +51,17 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
         }
         return "1.0";
       });
-    sm.fragmentShader = fragmentShader;
+    shaderMat.fragmentShader = fragmentShader;
     // it looks like the uniform is bound to the colours
     // so we dont have to manually resend the uniform every time the colour changes...
     // still needs more experimentation done
-    sm.uniforms = {
+    shaderMat.uniforms = {
       density: { value: null },
       hiCol:  { value: colToVec3(props.params.densityHighColour) }, 
-      lowCol: { value: colToVec3(props.params.densityLowColour) }, 
+      lowCol: { value: colToVec3(props.params.densityLowColour)  }, 
     };
 
-    return sm;
+    return shaderMat;
   }, [props.params.densityHighColour, props.params.densityLowColour])
 
   // HOOKS
@@ -102,16 +102,13 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
     // output is received
     function output(data: Float32Array): void {
       console.log(data)
-      if (data == null)
-        return
-      sm.uniforms.density.value = data.slice(32*32);
-      sm.uniformsNeedUpdate = true;
+      shaderMat.uniforms.density.value = data.slice(32*32);
+      shaderMat.uniformsNeedUpdate = true;
     }
-
-  }, [sm, props.worker]);
+  }, [shaderMat, props.worker]);
 
   return (
-    <mesh {...props} ref={ref} material={sm}>
+    <mesh {...props} ref={ref} material={shaderMat}>
       <planeGeometry args={[2, 2, 31, 31]} />
     </mesh>
   );
