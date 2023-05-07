@@ -14,6 +14,7 @@ class SimulationParams {
 // we can pass the parameter object directly
 interface Renderable {
   params: SimulationParams
+  worker: Worker
 }
 
 // converts a colour to vector3, does not preserve alpha
@@ -74,11 +75,7 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
   // create a worker and assign it the model computations
   useEffect(() => {
     void (async () => {
-      const worker = new Worker(
-        new URL("../workers/modelWorker", import.meta.url), {
-          type: "module",
-        }
-      );
+      const worker = props.worker
       worker.postMessage({ func: "init" });
       worker.onmessage = (e) => {
         switch (e.data.type)
@@ -111,7 +108,7 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
       sm.uniformsNeedUpdate = true;
     }
 
-  }, [sm]);
+  }, [sm, props.worker]);
 
   return (
     <mesh {...props} ref={ref} material={sm}>
