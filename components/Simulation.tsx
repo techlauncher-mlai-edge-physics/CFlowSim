@@ -1,6 +1,6 @@
 import * as t from "three";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import vertexShader from "../shaders/vert.glsl";
 import fragmentShader from "../shaders/frag.glsl";
 
@@ -24,36 +24,41 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
   const ref = useRef<t.Mesh>(null!);
 
   // create the shader
-  // TODO: move the rest of renderConfig to SimulationParams
-  const renderConfig : Record<string, string> = {
-    segX: '31.0',
-    segY: '31.0',
-    width: '2.0',
-    height: '2.0',
-    segXInt: '32',
-    segArea: '1024', 
-    densityRangeLow: '0.0',
-    densityRangeHigh: '3.0',
-    densityRangeSize: '3.0',
-  }
-  const sm = new t.ShaderMaterial();
-  sm.vertexShader = vertexShader
-    // match `${varName}` in shader and replace with values
-    .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
-      if (renderConfig[varName] !== undefined) {
-        return renderConfig[varName];
-      }
-      return "1.0";
-    });
-  sm.fragmentShader = fragmentShader;
-  // it looks like the uniform is bound to the colours
-  // so we dont have to manually resend the uniform every time the colour changes...
-  // still needs more experimentation done
-  sm.uniforms = {
-    density: { value: null },
-    hiCol: { value: props.params.densityHighColour }, 
-    lowCol: { value: props.params.densityLowColour }, 
-  };
+  const sm = useMemo(() => {
+    // TODO: move the rest of renderConfig to SimulationParams
+    const renderConfig : Record<string, string> = {
+      segX: '31.0',
+      segY: '31.0',
+      width: '2.0',
+      height: '2.0',
+      segXInt: '32',
+      segArea: '1024', 
+      densityRangeLow: '0.0',
+      densityRangeHigh: '3.0',
+      densityRangeSize: '3.0',
+    }
+
+    const sm = new t.ShaderMaterial();
+    sm.vertexShader = vertexShader
+      // match `${varName}` in shader and replace with values
+      .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
+        if (renderConfig[varName] !== undefined) {
+          return renderConfig[varName];
+        }
+        return "1.0";
+      });
+    sm.fragmentShader = fragmentShader;
+    // it looks like the uniform is bound to the colours
+    // so we dont have to manually resend the uniform every time the colour changes...
+    // still needs more experimentation done
+    sm.uniforms = {
+      density: { value: null },
+      hiCol: { value: props.params.densityHighColour }, 
+      lowCol: { value: props.params.densityLowColour }, 
+    };
+
+    return sm;
+  }, [props.params.densityHighColour, props.params.densityLowColour])
 
   // HOOKS
 
@@ -86,7 +91,6 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
         }
 
       };
-
       worker.onerror = (e) => { console.log(e) };
 
       console.log("worker created", worker);
