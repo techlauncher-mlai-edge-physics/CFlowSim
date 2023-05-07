@@ -62,8 +62,7 @@ export default class ModelService implements Model {
     if (matrix == null) {
       throw new Error(`The matrix from ${path} is null`);
     }
-
-    this.initMatrixFromJSON(this.normalizeMatrix(matrix));
+    this.initMatrixFromJSON(matrix);
   }
 
   bindOutput(callback: (data: Float32Array) => void): void {
@@ -103,6 +102,7 @@ export default class ModelService implements Model {
   }
 
   private initMatrixFromJSON(data: any): void {
+    data = this.normalizeMatrix(data)
     console.log("initMatrixFromJSON called");
     this.matrixArray = new Float32Array(data.flat(Infinity));
     if (this.matrixArray.length !== this.tensorSize) {
@@ -151,7 +151,7 @@ export default class ModelService implements Model {
       });
   }
 
-  private normalizeMatrix(matrix: any[]): any[]{
+  private normalizeMatrix(matrix: number[][][][]): number[][][][] {
     for (let channel = 0; channel < this.channelSize; channel++) {
       // calculate mean
       let sum = 0;
