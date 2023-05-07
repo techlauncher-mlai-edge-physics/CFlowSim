@@ -1,4 +1,5 @@
 # Physics In The Browser
+[![Node.js CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml) [![pages-build-deployment](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment)
 
 **Deployed at [GitHub Action](https://techlauncher-mlai-edge-physics.github.io)**
 
