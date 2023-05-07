@@ -44,7 +44,7 @@ const nextConfig = {
   env: {
     BASE_PATH:
       process.env.NODE_ENV === "development"
-        ? "http://localhost:8000"
+        ? "http://localhost:3000"
         : "https://techlauncher-mlai-edge-physics.github.io",
   },
 };
