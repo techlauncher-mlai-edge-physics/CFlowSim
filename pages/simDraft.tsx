@@ -2,11 +2,11 @@ import css from "../styles/Home.module.css";
 import { Canvas } from "@react-three/fiber";
 import { MapControls, Stats } from "@react-three/drei";
 import { DiffusionPlane, SimulationParams } from "@components/Simulation"
-import { Vector3 } from "three";
+import { Color } from "three";
 
 export default function Home(): JSX.Element {
   const params: SimulationParams = new SimulationParams()
-  params.densityLowColour = new Vector3(1,1,0)
+  params.densityLowColour = new Color("green")
 
   return (
     <div className={css.scene}>
@@ -19,7 +19,7 @@ export default function Home(): JSX.Element {
       >
         <ambientLight />
         <Stats />
-        <DiffusionPlane position={[0, 0, 0]} params={e} />
+        <DiffusionPlane position={[0, 0, 0]} params={params} />
         <MapControls />
       </Canvas>
     </div>

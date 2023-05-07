@@ -6,8 +6,8 @@ import fragmentShader from "../shaders/frag.glsl";
 
 class SimulationParams {
   // render options
-  densityLowColour: t.Vector3 = new t.Vector3(0,0,1)
-  densityHighColour: t.Vector3 = new t.Vector3(1,0,0)
+  densityLowColour: t.Color = new t.Color("blue")
+  densityHighColour: t.Color = new t.Color("red")
 }
 
 // we will store the parameters in an interface explicitly so
@@ -15,6 +15,9 @@ class SimulationParams {
 interface Renderable {
   params: SimulationParams
 }
+
+// converts a colour to vector3, does not preserve alpha
+function colToVec3(col: t.Color): t.Vector3 { return new t.Vector3(col.r, col.g, col.b) }
 
 function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element {
   // INITIALISATION
@@ -53,8 +56,8 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element 
     // still needs more experimentation done
     sm.uniforms = {
       density: { value: null },
-      hiCol: { value: props.params.densityHighColour }, 
-      lowCol: { value: props.params.densityLowColour }, 
+      hiCol:  { value: colToVec3(props.params.densityHighColour) }, 
+      lowCol: { value: colToVec3(props.params.densityLowColour) }, 
     };
 
     return sm;
