@@ -5,8 +5,8 @@ import { DiffusionPlane, SimulationParams } from "@components/Simulation"
 import { Vector3 } from "three";
 
 export default function Home(): JSX.Element {
-  const e: SimulationParams = new SimulationParams()
-  e.densityLowColour = new Vector3(1,1,0)
+  const params: SimulationParams = new SimulationParams()
+  params.densityLowColour = new Vector3(1,1,0)
 
   return (
     <div className={css.scene}>
