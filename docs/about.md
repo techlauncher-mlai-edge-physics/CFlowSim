@@ -19,7 +19,7 @@ Overall, the ability to simulate fluid dynamics using neural network technology 
 
 What's really exciting about this online neural physics emulation engine is that it allows anyone with an internet connection to experiment with these simulations themselves. Traditionally, these simulations require specialized hardware and software, and may only be accessible to researchers with access to high-performance computing resources. However, by hosting technology on a web browser, we can make it accessible to anyone, regardless of their technical background.
 
-Our interactive online neural physics emulation engine is based on the research of the Hybrid Prediction Activity, which is part of the Machine Learning and Artificial Intelligence Future Science Platform (MLAI-FSP) in CSIRO’s Data61. The MLAI-FSP is dedicated to advancing the field of machine learning and artificial intelligence through interdisciplinary research and collaboration.
+Our interactive online neural physics emulation engine is based on the research of the Hybrid Prediction Activity, which is part of the Machine Learning and Artificial Intelligence Future Science Platform (MLAI-FSP) in CSIRO's Data61. The MLAI-FSP is dedicated to advancing the field of machine learning and artificial intelligence through interdisciplinary research and collaboration.
 
 ## About the team
 
