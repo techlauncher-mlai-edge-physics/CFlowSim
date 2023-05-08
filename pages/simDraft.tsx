@@ -37,7 +37,7 @@ export default function Home(): React.ReactElement {
       >
         <ambientLight />
         <Stats />
-        <DiffusionPlane position={[0, 0, 0]} params={params} worker={worker} />
+        <DiffusionPlane position={[0, 0, 0]} params={params} worker={worker} disableInteraction={enableMapControls} />
         <MapControls enabled={enableMapControls} />
       </Canvas>
     </div>

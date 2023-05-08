@@ -1,5 +1,5 @@
 import * as t from "three";
-import { useFrame, type ThreeElements } from "@react-three/fiber";
+import { useFrame, type ThreeElements, ThreeEvent } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import vertexShader from "../shaders/vert.glsl";
 import fragmentShader from "../shaders/frag.glsl";
@@ -15,6 +15,7 @@ class SimulationParams {
 interface Renderable {
   params: SimulationParams
   worker: Worker
+  disableInteraction: boolean
 }
 
 // converts a colour to vector3, does not preserve alpha
@@ -33,8 +34,8 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
     const renderConfig : Record<string, string> = {
       segX: '31.0',
       segY: '31.0',
-      width: '2.0',
-      height: '2.0',
+      width: '10.0',
+      height: '8.0',
       segXInt: '32',
       segArea: '1024', 
       densityRangeLow: '0.0',
@@ -77,9 +78,9 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
   });
 
   // create a worker and assign it the model computations
+  const { worker } = props
   useEffect(() => {
     void (async () => {
-      const worker = props.worker
       worker.postMessage({ func: "init" });
       worker.onmessage = (e) => {
         switch (e.data.type)
@@ -111,9 +112,56 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
     }
   }, [shaderMat, props.worker]);
 
+  const { disableInteraction } = props;
+  let pointMoved = false;
+  let trackMove = false;
+  const prevPointPos = new t.Vector2(0, 0);
+  const pointPos = new t.Vector2(0, 0);
+  const pointDown = (e:ThreeEvent<PointerEvent>) => {
+    pointMoved = false;
+    trackMove = true;
+    // make top left corner (0,0)
+    prevPointPos.set(e.uv!.x, 1 - e.uv!.y);
+  }
+  const pointMove = (e:ThreeEvent<PointerEvent>) => {
+    if (!trackMove) return;
+    pointMoved = true;
+    pointPos.set(e.uv!.x, 1 - e.uv!.y);
+  }
+  const pointUp = (e:ThreeEvent<PointerEvent>) => {
+    pointMoved = false;
+    trackMove = false;
+  }
+  // 30 fps force update for now
+  const forceInterval = 1000 / 30;
+  // should be in config
+  const forceMul = 100
+  // grid size of model, should be changed with config
+  const gridSize = new t.Vector2(32, 32)
+  setInterval(()=>{
+    if (disableInteraction) return;
+    if (!pointMoved) return;
+    const forceDelta = (new t.Vector2).subVectors(pointPos, prevPointPos).multiplyScalar(forceMul);
+    const loc = (new t.Vector2).add(pointPos).multiply(gridSize).round();
+    prevPointPos.set(pointPos.x, pointPos.y);
+    pointMoved = false;
+    console.log('[event] Applying force', forceDelta, 'at', loc);
+    // call model with param
+    worker.postMessage({
+      func: 'updateForce',
+      args: {
+        loc,
+        forceDelta
+      }
+    });
+  }, forceInterval);
+
   return (
-    <mesh {...props} ref={ref} material={shaderMat}>
-      <planeGeometry args={[2, 2, 31, 31]} />
+    <mesh {...props} ref={ref} material={shaderMat}
+      onPointerUp={pointUp}
+      onPointerDown={pointDown}
+      onPointerMove={pointMove} >
+      <planeGeometry args={[10, 8, 31, 31]} />
     </mesh>
   );
 }
