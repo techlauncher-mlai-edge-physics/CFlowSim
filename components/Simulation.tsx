@@ -20,9 +20,8 @@ interface Renderable {
 // converts a colour to vector3, does not preserve alpha
 function colToVec3(col: t.Color): t.Vector3 { return new t.Vector3(col.r, col.g, col.b) }
 
-function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): JSX.Element {
+function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactElement {
   // INITIALISATION
-
 
   // reference to the parent mesh
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
