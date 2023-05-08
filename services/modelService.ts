@@ -7,6 +7,7 @@ export default class ModelService implements Model {
   gridSize: [number, number];
   batchSize: number;
   channelSize: number;
+  fpsLimit: number;
 
   private tensorShape: [number, number, number, number];
   private tensorSize: number;
@@ -22,6 +23,7 @@ export default class ModelService implements Model {
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
   private isPaused: boolean;
+  private curFrameCountbyLastSecond: number;
 
   private constructor() {
     this.session = null;
@@ -35,6 +37,8 @@ export default class ModelService implements Model {
     this.stdArray = [];
     this.meanArray = [];
     this.channelSize = 0;
+    this.fpsLimit = 0;
+    this.curFrameCountbyLastSecond = 0;
   }
 
   // static async method to create an instance
@@ -42,7 +46,8 @@ export default class ModelService implements Model {
     modelPath: string,
     gridSize: [number, number] = [64, 64],
     batchSize: number = 1,
-    channelSize: number = 5
+    channelSize: number = 5,
+    fpsLimit: number = 30
   ): Promise<ModelService> {
     console.log("createModelService called");
     const modelServices = new ModelService();
@@ -73,10 +78,23 @@ export default class ModelService implements Model {
   async startSimulation(): Promise<void> {
     // start iterate() in a new thread
     this.isPaused = false;
+    this.curFrameCountbyLastSecond = 0;
+    this.fpsHeartbeat();
     this.iterate().catch((e) => {
       console.error("error in iterate", e);
       this.isPaused = true;
     });
+  }
+
+  private fpsHeartbeat(): void {
+    setTimeout(() => {
+      this.curFrameCountbyLastSecond = 0;
+      if (this.curFrameCountbyLastSecond > this.fpsLimit) {
+        void this.startSimulation();
+      } else {
+        this.fpsHeartbeat();
+      }
+    }, 1000);
   }
 
   pauseSimulation(): void {
@@ -87,7 +105,7 @@ export default class ModelService implements Model {
     modelPath: string,
     gridSize: [number, number],
     batchSize: number,
-    channelSize: number,
+    channelSize: number
   ): Promise<void> {
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
@@ -134,13 +152,18 @@ export default class ModelService implements Model {
         // check if the output canbe downcasted to Float32Array
         if (outputs.Output.data instanceof Float32Array) {
           this.outputCallback(outputs.Output.data);
+          this.curFrameCountbyLastSecond++;
           this.copyOutputToMatrix(outputs.Output.data);
           setTimeout(() => {
             if (!this.isPaused) {
-              this.iterate().catch((e) => {
-                console.error("error in iterate", e);
+              if (this.curFrameCountbyLastSecond > this.fpsLimit) {
                 this.isPaused = true;
-              });
+              } else {
+                this.iterate().catch((e) => {
+                  console.error("error in iterate", e);
+                  this.isPaused = true;
+                });
+              }
             }
           });
         }
@@ -151,18 +174,21 @@ export default class ModelService implements Model {
       });
   }
 
-  private normalizeMatrix(matrix: any[]): any[]{
+  private normalizeMatrix(matrix: any[]): any[] {
     for (let channel = 0; channel < this.channelSize; channel++) {
       // calculate mean
       let sum = 0;
       for (let batch = 0; batch < this.batchSize; batch++) {
         for (let x = 0; x < this.gridSize[0]; x++) {
           for (let y = 0; y < this.gridSize[1]; y++) {
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             sum += matrix[batch][x][y][channel];
           }
         }
       }
-      this.meanArray.push(Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1])));
+      this.meanArray.push(
+        Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]))
+      );
       // calculate standard deviation, subtract mean
       sum = 0;
       for (let batch = 0; batch < this.batchSize; batch++) {
@@ -173,17 +199,19 @@ export default class ModelService implements Model {
           }
         }
       }
-      this.stdArray.push(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]));
+      this.stdArray.push(
+        sum / (this.batchSize * this.gridSize[0] * this.gridSize[1])
+      );
       // normalize
       for (let batch = 0; batch < this.batchSize; batch++) {
         for (let x = 0; x < this.gridSize[0]; x++) {
           for (let y = 0; y < this.gridSize[1]; y++) {
-            matrix[batch][x][y][channel] /= this.stdArray[channel]
+            matrix[batch][x][y][channel] /= this.stdArray[channel];
           }
         }
       }
     }
-    return matrix
+    return matrix;
   }
 
   private copyOutputToMatrix(outputs: Float32Array): void {

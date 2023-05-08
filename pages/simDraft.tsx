@@ -5,7 +5,7 @@ import { DiffusionPlane, SimulationParams } from "@components/Simulation"
 import { Color } from "three";
 import { useEffect, useState } from "react";
 
-export default function Home(): JSX.Element {
+export default function Home(): React.ReactElement {
   const params: SimulationParams = new SimulationParams()
   params.densityLowColour = new Color("green")
 
