@@ -2,7 +2,7 @@ import css from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
-export default function Home(): JSX.Element {
+export default function Home(): React.ReactElement {
   const [paused, setPaused] = useState(true);
   const [worker, setWorker] = useState<Worker | null>(null);
   useEffect(() => {
