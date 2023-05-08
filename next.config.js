@@ -9,7 +9,7 @@ const nextConfig = {
   },
   webpack(config, options) {
     config.module.rules.push({
-      test: /\.(glsl|vs|fs|vert|frag)$/,
+      test: /\.(glsl|vs|fs|vert|frag|md)$/,
       use: {
         loader: "raw-loader",
       },
