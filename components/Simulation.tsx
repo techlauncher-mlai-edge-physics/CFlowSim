@@ -25,7 +25,7 @@ class SimulationParams {
   }
 }
 */
-function DiffusionPlane(props: ThreeElements["mesh"]): JSX.Element {
+function DiffusionPlane(props: ThreeElements["mesh"]): React.ReactElement {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ref = useRef<t.Mesh>(null!);
   useFrame((state) => {

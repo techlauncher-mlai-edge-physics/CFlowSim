@@ -1,11 +1,10 @@
 import Head from "next/head";
-// import { Inter } from "next/font/google";
 import styles from "styles/Home.module.css";
 import NavBar from "@components/NavBar";
 import ParBar from "@components/ParametersBar";
 
 
-export default function Home(): JSX.Element {
+export default function Home(): React.ReactElement {
   return (
     <>
       <Head>
@@ -20,7 +19,6 @@ export default function Home(): JSX.Element {
         </div>
           <ParBar />
       </main>
-
     </>
   );
 }
