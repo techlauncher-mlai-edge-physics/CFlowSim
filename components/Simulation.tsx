@@ -39,8 +39,8 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
       segXInt: '32',
       segArea: '1024', 
       densityRangeLow: '0.0',
-      densityRangeHigh: '3.0',
-      densityRangeSize: '3.0',
+      densityRangeHigh: '10.0',
+      densityRangeSize: '10.0',
     }
 
     const shaderMat = new t.ShaderMaterial();
@@ -107,7 +107,14 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
     // output is received
     function output(data: Float32Array): void {
       console.log(data)
-      shaderMat.uniforms.density.value = data.slice(32*32);
+      const scaledOutput = new Float32Array(data.length / 4);
+      // pick data point from 64x64 to 32x32
+      for (let i=0; i<32; i++) {
+        for (let j=0; j<32; j++) {
+          scaledOutput[i*32+j] = data[i*64 + j*2];
+        }
+      }
+      shaderMat.uniforms.density.value = scaledOutput;
       shaderMat.uniformsNeedUpdate = true;
     }
   }, [shaderMat, worker]);
