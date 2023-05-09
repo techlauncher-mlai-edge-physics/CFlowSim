@@ -110,7 +110,7 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
       shaderMat.uniforms.density.value = data.slice(32*32);
       shaderMat.uniformsNeedUpdate = true;
     }
-  }, [shaderMat, props.worker]);
+  }, [shaderMat, worker]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
