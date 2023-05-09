@@ -3,7 +3,7 @@ import styles from "styles/Home.module.css";
 
 export default function AboutPage(): JSX.Element {
     return (
-        <div className={styles.navBar}>
+        <div>
             <NavBar />
         </div>
     );

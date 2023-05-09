@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 // for themes switching
-import React from "react";
+import React, {useState} from "react";
 import { GlobalStyles } from "../styles/theme/Global";
-import { Header } from "../styles/theme/Navbar.styled";
+import {ThemeButton} from "../styles/theme/ThemeSwitching.styled";
+import {light} from "../styles/theme/Theme.styled";
 
 
 export default function NavBar(): React.ReactElement {
@@ -41,11 +42,20 @@ export default function NavBar(): React.ReactElement {
               Settings
             </Button>
           </Link>
-          <Link href="/ThemesDialog">
-            <Button  type="primary" className={styles.theme_btn}>
-              Night Mode
-            </Button>
-          </Link>
+
+            {/*<ThemeButton*/}
+            {/*    className={`light ${selectedTheme === light ? "active" : ""}`}*/}
+            {/*    onClick={() => HandleThemeChange(light)}></ThemeButton>*/}
+
+          {/*<Link href="/#">*/}
+            {/*<ThemeButton onClick={()=>changeTheme('Dark')}>*/}
+            {/*  THEMEs*/}
+            {/*</ThemeButton>*/}
+            {/*<ThemeContainer className={styles.theme_btn}>*/}
+              <ThemeButton className={styles.theme_btn} onClick={()=>{changeTheme('light')}}>Light</ThemeButton>
+              <ThemeButton className={styles.theme_btn} onClick={()=>{changeTheme('dark')}}>Dark</ThemeButton>
+            {/*</ThemeContainer>*/}
+          {/*</Link>*/}
         </nav>
       </header>
   );

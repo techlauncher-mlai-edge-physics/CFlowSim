@@ -4,11 +4,37 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: 5rem;
   padding: 0 2rem;
   background-color: #000000;
   color: #eee;
 }
+
+.light_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 5rem;
+  padding: 0 2rem;
+  background-color: #000000;
+  color: #eee;
+}
+
+.dark_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 5rem;
+  padding: 0 2rem;
+  background-color: #c7c7c7;
+  color: #eee;
+}
+
+.nav {
+  display: flex;
+  flex-direction: row;
+}
+
 
 .nav a {
   margin: 0 1rem;
@@ -46,7 +72,7 @@
   color: #000000;
   background-color: #f3f3f3;
   height: 2.7rem;
-  width: 6.5rem;
+  width: 6.5rem;;
 }
 
 .logo {

@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import * as theme from "./Theme.styled";
 
 export const GlobalStyles = createGlobalStyle`
 *,
@@ -15,4 +16,28 @@ body {
   font-family: monospace;
   overflow-x: hidden;
 }
+
+body {
+    background-color: ${({ theme }) => theme.colors.background};
+color: ${({ theme }) => theme.colors.text};
+font-family: monospace;
+overflow-x: hidden;
+}
+
+// theme buttons color
+.light {
+    background-color: ${theme.light.colors.header};
+}
+.dark {
+    background-color: ${theme.dark.colors.header};
+}
+
+// active theme
+.active{
+    border: 3px solid ${({ theme }) => theme.colors.border};
+}
+
+
+
+
 `
