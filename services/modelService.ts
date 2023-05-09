@@ -55,7 +55,13 @@ export default class ModelService implements Model {
     console.log("createModelService called");
     const modelServices = new ModelService();
     console.log("createModelService constructor called");
-    await modelServices.init(modelPath, gridSize, batchSize, channelSize, outputChannelSize);
+    await modelServices.init(
+      modelPath,
+      gridSize,
+      batchSize,
+      channelSize,
+      outputChannelSize
+    );
     modelServices.fpsLimit = fpsLimit;
     console.log("createModelService finished");
     return modelServices;
@@ -79,7 +85,6 @@ export default class ModelService implements Model {
   }
 
   async startSimulation(): Promise<void> {
-    // start iterate() in a new thread
     this.isPaused = false;
     this.curFrameCountbyLastSecond = 0;
     this.fpsHeartbeat();
@@ -109,7 +114,7 @@ export default class ModelService implements Model {
     gridSize: [number, number],
     batchSize: number,
     channelSize: number,
-    outputChannelSize: number,
+    outputChannelSize: number
   ): Promise<void> {
     console.log("init called");
     this.session = await ort.InferenceSession.create(modelPath, {
@@ -135,7 +140,9 @@ export default class ModelService implements Model {
         `matrixArray length ${this.matrixArray.length} does not match tensorSize ${this.tensorSize}`
       );
     }
-    this.matrixArray = this.matrixMap(this.matrixArray, [0, 1], (v) => Math.max(v, 0));
+    this.matrixArray = this.matrixMap(this.matrixArray, [0, 1], (v) =>
+      Math.max(v, 0)
+    );
     this.mass = this.matrixSum(this.matrixArray, [0, 1]);
   }
 
@@ -162,13 +169,21 @@ export default class ModelService implements Model {
           const outputData = this.constrainOutput(outputs.Output.data);
           this.outputCallback(outputData);
           this.curFrameCountbyLastSecond++;
-          console.log("curFrameCountbyLastSecond", this.curFrameCountbyLastSecond);
+          console.log(
+            "curFrameCountbyLastSecond",
+            this.curFrameCountbyLastSecond
+          );
           this.copyOutputToMatrix(outputData);
           setTimeout(() => {
             if (!this.isPaused) {
               if (this.curFrameCountbyLastSecond > this.fpsLimit) {
                 this.isPaused = true;
-                console.log("fps limit reached, pause simulation, fpsLimit:", this.fpsLimit, "curFrameCountbyLastSecond:", this.curFrameCountbyLastSecond);
+                console.log(
+                  "fps limit reached, pause simulation, fpsLimit:",
+                  this.fpsLimit,
+                  "curFrameCountbyLastSecond:",
+                  this.curFrameCountbyLastSecond
+                );
               } else {
                 this.iterate().catch((e) => {
                   console.error("error in iterate", e);
@@ -230,14 +245,25 @@ export default class ModelService implements Model {
 
   private constrainDensity(data: Float32Array): Float32Array {
     data = this.matrixMap(data, [0, 1], (value) => Math.max(value, 0), true);
-    const scale = Math.round((this.mass / this.matrixSum(data, [0, 1], (value) => value, true))*100)/100;
+    const scale = this.roundFloat(
+      this.mass / this.matrixSum(data, [0, 1], (value) => value, true)
+    );
     console.log("Density scale", scale);
     return this.matrixMap(data, [0, 1], (value) => value * scale, true);
   }
 
   private constrainVelocity(data: Float32Array): Float32Array {
-    const energy = this.matrixSum(this.matrixArray, [1, 3], (value) => value ** 2, false);
-    const scale = Math.round(Math.sqrt(energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true)) * 100) / 100; // cut to 2 decimal places, to avoid IEEE 754 rounding error
+    const energy = this.matrixSum(
+      this.matrixArray,
+      [1, 3],
+      (value) => value ** 2,
+      false
+    );
+    const scale = this.roundFloat(
+      Math.sqrt(
+        energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true)
+      )
+    );
     console.log("Velocity scale", scale);
     if (scale <= 1) return data;
     return this.matrixMap(data, [1, 3], (value) => value * scale, true);
@@ -342,5 +368,9 @@ export default class ModelService implements Model {
       index += channelSize;
     }
     return matrix;
+  }
+
+  private roundFloat(value: number, decimal: number = 2): number {
+    return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
 }
