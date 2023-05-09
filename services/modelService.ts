@@ -135,6 +135,7 @@ export default class ModelService implements Model {
         `matrixArray length ${this.matrixArray.length} does not match tensorSize ${this.tensorSize}`
       );
     }
+    this.matrixArray = this.matrixMap(this.matrixArray, [0, 1], (v) => Math.max(v, 0));
     this.mass = this.matrixSum(this.matrixArray, [0, 1]);
   }
 
@@ -158,7 +159,6 @@ export default class ModelService implements Model {
       .then((outputs) => {
         // check if the output canbe downcasted to Float32Array
         if (outputs.Output.data instanceof Float32Array) {
-
           const outputData = this.constrainOutput(outputs.Output.data);
           this.outputCallback(outputData);
           this.curFrameCountbyLastSecond++;
@@ -223,20 +223,21 @@ export default class ModelService implements Model {
   }
 
   private constrainOutput(data: Float32Array): Float32Array {
-    data = this.constrainPressure(data);
+    data = this.constrainDensity(data);
     data = this.constrainVelocity(data);
     return data;
   }
 
-  private constrainPressure(data: Float32Array): Float32Array {
-    const scale = this.mass / this.matrixSum(data, [0, 1], (value) => value, true);
-    console.log("Pressure scale", scale);
+  private constrainDensity(data: Float32Array): Float32Array {
+    data = this.matrixMap(data, [0, 1], (value) => Math.max(value, 0), true);
+    const scale = Math.round((this.mass / this.matrixSum(data, [0, 1], (value) => value, true))*100)/100;
+    console.log("Density scale", scale);
     return this.matrixMap(data, [0, 1], (value) => value * scale, true);
   }
 
   private constrainVelocity(data: Float32Array): Float32Array {
     const energy = this.matrixSum(this.matrixArray, [1, 3], (value) => value ** 2, false);
-    const scale = Math.sqrt(energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true));
+    const scale = Math.round(Math.sqrt(energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true)) * 100) / 100; // cut to 2 decimal places, to avoid IEEE 754 rounding error
     console.log("Velocity scale", scale);
     if (scale <= 1) return data;
     return this.matrixMap(data, [1, 3], (value) => value * scale, true);
