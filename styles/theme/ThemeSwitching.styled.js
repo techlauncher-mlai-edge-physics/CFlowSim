@@ -16,13 +16,9 @@ export const ThemeButton = styled.button`
   font-size: 0.5rem;
   border: 1px solid hsl(0, 0%, 87%);
   border-radius: 5px;
-  width: 50px;
-  height: 20px;
+  width: 30px;
+  height: 15px;
   cursor: pointer;
   &:hover {
     box-shadow: 2px 2px 2px hsl(0, 0%, 87%);
 `;
-
-  // &:hover {
-  //   box-shadow: 2px 2px 2px ${({ theme }) => theme.colors.border};
-//`;
