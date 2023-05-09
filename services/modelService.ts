@@ -13,7 +13,7 @@ export default class ModelService implements Model {
 
   private tensorShape: [number, number, number, number];
   private tensorSize: number;
-  private outputTensorSize: number;
+  private outputSize: number;
   private outputCallback!: (data: Float32Array) => void;
   private matrixArray: Float32Array;
   // 0: partial density
@@ -34,7 +34,7 @@ export default class ModelService implements Model {
     this.batchSize = 0;
     this.tensorShape = [0, 0, 0, 0];
     this.tensorSize = 0;
-    this.outputTensorSize = 0;
+    this.outputSize = 0;
     this.isPaused = true;
     this.channelSize = 0;
     this.outputChannelSize = 0;
@@ -123,7 +123,7 @@ export default class ModelService implements Model {
     this.batchSize = batchSize;
     this.tensorShape = [batchSize, gridSize[0], gridSize[1], channelSize];
     this.tensorSize = batchSize * gridSize[0] * gridSize[1] * channelSize;
-    this.outputTensorSize = batchSize * gridSize[0] * gridSize[1] * outputChannelSize;
+    this.outputSize = batchSize * gridSize[0] * gridSize[1] * outputChannelSize;
   }
 
   private initMatrixFromJSON(data: any): void {
@@ -186,7 +186,7 @@ export default class ModelService implements Model {
   }
 
   private normalizeMatrix(matrix: number[][][][]): number[][][][] {
-    for (let channel = 0; channel < this.channelSize; channel++) {
+    for (let channel = 0; channel < this.outputChannelSize; channel++) {
       // calculate mean
       let sum = 0;
       for (let batch = 0; batch < this.batchSize; batch++) {
@@ -223,23 +223,23 @@ export default class ModelService implements Model {
   }
 
   private constrainOutput(data: Float32Array): Float32Array {
-    const energy = this.matrixSum(this.matrixArray, [1, 3], (value) => value ** 2, false);
     data = this.constrainPressure(data);
-    data = this.constrainVelocity(data, energy);
+    data = this.constrainVelocity(data);
     return data;
   }
 
   private constrainPressure(data: Float32Array): Float32Array {
     const scale = this.mass / this.matrixSum(data, [0, 1], (value) => value, true);
     console.log("Pressure scale", scale);
-    return this.matrixAlter(data, [0, 1], (value) => value * scale, true);
+    return this.matrixMap(data, [0, 1], (value) => value * scale, true);
   }
 
-  private constrainVelocity(data: Float32Array, energy: number): Float32Array {
+  private constrainVelocity(data: Float32Array): Float32Array {
+    const energy = this.matrixSum(this.matrixArray, [1, 3], (value) => value ** 2, false);
     const scale = Math.sqrt(energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true));
     console.log("Velocity scale", scale);
     if (scale <= 1) return data;
-    return this.matrixAlter(data, [1, 3], (value) => value * scale, true);
+    return this.matrixMap(data, [1, 3], (value) => value * scale, true);
   }
 
   private copyOutputToMatrix(outputs: Float32Array): void {
@@ -290,13 +290,21 @@ export default class ModelService implements Model {
     );
   }
 
+  /**
+   * Calculate the sum of a matrix Array with provided transform applied on matrix values.
+   * @param matrix input matrix Array
+   * @param channelRange range of selected channel
+   * @param f transform function for matrix values
+   * @param isOutput is the matrix from model output
+   * @returns sum of the selected channel of matrix
+   */
   private matrixSum(
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number = (value) => value,
     isOutput: boolean = false
   ): number {
-    const tensorSize = isOutput ? this.outputTensorSize : this.tensorSize;
+    const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;
     let sum = 0;
     let index = 0;
@@ -309,13 +317,21 @@ export default class ModelService implements Model {
     return sum;
   }
 
-  private matrixAlter(
+  /**
+   * Map the transform function to selected channel of input matrix.
+   * @param matrix input matrix Array
+   * @param channelRange range of selected channel
+   * @param f transform function for matrix values
+   * @param isOutput is the matrix from model output
+   * @returns sum of the selected channel of matrix
+   */
+  private matrixMap(
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number,
     isOutput: boolean = false
   ): Float32Array {
-    const tensorSize = isOutput ? this.outputTensorSize : this.tensorSize;
+    const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;
     let index = 0;
     while (index < tensorSize) {
