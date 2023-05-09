@@ -64,6 +64,7 @@ export default function Home(): React.ReactElement {
         >
           <ambientLight />
           <DiffusionPlane
+            disableInteraction={false}
             position={[0, 0, 0]}
             params={params}
             worker={worker}
