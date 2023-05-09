@@ -3,6 +3,12 @@ import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 
+// for themes switching
+import React from "react";
+import { GlobalStyles } from "../styles/theme/Global";
+import { Header } from "../styles/theme/Navbar.styled";
+
+
 export default function NavBar(): React.ReactElement {
   return (
       <header className={styles.header}>
@@ -32,11 +38,11 @@ export default function NavBar(): React.ReactElement {
           </Link>
           <Link href="/#">
             <Button type="primary" className={styles.theme_btn}>
-              THEMEs
+              Settings
             </Button>
           </Link>
-          <Link href="/#">
-            <Button type="primary" className={styles.theme_btn}>
+          <Link href="/ThemesDialog">
+            <Button  type="primary" className={styles.theme_btn}>
               Night Mode
             </Button>
           </Link>
