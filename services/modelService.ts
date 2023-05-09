@@ -258,7 +258,7 @@ export default class ModelService implements Model {
   private constrainDensity(data: Float32Array): Float32Array {
     data = this.matrixMap(data, [0, 1], (value) => Math.max(value, 0), true);
     const sum = this.matrixSum(data, [0, 1], (value) => value, true);
-    const scale = this.roundFloat(this.mass / sum, 4);
+    const scale = this.mass / sum;
     console.log(
       "Scaling density, cur mass:",
       sum,
