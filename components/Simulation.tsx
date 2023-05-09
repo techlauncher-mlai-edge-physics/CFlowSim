@@ -1,5 +1,5 @@
 import * as t from "three";
-import { useFrame, type ThreeElements, ThreeEvent } from "@react-three/fiber";
+import { useFrame, type ThreeElements, type ThreeEvent } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import vertexShader from "../shaders/vert.glsl";
 import fragmentShader from "../shaders/frag.glsl";
@@ -117,18 +117,20 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
   let trackMove = false;
   const prevPointPos = new t.Vector2(0, 0);
   const pointPos = new t.Vector2(0, 0);
-  const pointDown = (e:ThreeEvent<PointerEvent>) => {
+  const pointDown = (e:ThreeEvent<PointerEvent>): void => {
+    if (e.uv == null) return;
     pointMoved = false;
     trackMove = true;
     // make top left corner (0,0)
-    prevPointPos.set(e.uv!.x, 1 - e.uv!.y);
+    prevPointPos.set(e.uv.x, 1 - e.uv.y);
   }
-  const pointMove = (e:ThreeEvent<PointerEvent>) => {
+  const pointMove = (e:ThreeEvent<PointerEvent>): void => {
     if (!trackMove) return;
+    if (e.uv == null) return;
     pointMoved = true;
-    pointPos.set(e.uv!.x, 1 - e.uv!.y);
+    pointPos.set(e.uv.x, 1 - e.uv.y);
   }
-  const pointUp = (e:ThreeEvent<PointerEvent>) => {
+  const pointUp = (e:ThreeEvent<PointerEvent>): void => {
     pointMoved = false;
     trackMove = false;
   }

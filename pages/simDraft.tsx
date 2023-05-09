@@ -9,7 +9,7 @@ export default function Home(): React.ReactElement {
   const [enableMapControls, setEnableMapControls] = useState(false)
   useEffect(() => {
     (window as any).testMapControlsToggle = setEnableMapControls
-  })
+  }, [])
   
   const params: SimulationParams = new SimulationParams()
   params.densityLowColour = new Color("green")
