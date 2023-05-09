@@ -6,7 +6,7 @@ import { Color } from "three";
 import { useEffect, useState } from "react";
 
 export default function Home(): React.ReactElement {
-  const [enableMapControls, setEnableMapControls] = useState(true)
+  const [enableMapControls, setEnableMapControls] = useState(false)
   useEffect(() => {
     (window as any).testMapControlsToggle = setEnableMapControls
   })
