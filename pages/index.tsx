@@ -7,12 +7,24 @@ import styled from "styled-components";
 import { DiffusionPlane, SimulationParams } from "@components/Simulation";
 import { useEffect, useState } from "react";
 
-const Simulator = styled.div`
+const SimulatorContainer = styled.div`
   position: absolute;
   left: 21rem;
-  top: 90px;
-  width: calc(100% - 22rem);
-  height: calc(100% - 100px);
+  top: 6rem;
+  width: calc(100vw - 22rem);
+  height: calc(100vh - 7rem);
+`;
+const Simulator = styled(Canvas)`
+  background: transparent;
+`;
+
+const Main = styled.main`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
 `;
 
 export default function Home(): React.ReactElement {
@@ -38,28 +50,27 @@ export default function Home(): React.ReactElement {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <Main>
         <div className={styles.navBar}>
           <NavBar />
         </div>
         <ParBar />
-        <Simulator>
-          <Canvas
-            shadows
-            className={styles.canvas}
-            camera={{
-              position: [1, 10, 1],
-            }}
-          >
-            <ambientLight />
-            <DiffusionPlane
-              position={[0, 0, 0]}
-              params={params}
-              worker={worker}
-            />
-          </Canvas>
-        </Simulator>
-      </main>
+        <SimulatorContainer>
+        <Simulator
+          shadows
+          camera={{
+            position: [1, 10, 1],
+          }}
+        >
+          <ambientLight />
+          <DiffusionPlane
+            position={[0, 0, 0]}
+            params={params}
+            worker={worker}
+          />
+          </Simulator>
+          </SimulatorContainer>
+      </Main>
     </>
   );
 }
