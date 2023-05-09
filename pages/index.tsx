@@ -3,7 +3,6 @@ import styles from "styles/Home.module.css";
 import NavBar from "@components/NavBar";
 import ParBar from "@components/ParametersBar";
 
-
 export default function Home(): React.ReactElement {
   return (
     <>
@@ -12,13 +11,16 @@ export default function Home(): React.ReactElement {
         <meta name="description" content="PHYS" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/*<link rel="icon" href="/favicon.ico" />*/}
-        <link rel="icon" href="https://style.csiro.au/assets/media/CSIRO/favicon.ico" />
+        <link
+          rel="icon"
+          href="https://style.csiro.au/assets/media/CSIRO/favicon.ico"
+        />
       </Head>
       <main>
         <div className={styles.navBar}>
           <NavBar />
         </div>
-          <ParBar />
+        <ParBar />
       </main>
     </>
   );

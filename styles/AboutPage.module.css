@@ -1,20 +1,20 @@
-.header{
-    background-color: #000000;
-    color: #eee;
-    height: 80px;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.header {
+  background-color: #000000;
+  color: #eee;
+  height: 80px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.nav a{
-    margin: 0 1rem;
-    color: #eee;
-    text-decoration: none;
-    align-items: center;
+.nav a {
+  margin: 0 1rem;
+  color: #eee;
+  text-decoration: none;
+  align-items: center;
 }
 
-.content{
-    padding: 0 2rem;
+.content {
+  padding: 0 2rem;
 }
