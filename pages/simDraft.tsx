@@ -6,6 +6,11 @@ import { Color } from "three";
 import { useEffect, useState } from "react";
 
 export default function Home(): React.ReactElement {
+  const [enableMapControls, setEnableMapControls] = useState(false)
+  useEffect(() => {
+    (window as any).testMapControlsToggle = setEnableMapControls
+  }, [])
+  
   const params: SimulationParams = new SimulationParams()
   params.densityLowColour = new Color("green")
 
@@ -32,8 +37,8 @@ export default function Home(): React.ReactElement {
       >
         <ambientLight />
         <Stats />
-        <DiffusionPlane position={[0, 0, 0]} params={params} worker={worker} />
-        <MapControls />
+        <DiffusionPlane position={[0, 0, 0]} params={params} worker={worker} disableInteraction={enableMapControls} />
+        <MapControls enabled={enableMapControls} />
       </Canvas>
     </div>
   );
