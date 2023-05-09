@@ -1,4 +1,5 @@
 # Physics In The Browser
+
 [![Node.js CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml) [![pages-build-deployment](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment)
 
 **Deployed at [GitHub Action](https://techlauncher-mlai-edge-physics.github.io)**
@@ -41,15 +42,13 @@ The public deployment of the application can be found at [GitHub Action](https:/
 
    The built application will be in the `out` folder.
 
-   **For development**, you can run the application in `dev` command
+   **For development**, you can run the application in `dev` command which is a wrapper of `next dev` command. It will start a development server with hot reloading at `localhost:3000`.
 
    ```sh
    npm run dev
    ```
 
-   The application will be served at `localhost:8000`. However, dynamic reloading is not supported, as `onnxruntime-web` is incompatible with nodejs environment. So current workaround is to wrap build command in `dev` command.
-
-## Relavent Work
+## Relevant Works
 
 To Do
 
