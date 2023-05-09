@@ -132,9 +132,9 @@ export default class ModelService implements Model {
   }
 
   private initMatrixFromJSON(data: any): void {
-    data = this.normalizeMatrix(data);
     console.log("initMatrixFromJSON called");
     this.matrixArray = new Float32Array(data.flat(Infinity));
+    this.normalizeMatrix(this.matrixArray);
     if (this.matrixArray.length !== this.tensorSize) {
       throw new Error(
         `matrixArray length ${this.matrixArray.length} does not match tensorSize ${this.tensorSize}`
@@ -154,6 +154,11 @@ export default class ModelService implements Model {
     }
     console.log("iterate called");
     console.log("this.matrixArray", this.matrixArray);
+    const inputEnergy = this.matrixSum(
+      this.matrixArray,
+      [1, 5],
+      (value) => value ** 2
+    );
     const inputTensor = new ort.Tensor(
       "float32",
       this.matrixArray,
@@ -166,7 +171,10 @@ export default class ModelService implements Model {
       .then((outputs) => {
         // check if the output canbe downcasted to Float32Array
         if (outputs.Output.data instanceof Float32Array) {
-          const outputData = this.constrainOutput(outputs.Output.data);
+          const outputData = this.constrainOutput(
+            outputs.Output.data,
+            inputEnergy
+          );
           this.outputCallback(outputData);
           this.curFrameCountbyLastSecond++;
           console.log(
@@ -200,72 +208,83 @@ export default class ModelService implements Model {
       });
   }
 
-  private normalizeMatrix(matrix: number[][][][]): number[][][][] {
-    for (let channel = 0; channel < this.outputChannelSize; channel++) {
-      // calculate mean
-      let sum = 0;
-      for (let batch = 0; batch < this.batchSize; batch++) {
-        for (let x = 0; x < this.gridSize[0]; x++) {
-          for (let y = 0; y < this.gridSize[1]; y++) {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            sum += matrix[batch][x][y][channel];
-          }
-        }
-      }
-      const mean = sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]);
-      // calculate standard deviation, subtract mean
-      sum = 0;
-      for (let batch = 0; batch < this.batchSize; batch++) {
-        for (let x = 0; x < this.gridSize[0]; x++) {
-          for (let y = 0; y < this.gridSize[1]; y++) {
-            matrix[batch][x][y][channel] -= mean;
-            sum += matrix[batch][x][y][channel] ** 2;
-          }
-        }
-      }
-      const std =
-        Math.sqrt(sum / (this.batchSize * this.gridSize[0] * this.gridSize[1]));
-      // normalize
-      for (let batch = 0; batch < this.batchSize; batch++) {
-        for (let x = 0; x < this.gridSize[0]; x++) {
-          for (let y = 0; y < this.gridSize[1]; y++) {
-            matrix[batch][x][y][channel] /= std;
-          }
-        }
-      }
+  private normalizeMatrix(matrix: Float32Array): void {
+    console.log("normalizeMatrix called");
+    for (let i = 0; i < this.channelSize; i++) {
+      matrix = this.normalizeMatrixChannel(matrix, i);
     }
-    return matrix;
   }
 
-  private constrainOutput(data: Float32Array): Float32Array {
-    data = this.constrainDensity(data);
-    data = this.constrainVelocity(data);
-    return data;
+  private normalizeMatrixChannel(
+    matrix: Float32Array,
+    channel: number
+  ): Float32Array {
+    const sum = this.matrixSum(
+      matrix,
+      [channel, channel + 1],
+      (value) => value
+    );
+    const mean = this.roundFloat(
+      sum / (this.gridSize[0] * this.gridSize[1] * this.batchSize),
+      4
+    );
+    const std = this.roundFloat(
+      Math.sqrt(
+        this.matrixSum(matrix, [channel, channel + 1], (value) =>
+          Math.pow(value - mean, 2)
+        ) /
+          (this.gridSize[0] * this.gridSize[1] * this.batchSize)
+      ),
+      4
+    );
+    console.log("normalizeMatrixChannel", channel, mean, std);
+    return this.matrixMap(
+      matrix,
+      [channel, channel + 1],
+      (value) => (value - mean) / std
+    );
   }
 
+  private constrainOutput(
+    data: Float32Array,
+    inputEnergy: number
+  ): Float32Array {
+    let processed = this.constrainDensity(data);
+    processed = this.constrainVelocity(processed, inputEnergy);
+    return processed;
+  }
+
+  // data has cut off negative values (argument changed!)
   private constrainDensity(data: Float32Array): Float32Array {
     data = this.matrixMap(data, [0, 1], (value) => Math.max(value, 0), true);
-    const scale = this.roundFloat(
-      this.mass / this.matrixSum(data, [0, 1], (value) => value, true)
+    const sum = this.matrixSum(data, [0, 1], (value) => value, true);
+    const scale = this.roundFloat(this.mass / sum, 4);
+    console.log(
+      "Scaling density, cur mass:",
+      sum,
+      "target mass:",
+      this.mass,
+      "scale:",
+      scale
     );
-    console.log("Density scale", scale);
     return this.matrixMap(data, [0, 1], (value) => value * scale, true);
   }
 
-  private constrainVelocity(data: Float32Array): Float32Array {
-    const energy = this.matrixSum(
-      this.matrixArray,
-      [1, 3],
-      (value) => value ** 2,
-      false
+  private constrainVelocity(
+    data: Float32Array,
+    inputEnergy: number
+  ): Float32Array {
+    const curEnergy = this.matrixSum(data, [1, 3], (value) => value ** 2, true);
+    const scale = this.roundFloat(Math.sqrt(inputEnergy / curEnergy), 4);
+    console.log(
+      "Scaling velocity, cur energy:",
+      curEnergy,
+      "target energy:",
+      inputEnergy,
+      "scale:",
+      scale
     );
-    const scale = this.roundFloat(
-      Math.sqrt(
-        energy / this.matrixSum(data, [1, 3], (value) => value ** 2, true)
-      )
-    );
-    console.log("Velocity scale", scale);
-    if (scale <= 1) return data;
+    if (scale >= 1) return data;
     return this.matrixMap(data, [1, 3], (value) => value * scale, true);
   }
 
@@ -370,7 +389,7 @@ export default class ModelService implements Model {
     return matrix;
   }
 
-  private roundFloat(value: number, decimal: number = 2): number {
+  private roundFloat(value: number, decimal: number = 4): number {
     return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
 }
