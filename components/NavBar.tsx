@@ -11,8 +11,19 @@ import {light} from "../styles/theme/Theme.styled";
 
 
 export default function NavBar(): React.ReactElement {
+  const [selectedTheme, setSelectedTheme] = useState('light');
+  const changeTheme = (theme:string):void=>{
+    console.log('click button ' + theme)
+    setSelectedTheme(theme);
+  }
+
+    // const HandleThemeChange = (theme) => {
+    //     setSelectedTheme(theme);
+    // };
+
   return (
-      <header className={styles.header}>
+          <header className={`${selectedTheme === 'light' ? styles.light_header : styles.dark_header}`}>
+              {/*<header className={`${selectedTheme === 'light' ? 'styles.light_header' : 'styles.dark_header'}`}>*/}
         <div>
           <Link href="/">
             <Image
