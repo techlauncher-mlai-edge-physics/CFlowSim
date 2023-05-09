@@ -5,7 +5,8 @@ import Link from "next/link";
 
 // for themes switching
 import {useState} from "react";
-import {ThemeButton} from "../styles/theme/ThemeSwitching.styled";
+import {ThemeModeButton, SettingButton} from "../styles/theme/ThemeSwitching.styled";
+
 
 export default function NavBar(): React.ReactElement {
     const [selectedTheme, setSelectedTheme] = useState('light');
@@ -41,17 +42,19 @@ export default function NavBar(): React.ReactElement {
                         About
                     </Button>
                 </Link>
-                <Link href="/#">
-                    <Button type="primary" className={styles.theme_btn}>
+                <div>
+                    <SettingButton className={styles.setting_btn }>
                         Settings
-                    </Button>
-                </Link>
-                <ThemeButton className={styles.theme_btn} onClick={() => {
+                    </SettingButton>
+                </div>
+                <button className={styles.theme_btn} onClick={() => {
                     changeTheme('light')
-                }}>Light</ThemeButton>
-                <ThemeButton className={styles.theme_btn} onClick={() => {
+                }}>Light
+                </button>
+                <button className={styles.theme_btn} onClick={() => {
                     changeTheme('dark')
-                }}>Dark</ThemeButton>
+                }}>Dark
+                </button>
             </nav>
         </header>
     );

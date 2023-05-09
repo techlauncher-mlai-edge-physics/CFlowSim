@@ -1,10 +1,10 @@
 import NavBar from "@components/NavBar";
 import styles from "styles/Home.module.css";
 
-export default function AboutPage(): JSX.Element {
+export default function AboutPage(): React.ReactElement {
     return (
-        <div className={styles.navBar} >
-            <NavBar />
+        <div className={styles.navbar}>
+            <NavBar/>
         </div>
     );
 }

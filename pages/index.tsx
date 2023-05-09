@@ -11,7 +11,8 @@ export default function Home(): React.ReactElement {
         <title>Physics in the Browser for the People</title>
         <meta name="description" content="PHYS" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        {/*<link rel="icon" href="/favicon.ico" />*/}
+        <link rel="icon" href="https://style.csiro.au/assets/media/CSIRO/favicon.ico" />
       </Head>
       <main>
         <div className={styles.navBar}>
