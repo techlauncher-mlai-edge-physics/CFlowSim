@@ -2,6 +2,8 @@
 varying lowp vec4 vColor;
 
 uniform float density[${segArea}]; //the size of one chunk 
+uniform vec3 hiCol; 
+uniform vec3 lowCol;
 
 int getIndexFromPoint(vec3 pos)
 {
@@ -15,7 +17,7 @@ vec4 getColourFromDensity(float density)
   density = min(density, ${densityRangeHigh});
   density = max(density, ${densityRangeLow});
   density = density / ${densityRangeSize};
-  return vec4(density, 0.0, 1.0 - density, 1.0);
+  return vec4(mix(lowCol, hiCol, density), 1.0);
 }
 
 void main(void) 
