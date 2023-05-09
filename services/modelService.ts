@@ -37,7 +37,7 @@ export default class ModelService implements Model {
     this.stdArray = [];
     this.meanArray = [];
     this.channelSize = 0;
-    this.fpsLimit = 0;
+    this.fpsLimit = 30;
     this.curFrameCountbyLastSecond = 0;
   }
 
@@ -47,12 +47,13 @@ export default class ModelService implements Model {
     gridSize: [number, number] = [64, 64],
     batchSize: number = 1,
     channelSize: number = 5,
-    fpsLimit: number = 30
+    fpsLimit: number = 15
   ): Promise<ModelService> {
     console.log("createModelService called");
     const modelServices = new ModelService();
     console.log("createModelService constructor called");
     await modelServices.init(modelPath, gridSize, batchSize, channelSize);
+    modelServices.fpsLimit = fpsLimit;
     console.log("createModelService finished");
     return modelServices;
   }
@@ -148,16 +149,17 @@ export default class ModelService implements Model {
     this.session
       .run(feeds)
       .then((outputs) => {
-        console.log("outputs type", typeof outputs);
         // check if the output canbe downcasted to Float32Array
         if (outputs.Output.data instanceof Float32Array) {
           this.outputCallback(outputs.Output.data);
           this.curFrameCountbyLastSecond++;
+          console.log("curFrameCountbyLastSecond", this.curFrameCountbyLastSecond);
           this.copyOutputToMatrix(outputs.Output.data);
           setTimeout(() => {
             if (!this.isPaused) {
               if (this.curFrameCountbyLastSecond > this.fpsLimit) {
                 this.isPaused = true;
+                console.log("fps limit reached, pause simulation, fpsLimit:", this.fpsLimit, "curFrameCountbyLastSecond:", this.curFrameCountbyLastSecond);
               } else {
                 this.iterate().catch((e) => {
                   console.error("error in iterate", e);

@@ -2,6 +2,6 @@ import React from "react";
 import "../styles/app.css";
 import type { AppProps } from "next/app";
 
-export default function MyApp({ Component, pageProps }: AppProps):React.ReactElement {
+export default function MyApp({ Component, pageProps }: AppProps): React.ReactElement {
   return <Component {...pageProps} />;
 }
