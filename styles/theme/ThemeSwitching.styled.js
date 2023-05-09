@@ -11,7 +11,7 @@ import styled from "styled-components";
 // `;
 
 export const ThemeButton = styled.button`
-  margin: 0 5px;
+  margin: 0 4px;
   padding: 10px;
   font-size: 0.5rem;
   border: 1px solid hsl(0, 0%, 87%);

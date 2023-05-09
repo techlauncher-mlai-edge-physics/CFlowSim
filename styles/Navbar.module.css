@@ -33,6 +33,7 @@
 .nav {
   display: flex;
   flex-direction: row;
+  vertical-align: center;
 }
 
 
@@ -62,17 +63,14 @@
   width: 8rem;
 }
 
-/*.btn :hover{*/
-/*    background-color: #FFFFFF;*/
-/*}*/
-
 .theme_btn {
   font-family: "Source Code Pro", monospace;
   font-size: 0.8rem;
   color: #000000;
   background-color: #f3f3f3;
   height: 2.7rem;
-  width: 6.5rem;;
+  width: 6.5rem;
+
 }
 
 .logo {
@@ -85,8 +83,27 @@
   top: 0.5rem;
 }
 
-.description {
+.logo_light {
   border: 1px solid #000000;
+  filter: invert(100%);
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.logo_dark {
+  border: 1px solid #000000;
+  /*filter: invert(100%);*/
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.description {
   position: absolute;
   left: 6.5rem;
   top: 0.5rem;

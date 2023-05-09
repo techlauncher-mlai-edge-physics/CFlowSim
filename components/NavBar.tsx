@@ -20,7 +20,7 @@ export default function NavBar(): React.ReactElement {
             <div>
                 <Link href="/">
                     <Image
-                        className={styles.logo}
+                        className={`${selectedTheme === 'light' ? styles.logo_light : styles.logo_dark}`}
                         src="/physics.svg"
                         alt="Physics in the Browser Logo"
                         width={50}
