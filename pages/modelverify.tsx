@@ -16,7 +16,36 @@ export default function Home(): React.ReactElement {
       console.log("worker created", worker);
       worker.postMessage({ func: "init" });
       worker.onmessage = (e) => {
-        console.log(e.data);
+        if (e.data.type === "output") {
+          const density = e.data.density;
+          // log the array 64x64
+          // chunk the array into 64x64
+          const chunked = [];
+          for (let i = 0; i < density.length; i += 64) {
+            chunked.push(density.slice(i, i + 64));
+          }
+          console.log(chunked);
+          // log some values
+          console.log(
+            "average density",
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+            density.reduce((a: any, b: any) => a + b) / density.length
+          );
+          console.log("max density", Math.max(...density));
+          console.log("min density", Math.min(...density));
+          console.log(
+            "density std dev",
+            Math.sqrt(
+              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+              density.reduce((a: any, b: any) => a + b * b) / density.length -
+                Math.pow(
+                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  density.reduce((a: any, b: any) => a + b) / density.length,
+                  2
+                )
+            )
+          );
+        } else console.log(e.data);
       };
       worker.onerror = (e) => {
         console.log(e);
