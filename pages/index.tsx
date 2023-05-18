@@ -1,5 +1,5 @@
 import Head from "next/head";
-import styles from "styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 import NavBar from "@components/NavBar";
 import ParBar from "@components/ParametersBar";
 import { Canvas } from "@react-three/fiber";
@@ -28,7 +28,9 @@ const Main = styled.main`
 `;
 
 export default function Home(): React.ReactElement {
-  const params: SimulationParams = new SimulationParams();
+  const [simulationParams, setSimulationParams] = useState<SimulationParams>(
+    new SimulationParams()
+  );
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [worker, setWorker] = useState<Worker>(null!);
 
@@ -54,23 +56,23 @@ export default function Home(): React.ReactElement {
         <div className={styles.navBar}>
           <NavBar />
         </div>
-        <ParBar />
+        <ParBar params={simulationParams} setParams={setSimulationParams} />
         <SimulatorContainer>
-        <Simulator
-          shadows
-          camera={{
-            position: [1, 10, 1],
-          }}
-        >
-          <ambientLight />
-          <DiffusionPlane
-            disableInteraction={false}
-            position={[0, 0, 0]}
-            params={params}
-            worker={worker}
-          />
+          <Simulator
+            shadows
+            camera={{
+              position: [1, 10, 1],
+            }}
+          >
+            <ambientLight />
+            <DiffusionPlane
+              disableInteraction={false}
+              position={[0, 0, 0]}
+              params={simulationParams}
+              worker={worker}
+            />
           </Simulator>
-          </SimulatorContainer>
+        </SimulatorContainer>
       </Main>
     </>
   );

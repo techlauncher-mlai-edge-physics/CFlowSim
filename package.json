@@ -18,7 +18,7 @@
     "@types/react": "^18.2.6",
     "@types/react-dom": "18.0.11",
     "@types/three": "^0.151.0",
-    "antd": "^5.4.0",
+    "antd": "^5.5.0",
     "copy-webpack-plugin": "^11.0.0",
     "eslint-config-next": "13.3.2",
     "glslify-loader": "^2.0.0",
