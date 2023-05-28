@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { ColorPicker } from "antd";
+import { ColorPicker, Divider, Col, Space, Row } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import type { Color } from "antd/es/color-picker";
 import { Color as ThreeColor } from "three";
 import { type SimulationParams } from "./Simulation";
+import { type SpaceSize } from "antd/es/space";
 
-const Container = styled.div`
+const Container = styled(Space)`
   background-color: #d3d3d3;
   color: #000000;
   width: 20rem;
@@ -14,19 +15,11 @@ const Container = styled.div`
   font-size: 2rem;
   min-height: 90%;
   position: absolute;
+  display: flex;
 `;
-const Title = styled.div`
+const Title = styled.span`
   font-family: "Roboto", sans-serif;
   font-size: 1.4rem;
-  position: absolute;
-  left: 5.5rem;
-  top: 1rem;
-`;
-const ColorPickerContainer = styled.div`
-  margin-top: 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 export default function ParametersBar(props: {
@@ -56,15 +49,32 @@ export default function ParametersBar(props: {
       };
     });
   }, [colorLowString, colorHighString, setParams]);
+  const space: [SpaceSize, SpaceSize] = ["large", "small"];
 
   return (
-    <Container>
-      <Title>Parameters</Title>
-      <ColorPickerContainer>
-        <div style={{ fontSize: "1.2rem" }}>Color</div>
-        <ColorPicker value={colorLow} onChange={setColorLow} />
-        <ColorPicker value={colorHigh} onChange={setColorHigh} />
-      </ColorPickerContainer>
+    <Container direction="vertical" size={space}>
+      <Row justify="center"/>
+      <Row justify="center">
+        <Title>Parameters</Title>  
+      </Row>
+      <Divider orientation="left">Simulator Color</Divider>
+      <Row justify="space-around">
+        <Col style={{ textAlign: "center" }}>
+          <span>Low</span>
+        </Col>
+        <Col>
+          <ColorPicker value={colorLow} onChange={setColorLow} />
+        </Col>
+      </Row>
+      <Row justify="space-around">
+        <Col>
+          <span>High</span>
+        </Col>
+        <Col>
+          <ColorPicker value={colorHigh} onChange={setColorHigh} />
+        </Col>
+      </Row>
+      <Divider />
     </Container>
   );
 }
