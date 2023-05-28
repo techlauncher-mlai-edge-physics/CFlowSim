@@ -1,16 +1,5 @@
 {
-    "*.ts": [
-        "eslint",
-        "prettier --list-different"
-    ],
-    "*.js": [
-        "eslint",
-        "prettier --list-different"
-    ],
-    "*.json": [
-        "prettier --list-different"
-    ],
-    "*.md": [
-        "prettier --list-different"
-    ]
+  "*.{ts,tsx,js,jsx}": ["eslint", "prettier --list-different"],
+  "*.json": "prettier --list-different",
+  "*.md": "prettier --list-different"
 }
