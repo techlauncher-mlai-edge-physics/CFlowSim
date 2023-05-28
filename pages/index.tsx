@@ -45,7 +45,7 @@ export default function Home(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Physics in the Browser for the People</title>
+        <title>CFlowSIm: Physics in the Browser for the People</title>
         <meta name="description" content="PHYS" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
