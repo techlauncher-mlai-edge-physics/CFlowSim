@@ -6,6 +6,7 @@ import { Canvas } from "@react-three/fiber";
 import styled from "styled-components";
 import { DiffusionPlane, SimulationParams } from "@components/Simulation";
 import { useEffect, useState } from "react";
+import ControlBar from "@components/ControlBar";
 
 const SimulatorContainer = styled.div`
   position: absolute;
@@ -13,11 +14,12 @@ const SimulatorContainer = styled.div`
   top: 6rem;
   width: calc(100vw - 22rem);
   height: calc(100vh - 7rem);
+  z-index: 0;
 `;
 const Simulator = styled(Canvas)`
   background: transparent;
+  z-index: 0;
 `;
-
 const Main = styled.main`
   position: absolute;
   left: 0;
@@ -25,6 +27,7 @@ const Main = styled.main`
   width: 100vw;
   height: 100vh;
   background: transparent;
+  z-index: 0;
 `;
 
 export default function Home(): React.ReactElement {
@@ -73,6 +76,7 @@ export default function Home(): React.ReactElement {
             />
           </Simulator>
         </SimulatorContainer>
+        <ControlBar worker={worker} />
       </Main>
     </>
   );
