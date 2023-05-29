@@ -9,7 +9,8 @@
     "lint": "next lint",
     "check-format": "prettier --check .",
     "format": "prettier --write .",
-    "commit": "cz"
+    "commit": "cz",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@react-three/drei": "^9.64.0",
@@ -50,6 +51,8 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
