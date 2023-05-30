@@ -36,7 +36,7 @@ export default function NavBar(): React.ReactElement {
           />
         </Link>
       </div>
-      <div className={styles.description}>Physics in the Browser</div>
+      <div className={styles.description}>CFLowSim</div>
       <nav className={styles.nav}>
         <Link href="/#">
           <Button type="primary" className={styles.btn}>
