@@ -18,6 +18,28 @@ interface Renderable {
   disableInteraction: boolean
 }
 
+// TODO: move the rest of renderConfig to SimulationParams
+const renderConfig : Record<string, string> = {
+  segX: '31.0',
+  segY: '31.0',
+  width: '10.0',
+  height: '8.0',
+  segXInt: '32',
+  segArea: '1024', 
+  densityRangeLow: '0.0',
+  densityRangeHigh: '10.0',
+  densityRangeSize: '10.0',
+}
+function applyConfigToShader(shader: string): string {
+  // match `${varName}` in shader and replace with values
+  return shader.replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
+    if (renderConfig[varName] !== undefined) {
+      return renderConfig[varName];
+    }
+    return "1.0";
+  });
+}
+
 // converts a colour to vector3, does not preserve alpha
 function colToVec3(col: t.Color): t.Vector3 { return new t.Vector3(col.r, col.g, col.b) }
 
@@ -30,38 +52,21 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
 
   // create the shader
   const shaderMat = useMemo(() => {
-    // TODO: move the rest of renderConfig to SimulationParams
-    const renderConfig : Record<string, string> = {
-      segX: '31.0',
-      segY: '31.0',
-      width: '10.0',
-      height: '8.0',
-      segXInt: '32',
-      segArea: '1024', 
-      densityRangeLow: '0.0',
-      densityRangeHigh: '10.0',
-      densityRangeSize: '10.0',
-    }
 
     const shaderMat = new t.ShaderMaterial();
-    shaderMat.vertexShader = vertexShader
-      // match `${varName}` in shader and replace with values
-      .replace(/\$\{(\w+?)\}/g, function (match: any, varName: string) {
-        if (renderConfig[varName] !== undefined) {
-          return renderConfig[varName];
-        }
-        return "1.0";
-      });
-    shaderMat.fragmentShader = fragmentShader;
+    shaderMat.vertexShader = applyConfigToShader(vertexShader);
+    shaderMat.fragmentShader = applyConfigToShader(fragmentShader);
 
     // provide a dummy density field first
 
     // TODO: until we standardise parameters a bit more we'll hardcode
     // an advection size of 32*32
-    const initDensity = new Float32Array(new Array(32*32).fill(1))
+    const initDensity = new Float32Array(new Array(64*64).fill(0))
+    const tex = new t.DataTexture(initDensity, 64, 64, t.RedFormat, t.FloatType)
+    tex.needsUpdate = true;
 
     shaderMat.uniforms = {
-      density: { value: initDensity },
+      density: { value: tex },
       hiCol:  { value: colToVec3(props.params.densityHighColour) }, 
       lowCol: { value: colToVec3(props.params.densityLowColour)  }, 
     };
@@ -106,16 +111,22 @@ function DiffusionPlane(props: ThreeElements["mesh"] & Renderable): React.ReactE
     // update the density uniforms every time
     // output is received
     function output(data: Float32Array): void {
-      console.log(data)
-      const scaledOutput = new Float32Array(data.length / 4);
-      // pick data point from 64x64 to 32x32
-      for (let i=0; i<32; i++) {
-        for (let j=0; j<32; j++) {
-          scaledOutput[i*32+j] = data[i*64 + j*2];
-        }
+      const param: Record<string, number> = {
+        densityRangeHigh: parseFloat(renderConfig.densityRangeHigh),
+        densityRangeLow: parseFloat(renderConfig.densityRangeLow),
+        densityRangeSize: parseFloat(renderConfig.densityRangeSize),
       }
-      shaderMat.uniforms.density.value = scaledOutput;
-      shaderMat.uniformsNeedUpdate = true;
+      // texture float value are required to be in range [0.0, 1.0],
+      // so we have to convert this in js
+      for (let i=0; i<data.length; i++) {
+        let density = Math.min(data[i], param.densityRangeHigh);
+        density = Math.max(density, param.densityRangeLow);
+        density = density / param.densityRangeSize;
+        data[i] = density;
+      }
+      const tex = new t.DataTexture(data, 64, 64, t.RedFormat, t.FloatType)
+      tex.needsUpdate = true;
+      shaderMat.uniforms.density.value = tex;
     }
   }, [shaderMat, worker]);
 
