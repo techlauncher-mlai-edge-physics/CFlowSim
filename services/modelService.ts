@@ -97,7 +97,7 @@ export default class ModelService implements Model {
   private fpsHeartbeat(): void {
     setTimeout(() => {
       this.curFrameCountbyLastSecond = 0;
-      if (this.curFrameCountbyLastSecond > this.fpsLimit) {
+      if (this.curFrameCountbyLastSecond >= this.fpsLimit) {
         void this.startSimulation();
       } else {
         this.fpsHeartbeat();
