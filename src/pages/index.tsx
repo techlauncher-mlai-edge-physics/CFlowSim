@@ -1,10 +1,9 @@
-import NavBar from "../components/NavBar";
-import ParBar from "../components/ParametersBar";
-import { Canvas } from "@react-three/fiber";
-import styled from "styled-components";
-import { DiffusionPlane, SimulationParams } from "../components/Simulation";
-import { useEffect, useState } from "react";
-import ControlBar from "../components/ControlBar";
+import ParBar from '../components/ParametersBar';
+import { Canvas } from '@react-three/fiber';
+import styled from 'styled-components';
+import { DiffusionPlane, SimulationParams } from '../components/Simulation';
+import { useEffect, useState } from 'react';
+import ControlBar from '../components/ControlBar';
 
 const SimulatorContainer = styled.div`
   position: absolute;
@@ -20,13 +19,13 @@ const Simulator = styled(Canvas)`
   z-index: 0;
 `;
 
-interface indexProp {
+interface IndexProp {
   simulationParams: SimulationParams;
   setSimulationParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
   worker: Worker;
 }
 
-export default function Home(props: indexProp): React.ReactElement {
+export default function Home(props: IndexProp): React.ReactElement {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 
   const { simulationParams, setSimulationParams, worker } = props;

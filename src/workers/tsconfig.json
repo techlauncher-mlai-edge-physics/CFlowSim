@@ -2,13 +2,9 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2020", "WebWorker", "WebWorker.ImportScripts"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": [
-      "vite-plugin-glsl/ext"
-      //"vite-plugin-remark-rehype/types"
-    ],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -24,7 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["src/workers/**/*"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["*"]
 }

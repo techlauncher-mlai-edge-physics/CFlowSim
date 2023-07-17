@@ -1,5 +1,5 @@
-import { Button, Space } from "antd";
-import styled from "styled-components";
+import { Button, Space } from 'antd';
+import styled from 'styled-components';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -19,21 +19,21 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     <ControlBarContainer size="small" direction="horizontal">
       <Button
         onClick={() => {
-          worker.postMessage({ func: "start" });
+          worker.postMessage({ func: 'start' });
         }}
       >
         Play
       </Button>
       <Button
         onClick={() => {
-          worker.postMessage({ func: "pause" });
+          worker.postMessage({ func: 'pause' });
         }}
       >
         Pause
       </Button>
       <Button
         onClick={() => {
-          worker.postMessage({ func: "stop" });
+          worker.postMessage({ func: 'stop' });
         }}
       >
         Stop

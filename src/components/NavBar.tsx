@@ -1,9 +1,9 @@
-import styles from "../styles/Navbar.module.css";
-import { Button } from "antd";
+import styles from '../styles/Navbar.module.css';
+import { Button } from 'antd';
 
 // for themes switching
-import { SettingButton } from "../styles/theme/ThemeSwitching.styled.ts";
-import styled from "styled-components";
+import { SettingButton } from '../styles/theme/ThemeSwitching.styled.ts';
+import styled from 'styled-components';
 
 interface NavBarProps {
   lightTheme: boolean;
@@ -23,7 +23,7 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
         <a href="/">
           <img
             className={`${
-              lightTheme === "light" ? styles.logo_light : styles.logo_dark
+              lightTheme === 'light' ? styles.logo_light : styles.logo_dark
             }`}
             src="/physics.svg"
             alt="Physics in the Browser Logo"

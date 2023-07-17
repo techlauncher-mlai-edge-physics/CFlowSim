@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { ColorPicker, Divider, Col, Space, Row } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import type { Color } from "antd/es/color-picker";
-import { Color as ThreeColor } from "three";
-import { type SimulationParams } from "./Simulation";
-import { type SpaceSize } from "antd/es/space";
+import styled from 'styled-components';
+import { ColorPicker, Divider, Col, Space, Row } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import type { Color } from 'antd/es/color-picker';
+import { Color as ThreeColor } from 'three';
+import { type SimulationParams } from './Simulation';
+import { type SpaceSize } from 'antd/es/space';
 
 const Container = styled(Space)`
   background-color: #d3d3d3;
@@ -18,7 +18,7 @@ const Container = styled(Space)`
   display: flex;
 `;
 const Title = styled.span`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.4rem;
 `;
 
@@ -26,18 +26,18 @@ export default function ParametersBar(props: {
   params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
 }): React.ReactElement {
-  const [colorLow, setColorLow] = useState<Color | string>("#0000FF");
-  const [colorHigh, setColorHigh] = useState<Color | string>("#FF0000");
+  const [colorLow, setColorLow] = useState<Color | string>('#0000FF');
+  const [colorHigh, setColorHigh] = useState<Color | string>('#FF0000');
 
   const setParams = props.setParams;
 
   const colorLowString = useMemo(
-    () => (typeof colorLow === "string" ? colorLow : colorLow.toHexString()),
-    [colorLow]
+    () => (typeof colorLow === 'string' ? colorLow : colorLow.toHexString()),
+    [colorLow],
   );
   const colorHighString = useMemo(
-    () => (typeof colorHigh === "string" ? colorHigh : colorHigh.toHexString()),
-    [colorHigh]
+    () => (typeof colorHigh === 'string' ? colorHigh : colorHigh.toHexString()),
+    [colorHigh],
   );
 
   useEffect(() => {
@@ -49,17 +49,17 @@ export default function ParametersBar(props: {
       };
     });
   }, [colorLowString, colorHighString, setParams]);
-  const space: [SpaceSize, SpaceSize] = ["large", "small"];
+  const space: [SpaceSize, SpaceSize] = ['large', 'small'];
 
   return (
     <Container direction="vertical" size={space}>
-      <Row justify="center"/>
+      <Row justify="center" />
       <Row justify="center">
-        <Title>Parameters</Title>  
+        <Title>Parameters</Title>
       </Row>
       <Divider orientation="left">Simulator Color</Divider>
       <Row justify="space-around">
-        <Col style={{ textAlign: "center" }}>
+        <Col style={{ textAlign: 'center' }}>
           <span>Low</span>
         </Col>
         <Col>

@@ -1,9 +1,9 @@
-import css from "../styles/Home.module.css";
-import { Canvas } from "@react-three/fiber";
-import { MapControls, Stats } from "@react-three/drei";
-import { DiffusionPlane, SimulationParams } from "./components/Simulation";
-import { Color } from "three";
-import { useEffect, useState } from "react";
+import css from '../styles/Home.module.css';
+import { Canvas } from '@react-three/fiber';
+import { MapControls, Stats } from '@react-three/drei';
+import { DiffusionPlane, SimulationParams } from '../components/Simulation';
+import { Color } from 'three';
+import { useEffect, useState } from 'react';
 
 export default function Home(): React.ReactElement {
   const [enableMapControls, setEnableMapControls] = useState(false);
@@ -12,17 +12,17 @@ export default function Home(): React.ReactElement {
   }, []);
 
   const params: SimulationParams = new SimulationParams();
-  params.densityLowColour = new Color("green");
+  params.densityLowColour = new Color('green');
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [worker, setWorker] = useState<Worker>(null!);
 
   useEffect(() => {
     const worker = new Worker(
-      new URL("../workers/modelWorker", import.meta.url),
+      new URL('../workers/modelWorker', import.meta.url),
       {
-        type: "module",
-      }
+        type: 'module',
+      },
     );
     setWorker(worker);
   }, []);

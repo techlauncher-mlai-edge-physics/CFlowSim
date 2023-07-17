@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import NavBar from "./components/NavBar";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import NavBar from './components/NavBar';
+import styled from 'styled-components';
 
-import "./App.css";
-import Home from "./pages";
-import AboutPage from "./pages/about";
-import { SimulationParams } from "./components/Simulation";
+import './App.css';
+import Home from './pages';
+import AboutPage from './pages/about';
+import { SimulationParams } from './components/Simulation';
 
 const Main = styled.main`
   position: absolute;
@@ -21,7 +21,7 @@ const NavBarContainer = styled.div`
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Titillium Web", sans-serif;
+  font-family: 'Titillium Web', sans-serif;
 `;
 
 function App() {
@@ -29,16 +29,16 @@ function App() {
   // 0 = home(index,simulation) 1 = about
   const [page, setPage] = useState(0);
   const [simulationParams, setSimulationParams] = useState<SimulationParams>(
-    new SimulationParams()
+    new SimulationParams(),
   );
   const [lightTheme, setlightTheme] = useState<boolean>(false);
   const [simWorker, setSimWorker] = useState<Worker>(null!);
   useEffect(() => {
     const worker = new Worker(
-      new URL("./workers/modelWorker", import.meta.url),
+      new URL('./workers/modelWorker', import.meta.url),
       {
-        type: "module",
-      }
+        type: 'module',
+      },
     );
     setSimWorker(worker);
   }, []);
@@ -49,10 +49,22 @@ function App() {
       mainPageComponent = <AboutPage />;
       break;
     case 0:
-      mainPageComponent = <Home worker={simWorker} simulationParams={simulationParams} setSimulationParams={setSimulationParams} />;
+      mainPageComponent = (
+        <Home
+          worker={simWorker}
+          simulationParams={simulationParams}
+          setSimulationParams={setSimulationParams}
+        />
+      );
       break;
     default:
-      mainPageComponent = <Home worker={simWorker} simulationParams={simulationParams} setSimulationParams={setSimulationParams} />;
+      mainPageComponent = (
+        <Home
+          worker={simWorker}
+          simulationParams={simulationParams}
+          setSimulationParams={setSimulationParams}
+        />
+      );
       break;
   }
 
@@ -60,7 +72,12 @@ function App() {
     <>
       <Main>
         <NavBarContainer>
-          <NavBar setPage={setPage} page={page} lightTheme={lightTheme} setlightTheme={setlightTheme} />
+          <NavBar
+            setPage={setPage}
+            page={page}
+            lightTheme={lightTheme}
+            setlightTheme={setlightTheme}
+          />
         </NavBarContainer>
         {mainPageComponent}
       </Main>

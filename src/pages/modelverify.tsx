@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function Home(): React.ReactElement {
   const [paused, setPaused] = useState(true);
@@ -12,15 +12,15 @@ export default function Home(): React.ReactElement {
   useEffect(() => {
     void (() => {
       const worker = new Worker(
-        new URL("../workers/modelWorker", import.meta.url),
+        new URL('../workers/modelWorker', import.meta.url),
         {
-          type: "module",
-        }
+          type: 'module',
+        },
       );
-      console.log("worker created", worker);
-      worker.postMessage({ func: "init" });
+      console.log('worker created', worker);
+      worker.postMessage({ func: 'init' });
       worker.onmessage = (e: MessageEvent) => {
-        if (e.data.type === "output") {
+        if (e.data.type === 'output') {
           const density = e.data.density;
           // log the array 64x64
           // chunk the array into 64x64
@@ -31,23 +31,23 @@ export default function Home(): React.ReactElement {
           console.log(chunked);
           // log some values
           console.log(
-            "average density",
+            'average density',
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            density.reduce((a: any, b: any) => a + b) / density.length
+            density.reduce((a: any, b: any) => a + b) / density.length,
           );
-          console.log("max density", Math.max(...density));
-          console.log("min density", Math.min(...density));
+          console.log('max density', Math.max(...density));
+          console.log('min density', Math.min(...density));
           console.log(
-            "density std dev",
+            'density std dev',
             Math.sqrt(
               // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
               density.reduce((a: any, b: any) => a + b * b) / density.length -
                 Math.pow(
                   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                   density.reduce((a: any, b: any) => a + b) / density.length,
-                  2
-                )
-            )
+                  2,
+                ),
+            ),
           );
         } else console.log(e.data);
       };
@@ -55,7 +55,7 @@ export default function Home(): React.ReactElement {
         console.log(e);
       };
       setWorker(worker);
-      console.log("worker created");
+      console.log('worker created');
     })();
   }, []);
 
@@ -70,22 +70,20 @@ export default function Home(): React.ReactElement {
       </head>
       <main>
         <h1>Model Verification</h1>
-        <p>
-          This page is used to verify the model. See console for output.
-        </p>
+        <p>This page is used to verify the model. See console for output.</p>
         <button
           onClick={() => {
             setPaused(!paused);
             if (paused && worker != null) {
-              worker.postMessage({ func: "start" });
+              worker.postMessage({ func: 'start' });
             } else if (!paused && worker != null) {
-              worker.postMessage({ func: "pause" });
+              worker.postMessage({ func: 'pause' });
             } else {
-              console.log("worker is null");
+              console.log('worker is null');
             }
           }}
         >
-          {paused ? "Resume" : "Pause"}
+          {paused ? 'Resume' : 'Pause'}
         </button>
       </main>
     </>

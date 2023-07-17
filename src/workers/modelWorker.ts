@@ -1,70 +1,85 @@
 // a worker that can control the modelService via messages
 
-import ModelService from "../services/modelService";
+import { Vector2 } from 'three';
+import ModelService from '../services/modelService';
+import { IncomingMessage } from './modelWorkerMessage';
 
 let modelService: ModelService | null = null;
 
-export function onmessage(this: any, event: MessageEvent): void {
-  const data = event.data;
+interface UpdateForceArgs {
+  loc: Vector2;
+  forceDelta: Vector2;
+}
+
+export function onmessage(
+  this: DedicatedWorkerGlobalScope,
+  event: MessageEvent,
+): void {
+  const data = event.data as IncomingMessage;
   if (data == null) {
-    throw new Error("data is null");
+    throw new Error('data is null');
   }
   if (data.func == null) {
-    throw new Error("data.type is null");
+    throw new Error('data.type is null');
   }
-  console.log("worker received message", data);
+  console.log('worker received message', data);
   switch (data.func) {
-    case "init":
+    case 'init':
       if (modelService == null) {
         initModelService(this)
           .then((service) => {
             modelService = service;
-            this.postMessage({ type: "init" });
+            this.postMessage({ type: 'init', success: true });
           })
           .catch((e) => {
-            console.error("error in initModelService", e);
+            console.error('error in initModelService', e);
           });
       }
       break;
-    case "start":
+    case 'start':
       if (modelService == null) {
-        throw new Error("modelService is null");
+        throw new Error('modelService is null');
       }
 
       modelService.startSimulation().catch((e) => {
-        console.error("error in startSimulation", e);
+        console.error('error in startSimulation', e);
       });
       break;
-    case "pause":
+    case 'pause':
       if (modelService == null) {
-        throw new Error("modelService is null");
+        throw new Error('modelService is null');
       }
       modelService.pauseSimulation();
       break;
-    case "updateForce":
-      if (modelService == null) {
-        throw new Error("modelService is null");
-      }
-      modelService.updateForce(data.args.loc, data.args.forceDelta);
+    case 'updateForce':
+      updateForce(data.args as UpdateForceArgs);
   }
+}
+function updateForce(args: UpdateForceArgs) {
+  if (modelService == null) {
+    throw new Error('modelService is null');
+  }
+  modelService.updateForce(args.loc, args.forceDelta);
 }
 
 self.onmessage = onmessage;
 
-async function initModelService(event: any): Promise<ModelService> {
-  const modelPath = "/model/bno_small.onnx";
-  const dataPath = new URL("/initData/pvf_incomp_44_0.json", import.meta.url);
+async function initModelService(
+  event: DedicatedWorkerGlobalScope,
+): Promise<ModelService> {
+  const modelPath = '/model/bno_small.onnx';
+  const dataPath = new URL('/initData/pvf_incomp_44_0.json', import.meta.url);
   const outputCallback = (output: Float32Array): void => {
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
       density[i] = output[i * 3];
     }
-    event.postMessage({ type: "output", density });
+    event.postMessage({ type: 'output', density });
   };
   const modelService = await ModelService.createModelService(
     modelPath,
     [64, 64],
-    1
+    1,
   );
   modelService.bindOutput(outputCallback);
   await modelService.initMatrixFromPath(dataPath);

@@ -1,6 +1,6 @@
-import * as ort from "onnxruntime-web";
-import { type Vector2 } from "three";
-import type Model from "./model";
+import * as ort from 'onnxruntime-web';
+import { type Vector2 } from 'three';
+import type Model from './model';
 
 export default class ModelService implements Model {
   session: ort.InferenceSession | null;
@@ -50,26 +50,26 @@ export default class ModelService implements Model {
     batchSize = 1,
     channelSize = 5,
     outputChannelSize = 3,
-    fpsLimit = 15
+    fpsLimit = 15,
   ): Promise<ModelService> {
-    console.log("createModelService called");
+    console.log('createModelService called');
     const modelServices = new ModelService();
-    console.log("createModelService constructor called");
+    console.log('createModelService constructor called');
     await modelServices.init(
       modelPath,
       gridSize,
       batchSize,
       channelSize,
-      outputChannelSize
+      outputChannelSize,
     );
     modelServices.fpsLimit = fpsLimit;
-    console.log("createModelService finished");
+    console.log('createModelService finished');
     return modelServices;
   }
 
   async initMatrixFromPath(path: string | URL): Promise<void> {
     // check if the path is a relative path
-    if (typeof path === "string" && !path.startsWith("http")) {
+    if (typeof path === 'string' && !path.startsWith('http')) {
       path = new URL(path, import.meta.url);
     }
     console.log(`initMatrixFromPath called with path: ${path}`);
@@ -89,7 +89,7 @@ export default class ModelService implements Model {
     this.curFrameCountbyLastSecond = 0;
     this.fpsHeartbeat();
     this.iterate().catch((e) => {
-      console.error("error in iterate", e);
+      console.error('error in iterate', e);
       this.isPaused = true;
     });
   }
@@ -114,14 +114,14 @@ export default class ModelService implements Model {
     gridSize: [number, number],
     batchSize: number,
     channelSize: number,
-    outputChannelSize: number
+    outputChannelSize: number,
   ): Promise<void> {
-    console.log("init called");
+    console.log('init called');
     this.session = await ort.InferenceSession.create(modelPath, {
-      executionProviders: ["wasm"],
-      graphOptimizationLevel: "all",
+      executionProviders: ['wasm'],
+      graphOptimizationLevel: 'all',
     });
-    console.log("init session created");
+    console.log('init session created');
     this.channelSize = channelSize;
     this.outputChannelSize = outputChannelSize;
     this.gridSize = gridSize;
@@ -132,16 +132,16 @@ export default class ModelService implements Model {
   }
 
   private initMatrixFromJSON(data: any): void {
-    console.log("initMatrixFromJSON called");
+    console.log('initMatrixFromJSON called');
     this.matrixArray = new Float32Array(data.flat(Infinity));
     this.normalizeMatrix(this.matrixArray);
     if (this.matrixArray.length !== this.tensorSize) {
       throw new Error(
-        `matrixArray length ${this.matrixArray.length} does not match tensorSize ${this.tensorSize}`
+        `matrixArray length ${this.matrixArray.length} does not match tensorSize ${this.tensorSize}`,
       );
     }
     this.matrixArray = this.matrixMap(this.matrixArray, [0, 1], (v) =>
-      Math.max(v, 0)
+      Math.max(v, 0),
     );
     this.mass = this.matrixSum(this.matrixArray, [0, 1]);
   }
@@ -149,20 +149,20 @@ export default class ModelService implements Model {
   private async iterate(): Promise<void> {
     if (this.session == null) {
       throw new Error(
-        "session is null, createModelServices() must be called at first"
+        'session is null, createModelServices() must be called at first',
       );
     }
-    console.log("iterate called");
-    console.log("this.matrixArray", this.matrixArray);
+    console.log('iterate called');
+    console.log('this.matrixArray', this.matrixArray);
     const inputEnergy = this.matrixSum(
       this.matrixArray,
       [1, 5],
-      (value) => value ** 2
+      (value) => value ** 2,
     );
     const inputTensor = new ort.Tensor(
-      "float32",
+      'float32',
       this.matrixArray,
-      this.tensorShape
+      this.tensorShape,
     );
     const feeds: Record<string, ort.Tensor> = {};
     feeds[this.session.inputNames[0]] = inputTensor;
@@ -173,13 +173,13 @@ export default class ModelService implements Model {
         if (outputs.Output.data instanceof Float32Array) {
           const outputData = this.constrainOutput(
             outputs.Output.data,
-            inputEnergy
+            inputEnergy,
           );
           this.outputCallback(outputData);
           this.curFrameCountbyLastSecond++;
           console.log(
-            "curFrameCountbyLastSecond",
-            this.curFrameCountbyLastSecond
+            'curFrameCountbyLastSecond',
+            this.curFrameCountbyLastSecond,
           );
           this.copyOutputToMatrix(outputData);
           setTimeout(() => {
@@ -187,14 +187,14 @@ export default class ModelService implements Model {
               if (this.curFrameCountbyLastSecond > this.fpsLimit) {
                 this.isPaused = true;
                 console.log(
-                  "fps limit reached, pause simulation, fpsLimit:",
+                  'fps limit reached, pause simulation, fpsLimit:',
                   this.fpsLimit,
-                  "curFrameCountbyLastSecond:",
-                  this.curFrameCountbyLastSecond
+                  'curFrameCountbyLastSecond:',
+                  this.curFrameCountbyLastSecond,
                 );
               } else {
                 this.iterate().catch((e) => {
-                  console.error("error in iterate", e);
+                  console.error('error in iterate', e);
                   this.isPaused = true;
                 });
               }
@@ -203,13 +203,13 @@ export default class ModelService implements Model {
         }
       })
       .catch((e) => {
-        console.error("error in session.run", e);
+        console.error('error in session.run', e);
         this.isPaused = true;
       });
   }
 
   private normalizeMatrix(matrix: Float32Array): void {
-    console.log("normalizeMatrix called");
+    console.log('normalizeMatrix called');
     for (let i = 0; i < this.channelSize; i++) {
       matrix = this.normalizeMatrixChannel(matrix, i);
     }
@@ -217,37 +217,37 @@ export default class ModelService implements Model {
 
   private normalizeMatrixChannel(
     matrix: Float32Array,
-    channel: number
+    channel: number,
   ): Float32Array {
     const sum = this.matrixSum(
       matrix,
       [channel, channel + 1],
-      (value) => value
+      (value) => value,
     );
     const mean = this.roundFloat(
       sum / (this.gridSize[0] * this.gridSize[1] * this.batchSize),
-      4
+      4,
     );
     const std = this.roundFloat(
       Math.sqrt(
         this.matrixSum(matrix, [channel, channel + 1], (value) =>
-          Math.pow(value - mean, 2)
+          Math.pow(value - mean, 2),
         ) /
-          (this.gridSize[0] * this.gridSize[1] * this.batchSize)
+          (this.gridSize[0] * this.gridSize[1] * this.batchSize),
       ),
-      4
+      4,
     );
-    console.log("normalizeMatrixChannel", channel, mean, std);
+    console.log('normalizeMatrixChannel', channel, mean, std);
     return this.matrixMap(
       matrix,
       [channel, channel + 1],
-      (value) => (value - mean) / std
+      (value) => (value - mean) / std,
     );
   }
 
   private constrainOutput(
     data: Float32Array,
-    inputEnergy: number
+    inputEnergy: number,
   ): Float32Array {
     let processed = this.constrainDensity(data);
     processed = this.constrainVelocity(processed, inputEnergy);
@@ -260,29 +260,29 @@ export default class ModelService implements Model {
     const sum = this.matrixSum(data, [0, 1], (value) => value, true);
     const scale = this.mass / sum;
     console.log(
-      "Scaling density, cur mass:",
+      'Scaling density, cur mass:',
       sum,
-      "target mass:",
+      'target mass:',
       this.mass,
-      "scale:",
-      scale
+      'scale:',
+      scale,
     );
     return this.matrixMap(data, [0, 1], (value) => value * scale, true);
   }
 
   private constrainVelocity(
     data: Float32Array,
-    inputEnergy: number
+    inputEnergy: number,
   ): Float32Array {
     const curEnergy = this.matrixSum(data, [1, 3], (value) => value ** 2, true);
     const scale = this.roundFloat(Math.sqrt(inputEnergy / curEnergy), 4);
     console.log(
-      "Scaling velocity, cur energy:",
+      'Scaling velocity, cur energy:',
       curEnergy,
-      "target energy:",
+      'target energy:',
       inputEnergy,
-      "scale:",
-      scale
+      'scale:',
+      scale,
     );
     if (scale >= 1) return data;
     return this.matrixMap(data, [1, 3], (value) => value * scale, true);
@@ -290,7 +290,7 @@ export default class ModelService implements Model {
 
   private copyOutputToMatrix(outputs: Float32Array): void {
     if (this.matrixArray.length === 0) {
-      throw new Error("matrixArray is empty");
+      throw new Error('matrixArray is empty');
     }
     let fromIndex = 0;
     let toIndex = 0;
@@ -301,7 +301,7 @@ export default class ModelService implements Model {
         toIndex += 2;
         if (toIndex >= this.matrixArray.length) {
           throw new Error(
-            `toIndex ${toIndex} exceeds matrixArray length ${this.matrixArray.length}`
+            `toIndex ${toIndex} exceeds matrixArray length ${this.matrixArray.length}`,
           );
         }
       }
@@ -312,12 +312,12 @@ export default class ModelService implements Model {
     }
     if (fromIndex !== outputs.length) {
       throw new Error(
-        `fromIndex ${fromIndex} does not match outputs length ${outputs.length}`
+        `fromIndex ${fromIndex} does not match outputs length ${outputs.length}`,
       );
     }
     if (toIndex + 2 !== this.matrixArray.length) {
       throw new Error(
-        `toIndex ${toIndex} does not match matrixArray length ${this.matrixArray.length}`
+        `toIndex ${toIndex} does not match matrixArray length ${this.matrixArray.length}`,
       );
     }
   }
@@ -348,7 +348,7 @@ export default class ModelService implements Model {
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number = (value) => value,
-    isOutput: boolean = false
+    isOutput: boolean = false,
   ): number {
     const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;
@@ -375,7 +375,7 @@ export default class ModelService implements Model {
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number,
-    isOutput: boolean = false
+    isOutput: boolean = false,
   ): Float32Array {
     const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 // export const ThemeContainer = styled.div`
 //   background-color: hsl(0, 0%, 100%);
@@ -25,7 +25,7 @@ export const ThemeModeButton = styled.button`
 `;
 
 export const SettingButton = styled.button`
-  font-family: "Source Code Pro", monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.8rem;
   color: #000000;
   background-color: #f3f3f3;
