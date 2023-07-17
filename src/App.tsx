@@ -49,14 +49,6 @@ function App() {
       mainPageComponent = <AboutPage />;
       break;
     case 0:
-      mainPageComponent = (
-        <Home
-          worker={simWorker}
-          simulationParams={simulationParams}
-          setSimulationParams={setSimulationParams}
-        />
-      );
-      break;
     default:
       mainPageComponent = (
         <Home
