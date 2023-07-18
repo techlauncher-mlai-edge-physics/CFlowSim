@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
+import { OutgoingMessage } from '../workers/modelWorkerMessage';
 
 class SimulationParams {
   // render options
@@ -40,7 +41,7 @@ function applyConfigToShader(shader: string): string {
   // match `${varName}` in shader and replace with values
   return shader.replace(
     /\$\{(\w+?)\}/g,
-    function (_match: any, varName: string) {
+    function (_match: unknown, varName: string) {
       if (renderConfig[varName] !== undefined) {
         return renderConfig[varName];
       }
@@ -60,7 +61,6 @@ function DiffusionPlane(
   // INITIALISATION
 
   // reference to the parent mesh
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ref = useRef<t.Mesh>(null!);
 
   // create the shader
@@ -106,16 +106,19 @@ function DiffusionPlane(
     void (() => {
       worker.postMessage({ func: 'init' });
       worker.onmessage = (e) => {
-        const data = e.data;
+        const data = e.data as OutgoingMessage;
 
-        switch (e.data.type) {
+        switch (data.type) {
           case 'init':
             console.log('starting');
             worker.postMessage({ func: 'start' });
+            worker.postMessage({ func: 'pause' });
             break;
 
           case 'output':
-            output(e.data.density);
+            if (data.density !== undefined) {
+              output(data.density);
+            }
             break;
         }
       };

@@ -32,7 +32,6 @@ export default function Home(): React.ReactElement {
           // log some values
           console.log(
             'average density',
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             density.reduce((a: any, b: any) => a + b) / density.length,
           );
           console.log('max density', Math.max(...density));
@@ -40,10 +39,8 @@ export default function Home(): React.ReactElement {
           console.log(
             'density std dev',
             Math.sqrt(
-              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
               density.reduce((a: any, b: any) => a + b * b) / density.length -
                 Math.pow(
-                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                   density.reduce((a: any, b: any) => a + b) / density.length,
                   2,
                 ),

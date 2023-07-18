@@ -1,9 +1,8 @@
 import ParBar from '../components/ParametersBar';
+import ControlBar from '../components/ControlBar';
+import { DiffusionPlane, SimulationParams } from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
-import { DiffusionPlane, SimulationParams } from '../components/Simulation';
-import { useEffect, useState } from 'react';
-import ControlBar from '../components/ControlBar';
 
 const SimulatorContainer = styled.div`
   position: absolute;
@@ -26,8 +25,6 @@ interface IndexProp {
 }
 
 export default function Home(props: IndexProp): React.ReactElement {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-
   const { simulationParams, setSimulationParams, worker } = props;
 
   return (

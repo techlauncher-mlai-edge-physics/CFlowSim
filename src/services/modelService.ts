@@ -54,7 +54,6 @@ export default class ModelService implements Model {
   ): Promise<ModelService> {
     console.log('createModelService called');
     const modelServices = new ModelService();
-    console.log('createModelService constructor called');
     await modelServices.init(
       modelPath,
       gridSize,
@@ -72,33 +71,31 @@ export default class ModelService implements Model {
     if (typeof path === 'string' && !path.startsWith('http')) {
       path = new URL(path, import.meta.url);
     }
-    console.log(`initMatrixFromPath called with path: ${path}`);
-    const matrix = await fetch(path).then(async (res) => await res.json());
+    const matrix = await fetch(path).then(
+      async (res) => (await res.json()) as number[][][][],
+    );
     if (matrix == null) {
-      throw new Error(`The matrix from ${path} is null`);
+      throw new Error('Cannot fetch matrix from path');
     }
-    this.initMatrixFromJSON(matrix);
+    this.initMatrixFromArray(matrix);
   }
 
   bindOutput(callback: (data: Float32Array) => void): void {
     this.outputCallback = callback;
   }
 
-  async startSimulation(): Promise<void> {
+  startSimulation(): void {
     this.isPaused = false;
     this.curFrameCountbyLastSecond = 0;
     this.fpsHeartbeat();
-    this.iterate().catch((e) => {
-      console.error('error in iterate', e);
-      this.isPaused = true;
-    });
+    this.iterate();
   }
 
   private fpsHeartbeat(): void {
     setTimeout(() => {
       this.curFrameCountbyLastSecond = 0;
       if (this.curFrameCountbyLastSecond >= this.fpsLimit) {
-        void this.startSimulation();
+        this.startSimulation();
       } else {
         this.fpsHeartbeat();
       }
@@ -131,9 +128,12 @@ export default class ModelService implements Model {
     this.outputSize = batchSize * gridSize[0] * gridSize[1] * outputChannelSize;
   }
 
-  private initMatrixFromJSON(data: any): void {
-    console.log('initMatrixFromJSON called');
-    this.matrixArray = new Float32Array(data.flat(Infinity));
+  private initMatrixFromArray(data: number[][][][]): void {
+    console.log(
+      '🚀 ~ file: modelService.ts:132 ~ ModelService ~  initMatrixFromJSON ~ data:',
+      data,
+    );
+    this.matrixArray = new Float32Array(data.flat(3));
     this.normalizeMatrix(this.matrixArray);
     if (this.matrixArray.length !== this.tensorSize) {
       throw new Error(
@@ -146,7 +146,7 @@ export default class ModelService implements Model {
     this.mass = this.matrixSum(this.matrixArray, [0, 1]);
   }
 
-  private async iterate(): Promise<void> {
+  private iterate(): void {
     if (this.session == null) {
       throw new Error(
         'session is null, createModelServices() must be called at first',
@@ -193,10 +193,7 @@ export default class ModelService implements Model {
                   this.curFrameCountbyLastSecond,
                 );
               } else {
-                this.iterate().catch((e) => {
-                  console.error('error in iterate', e);
-                  this.isPaused = true;
-                });
+                this.iterate();
               }
             }
           });
@@ -328,7 +325,7 @@ export default class ModelService implements Model {
     this.matrixArray[index + 4] += forceDelta.y;
   }
 
-  private getIndex(pos: Vector2, batchIndex: number = 0): number {
+  private getIndex(pos: Vector2, batchIndex = 0): number {
     return (
       batchIndex * this.gridSize[0] * this.gridSize[1] * this.channelSize +
       pos.y * this.gridSize[1] * this.channelSize +
@@ -348,7 +345,7 @@ export default class ModelService implements Model {
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number = (value) => value,
-    isOutput: boolean = false,
+    isOutput = false,
   ): number {
     const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;
@@ -375,7 +372,7 @@ export default class ModelService implements Model {
     matrix: Float32Array,
     channelRange: [number, number],
     f: (value: number) => number,
-    isOutput: boolean = false,
+    isOutput = false,
   ): Float32Array {
     const tensorSize = isOutput ? this.outputSize : this.tensorSize;
     const channelSize = isOutput ? this.outputChannelSize : this.channelSize;
@@ -389,7 +386,7 @@ export default class ModelService implements Model {
     return matrix;
   }
 
-  private roundFloat(value: number, decimal: number = 4): number {
+  private roundFloat(value: number, decimal = 4): number {
     return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
 }

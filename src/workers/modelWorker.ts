@@ -40,10 +40,7 @@ export function onmessage(
       if (modelService == null) {
         throw new Error('modelService is null');
       }
-
-      modelService.startSimulation().catch((e) => {
-        console.error('error in startSimulation', e);
-      });
+      modelService.startSimulation();
       break;
     case 'pause':
       if (modelService == null) {
