@@ -65,6 +65,7 @@ const NavButton = styled(Button)`
   background-color: #00a9ce;
   height: 3.2rem;
   width: 8rem;
+  margin: 0 0.2rem;
 `;
 
 export default function NavBar(props: NavBarProps): React.ReactElement {
@@ -72,14 +73,14 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
 
   return (
     <Header>
-        <NavAnchor href="/">
-          <Logo
-            src="/physics.svg"
-            alt="Physics in the Browser Logo "
-            width={50}
-            height={50}
-          />
-        </NavAnchor>
+      <NavAnchor href="/">
+        <Logo
+          src="/physics.svg"
+          alt="Physics in the Browser Logo "
+          width={50}
+          height={50}
+        />
+      </NavAnchor>
       <Name>CFLowSim</Name>
       <Nav>
         <NavButton type="primary" onClick={() => setPage(0)}>
