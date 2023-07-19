@@ -6,6 +6,7 @@ import './App.css';
 import Home from './pages';
 import AboutPage from './pages/about';
 import { SimulationParams } from './components/Simulation';
+import { IncomingMessage } from './workers/modelWorkerMessage';
 
 const Main = styled.main`
   position: absolute;
@@ -61,6 +62,9 @@ function App() {
       },
     );
     setSimWorker(worker);
+    worker.postMessage({
+      func: 'init',
+    } as IncomingMessage);
   }, []);
 
   let mainPageComponent;

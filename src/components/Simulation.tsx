@@ -104,7 +104,6 @@ function DiffusionPlane(
   const { worker } = props;
   useEffect(() => {
     void (() => {
-      worker.postMessage({ func: 'init' });
       worker.onmessage = (e) => {
         const data = e.data as OutgoingMessage;
 
@@ -112,7 +111,6 @@ function DiffusionPlane(
           case 'init':
             console.log('starting');
             worker.postMessage({ func: 'start' });
-            worker.postMessage({ func: 'pause' });
             break;
 
           case 'output':
