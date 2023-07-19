@@ -5,7 +5,7 @@ import { SettingButton } from '../styles/theme/ThemeSwitching.styled.ts';
 import styled from 'styled-components';
 
 interface NavBarProps {
-  setlightTheme: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurThemeMode: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -69,7 +69,7 @@ const NavButton = styled(Button)`
 `;
 
 export default function NavBar(props: NavBarProps): React.ReactElement {
-  const { setlightTheme, setPage } = props;
+  const { setCurThemeMode, setPage } = props;
 
   return (
     <Header>
@@ -92,14 +92,14 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
         <SettingButton>Settings</SettingButton>
         <ThemeButton
           onClick={() => {
-            setlightTheme(true);
+            setCurThemeMode('light')
           }}
         >
           Light
         </ThemeButton>
         <ThemeButton
           onClick={() => {
-            setlightTheme(false);
+            setCurThemeMode('dark')
           }}
         >
           Dark

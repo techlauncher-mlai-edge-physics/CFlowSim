@@ -88,7 +88,8 @@ function App() {
     <ThemeProvider theme={{ light: lightTheme }}>
       <Main>
         <NavBarContainer>
-          <NavBar setPage={setPage} setlightTheme={setlightTheme} />
+          <NavBar setPage={setPage} setCurThemeMode={setCurThemeMode}
+          />
         </NavBarContainer>
         {mainPageComponent}
       </Main>
