@@ -50,6 +50,27 @@ export function onmessage(
       break;
     case 'updateForce':
       updateForce(data.args as UpdateForceArgs);
+      break;
+    case 'getFullMatrix':
+      if (modelService == null) {
+        throw new Error('modelService is null');
+      }
+      this.postMessage({
+        type: 'fullMatrix',
+        matrix: modelService.getFullMatrix(),
+      });
+      break;
+    case 'getDensity':
+      if (modelService == null) {
+        throw new Error('modelService is null');
+      }
+      this.postMessage({
+        type: 'density',
+        density: modelService.getDensity(),
+      });
+      break;
+    default:
+      throw new Error(`unknown func ${data.func}`);
   }
 }
 function updateForce(args: UpdateForceArgs) {
