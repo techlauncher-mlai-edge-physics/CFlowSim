@@ -1,6 +1,6 @@
 # Physics In The Browser
 
-[![Node.js CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml) [![pages-build-deployment](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/pages/pages-build-deployment)
+[![Deployment CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml)
 
 **Deployed at [GitHub Action](https://techlauncher-mlai-edge-physics.github.io)**
 
@@ -8,7 +8,7 @@ This project is a web application that allows users to simulate the fluid dynami
 
 ## Getting Started
 
-The public deployment of the application can be found at [GitHub Action](https://techlauncher-mlai-edge-physics.github.io). To build and run the application locally, follow the instructions below.
+The public deployment of the application can be found at [GitHub Pages](https://techlauncher-mlai-edge-physics.github.io). To build and run the application locally, follow the instructions below.
 
 ### Prerequisites
 
@@ -40,9 +40,9 @@ The public deployment of the application can be found at [GitHub Action](https:/
    npm run build
    ```
 
-   The built application will be in the `out` folder.
+   The built application will be in the `dist` folder.
 
-   **For development**, you can run the application in `dev` command which is a wrapper of `next dev` command. It will start a development server with hot reloading at `localhost:3000`.
+   **For development**, you can run the application in `dev` command and follow the instructions to open the application in your browser.
 
    ```sh
    npm run dev
