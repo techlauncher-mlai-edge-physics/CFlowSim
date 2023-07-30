@@ -5,12 +5,16 @@ info:
   repository_url: https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser
 options:
   commits:
-    # filters:
-    #   Type:
-    #     - feat
-    #     - fix
-    #     - perf
-    #     - refactor
+    filters:
+      Type:
+        - feat
+        - fix
+        - perf
+        - refactor
+        - ci
+        - style
+        - test
+        - docs
   commit_groups:
     # title_maps:
     #   feat: Features
