@@ -13,6 +13,7 @@
 
 ### Ci
 - **action:** add ci to generate changelog
+- **changelog:** update to fetch all the history
 - **changelog:** update workflow version
 - **changelog:** update permission
 - **changelog:** add for pull requests
