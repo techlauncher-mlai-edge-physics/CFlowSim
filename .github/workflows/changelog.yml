@@ -25,3 +25,7 @@ jobs:
         run: git-chglog --next-tag 'Unreleased' --output CHANGELOG.md
       - name: Commit changelog
         uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "ci(changelog): update CHANGELOG.md"
+          commit_options: '--no-verify --signoff'
+          file_pattern: CHANGELOG.md
