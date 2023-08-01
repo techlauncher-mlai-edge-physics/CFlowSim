@@ -1,0 +1,32 @@
+name: Changelog CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '>=1.19.0'
+      - name: Install git-chglog
+        run: go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
+      - name: Generate changelog
+        run: git-chglog --next-tag 'Unreleased' --output CHANGELOG.md
+      - name: Commit changelog
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(changelog): update CHANGELOG.md"
+          commit_options: '--no-verify --signoff'
+          file_pattern: CHANGELOG.md
+          push_options: --force
