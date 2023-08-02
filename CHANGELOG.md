@@ -3,22 +3,9 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-07-30
-### Build
-- **deps:** update dependencies, add some deps
-
-### Chore
-- **homepage:** add simulator testing page and threejs canvas
-- **package.json:** update the homepage link
-
+## Unreleased - 2023-08-02
 ### Ci
-- **action:** add ci to generate changelog
-- **changelog:** update to fetch all the history
-- **changelog:** update workflow version
-- **changelog:** update permission
-- **changelog:** add for pull requests
-- **changelog:** update changelog ci
-- **changelog:** allow manually trigger
+- **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **commit:** add pre-commit hook for the project ([#18](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/18))
 
 ### Docs
@@ -53,9 +40,6 @@
 - **theme:** add initial code for website themes ([#16](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/16))
 - **website:** add Navbar to the website;
 
-### Feature
-- added basic rendering
-
 ### Fix
 - **NavBar:** change the position of the logo
 - **Simulator:** hotfix for previous commit
@@ -71,9 +55,6 @@
 - **project:** add/update return type for react funtions
 - **styles:** remove the margin for body element
 - **styles:** declare css module
-
-### Init
-- **frontend:** initialize code for website codes ([#6](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/6))
 
 ### Refactor
 - **NavBar:** refactor the header style & add new button styles
@@ -92,10 +73,6 @@
 - **main:** formatting to solve the eslint conflict
 - **project:**  format the code with prettier
 
-### Update
-- **website:** update button style and formatted
-- **website:** add a temp button for simulator
-
 ### BREAKING CHANGE
 
 Previously used data.type has been renamed to data.func
@@ -109,8 +86,6 @@ Replace data with unnormalized data;
 * fix(modelWorker): fix size issue after compression
 
 ---------
-
-pls use `npm run dev` to develop the program now
 
 The output dir is now /out instead of /build; The dev folder is now under root folder
 
