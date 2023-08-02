@@ -2,7 +2,7 @@ name: Changelog CI
 
 on:
   push:
-    branches: [ "main","changelog-fix" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
