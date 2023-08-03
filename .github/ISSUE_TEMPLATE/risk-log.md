@@ -1,7 +1,7 @@
 ---
 name: Risk Log
 about: Log the risks here for further discussion
-title: ''
+title: '[Risk]: '
 labels: 'risk, Severity: Low, Priority: Low, Likelihood: Unlikely, waiting for collaborator review'
 assignees: ''
 
