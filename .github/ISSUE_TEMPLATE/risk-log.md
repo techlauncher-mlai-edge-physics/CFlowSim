@@ -2,7 +2,7 @@
 name: Risk Log
 about: Log the risks here for further discussion
 title: ''
-labels: 'Impact/Severity: Low, Priority: Low, risk, waiting for collaborator review'
+labels: 'risk, Severity: Low, Priority: Low, Likelihood: Unlikely, waiting for collaborator review'
 assignees: ''
 
 ---
