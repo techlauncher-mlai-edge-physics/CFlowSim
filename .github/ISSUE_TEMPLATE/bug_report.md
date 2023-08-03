@@ -2,7 +2,8 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: 'bug, Impact/Severity: Low, Priority: Low, waiting for collaborator
+  review'
 assignees: ''
 
 ---
@@ -36,3 +37,9 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**Task Relationship**
+  Belongs to: #<--issue number-->
+  Blocks: #<--issue number-->
+  Blocked by: #<--issue number-->
+  Subtasks: #<--issue number-->
