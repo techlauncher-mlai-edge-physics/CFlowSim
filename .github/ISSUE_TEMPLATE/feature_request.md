@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: '[Feature]: '
-labels: 'enhancement, Severity: Low, Priority: Low, waiting for collaborator
+labels: 'enhancement, Severity: Low, waiting for collaborator
   review'
 assignees: ''
 
