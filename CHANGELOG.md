@@ -11,6 +11,7 @@
 
 ### Docs
 - **ISSUE_TEMPLATE:** add issue templates ([#26](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/26))
+- **LICENSE:** create LICENSE ([#34](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/34))
 - **readme:** update readme.md
 - **readme:** init readme file
 
