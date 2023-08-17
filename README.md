@@ -3,7 +3,7 @@ previously *Physics in the Browser*
 
 [![Deployment CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml)
 
-**Deployed at [GitHub Actions](https://techlauncher-mlai-edge-physics.github.io)**
+**Deployed at [GitHub Pages](https://techlauncher-mlai-edge-physics.github.io)**
 
 This project is a web application that allows users to simulate the fluid dynamics of a 2D fluid system enhanced by machine learning. The application is built using [React](https://reactjs.org/) and [Three.js](https://threejs.org/). The machine learning model is built using [PyTorch](https://pytorch.org/) and converted to [ONNX](https://onnx.ai/) format for inference in the browser using [onnxruntime-web](https://npmjs.com/package/onnxruntime-web).
 
