@@ -12,6 +12,7 @@
 ### Docs
 - **ISSUE_TEMPLATE:** add issue templates ([#26](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/26))
 - **LICENSE:** create LICENSE ([#34](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/34))
+- **readme:** change header to CFlowSim ([#43](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/43))
 - **readme:** changed title to github pages
 - **readme:** update readme.md
 - **readme:** init readme file
