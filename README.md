@@ -1,4 +1,5 @@
-# Physics In The Browser
+# CFlowSim
+previously *Physics in the Browser*
 
 [![Deployment CI](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/techlauncher-mlai-edge-physics/techlauncher-mlai-edge-physics.github.io/actions/workflows/main.yml)
 
