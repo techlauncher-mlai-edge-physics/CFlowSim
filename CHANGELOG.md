@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-08-10
+## Unreleased - 2023-08-17
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -12,6 +12,7 @@
 ### Docs
 - **ISSUE_TEMPLATE:** add issue templates ([#26](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/26))
 - **LICENSE:** create LICENSE ([#34](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/34))
+- **readme:** changed title to github pages
 - **readme:** update readme.md
 - **readme:** init readme file
 
