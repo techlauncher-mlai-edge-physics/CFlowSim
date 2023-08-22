@@ -38,6 +38,8 @@ This project was developed in collaboration with team from ANU TechLauncher, a s
 
 The team is led by students of ANU college of Engineering, Computing and Cybernetics. Students with different levels of expertise in coding, design, content creation, and project management actively collaborate to create this website that presents a user-friendly simulation platform to the public.
 
+As this project is open source, we are open to contributions from the general public. Please see our contribution guide if you would like to lend a hand with our efforts.
+
 ## Getting Started
 
 The public deployment of the application can be found at [GitHub Pages](https://techlauncher-mlai-edge-physics.github.io). 
