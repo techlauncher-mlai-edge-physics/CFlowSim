@@ -113,7 +113,6 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
   const { setCurThemeMode, setPage } = props;
   const [isShowExtend, setIsShowExtend] = useState(false);
 
-  // @ts-ignore
   return (
     <Header>
       <LogoAnchor href="/">
