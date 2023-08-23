@@ -81,7 +81,7 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
           height={50}
         />
       </NavAnchor>
-      <Name>CFLowSim</Name>
+      <Name>CFlowSim</Name>
       <Nav>
         <NavButton type="primary" onClick={() => setPage(0)}>
           Simulations
