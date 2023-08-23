@@ -13,7 +13,6 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   height: 5rem;
-  //padding: 0 2rem;
   background-color: ${(props) => (props.theme.light ? '#004b87' : '#142c3f')};
   color: ${(props) => (props.theme.light ? '#f5f5f5' : '#9faee5')};
 `;
@@ -122,7 +121,7 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
           width={50}
           height={50}
         />
-        <Name>CFLowSim</Name>
+        <Name>CFlowSim</Name>
       </LogoAnchor>
       <HamburgerBar
         onClick={() => {
