@@ -85,8 +85,8 @@ self.onmessage = onmessage;
 async function initModelService(
   event: DedicatedWorkerGlobalScope,
 ): Promise<ModelService> {
-  const modelPath = '/model/bno_small.onnx';
-  const dataPath = new URL('/initData/pvf_incomp_44_0.json', import.meta.url);
+  const modelPath = '/model/bno_small_001.onnx';
+  const dataPath = new URL('/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json', import.meta.url);
   const outputCallback = (output: Float32Array): void => {
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
