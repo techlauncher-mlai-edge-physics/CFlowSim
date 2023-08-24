@@ -5,12 +5,20 @@ import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 
 const SimulatorContainer = styled.div`
-  position: absolute;
+  position: relative;
   left: 21rem;
   top: 6rem;
   width: calc(100vw - 22rem);
   height: calc(100vh - 7rem);
   z-index: 0;
+  @media (max-width: 760px) {
+    position: relative;
+    left: 6rem;
+    top: 6rem;
+    width: calc(100vw - 12rem);
+    height: calc(100vh - 6rem);
+    z-index: 0;
+  }
 `;
 
 const Simulator = styled(Canvas)`

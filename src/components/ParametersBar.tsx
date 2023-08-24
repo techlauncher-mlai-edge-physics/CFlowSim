@@ -16,10 +16,18 @@ const Container = styled(Space)`
   min-height: 90%;
   position: absolute;
   display: flex;
+
+  @media (max-width: 760px) {
+    display: none;
+  }
 `;
 const Title = styled.span`
   font-family: 'Roboto', sans-serif;
   font-size: 1.4rem;
+
+  @media (max-width: 760px) {
+    display: none;
+  }
 `;
 
 export default function ParametersBar(props: {
