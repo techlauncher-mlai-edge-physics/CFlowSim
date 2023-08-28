@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-08-26
+## Unreleased - 2023-08-28
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -74,6 +74,7 @@
 - **index:** remove the unused imports and variables
 - **modelService:** refactor the normalization function ([#8](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/8))
 - **project:** add type delcaretion for functions
+- **styles:** remove deprecated style sheets ([#53](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/53))
 
 ### Style
 - change occurences of Physics in the browser to CFlowSim ([#20](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/20))
