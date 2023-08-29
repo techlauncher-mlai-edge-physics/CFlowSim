@@ -51,4 +51,4 @@ See our [contribution guide](CONTRIBUTION.md) to get started.
 
 ## License
 
-Distributed under the _placeholder_ License. See `LICENSE` for more information.
+Distributed under the BSD-3 Clause License. See `LICENSE` for more information.
