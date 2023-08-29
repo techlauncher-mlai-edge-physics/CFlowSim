@@ -51,7 +51,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.3.0",
-    "prettier": "^3.0.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vite-plugin-glsl": "^1.1.2",
     "vite-plugin-remark-rehype": "^1.1.0"
