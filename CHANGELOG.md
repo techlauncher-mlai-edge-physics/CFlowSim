@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-08-28
+## Unreleased - 2023-08-29
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -13,6 +13,7 @@
 ### Docs
 - **ISSUE_TEMPLATE:** add issue templates ([#26](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/26))
 - **LICENSE:** create LICENSE ([#34](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/34))
+- **README:** replace LICENSE placeholder ([#60](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/60))
 - **readme:** change header to CFlowSim ([#43](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/43))
 - **readme:** changed title to github pages
 - **readme:** update readme.md
