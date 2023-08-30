@@ -2,7 +2,9 @@
 import styled from 'styled-components';
 import { useState } from "react";
 
-const Container = styled.div``
+const Container = styled.div`
+  margin: 5px 0;
+`
 const Row = styled.div``
 const Col = styled.span``
 const Button = styled.button`

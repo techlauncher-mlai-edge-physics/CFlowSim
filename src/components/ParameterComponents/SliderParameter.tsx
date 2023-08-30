@@ -9,14 +9,28 @@ const Slider = styled.input`
   width: 15rem;
   height: 24px;
   display: block;
+  margin: 5px 0;
 
-  &::-webkit-slider-runnable-track,
-  &::-moz-range-track {
+  &::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
     background: rgb(217,217,217);
     height:100%;
   }
-  &::-webkit-slider-thumb,
+  &::-moz-range-track {
+    -webkit-appearance: none;
+    background: rgb(217,217,217);
+    height:100%;
+  }
+  &::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    background: rgb(32,32,32);
+    height:100%;
+    width:10px;
+    border:none;
+    border-radius:0;
+  }
   &::-moz-range-thumb {
+    -webkit-appearance: none;
     background: rgb(32,32,32);
     height:100%;
     width:10px;

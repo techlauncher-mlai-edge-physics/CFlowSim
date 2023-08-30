@@ -9,6 +9,7 @@ const Select = styled.select`
   border: black 1px solid;
   background: rgb(217,217,217);
   margin: 5px 0;
+  padding: 0 5px;
   height: 24px;
 `
 
