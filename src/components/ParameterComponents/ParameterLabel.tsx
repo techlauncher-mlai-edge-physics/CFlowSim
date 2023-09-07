@@ -1,6 +1,12 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd"
+import styled from 'styled-components';
 
+const Lab = styled.div`
+  align-items:center;
+  height: 100%;
+  display:flex;
+`;
 
 export default function ParameterLabel(props: {
   title: string,
@@ -10,6 +16,10 @@ export default function ParameterLabel(props: {
   if (props.tooltip) {
     tooltip.push(<Tooltip placement="right" title={props.tooltip}><QuestionCircleOutlined /></Tooltip>)
   }
-  const label = (<div>{props.title}&nbsp;&nbsp;{tooltip}</div>)
-  return label;
+
+  return (
+    <Lab>
+      {props.title}&nbsp;&nbsp;{tooltip}
+    </Lab>
+  )
 }
