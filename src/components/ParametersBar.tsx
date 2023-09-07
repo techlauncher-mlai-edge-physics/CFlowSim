@@ -1,3 +1,4 @@
+import { DoubleRightOutlined, DoubleLeftOutlined } from "@ant-design/icons";
 import styled from 'styled-components';
 import { ColorPicker, Col, Space, Row, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,7 +23,6 @@ const Container = styled(Space)`
 
   text-align:left;
 
-  // set curves
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
 
@@ -31,6 +31,11 @@ const Container = styled(Space)`
   @media (max-width: 760px) {
     display: none;
   }
+`;
+
+const ButtonDiv = styled.span`
+  position:absolute;
+  left:10px;
 `;
 
 const Title = styled.span`
@@ -62,24 +67,106 @@ const BackButton = styled.button`
 `
 
 function ShowHideButton(props: {
-  toggleVisible: ()=>void
+  isVisible: boolean,
+  setVisible: (inp:boolean)=>void,
 }) {
-  const toggleVis = props.toggleVisible
+  const isVisible = props.isVisible
+  const setVisible = props.setVisible
+
   return(
-    <BackButton onClick={toggleVis}>
-      {"<<"}
+    <BackButton onClick={() => setVisible(!isVisible)}>
+      {isVisible ? (<DoubleLeftOutlined />) : (<DoubleRightOutlined />)}
       </BackButton>
   )
+}
+
+// whether the pane is in expert or easy mode
+enum ControlDifficulty {
+  Easy   = 1 << 0,
+  Expert = 1 << 1,
 }
 
 export default function ParametersBar(props: {
   params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
 }): React.ReactElement {
+  const [isPaneVisible, setPaneVisible] = useState<boolean>(true);
+  const space: [SpaceSize, SpaceSize] = ['large', 'small'];
+
+  // for ease of development, we'll default to expert mode for now
+  const [controlDifficulty, setControlDifficulty] = useState<ControlDifficulty>(ControlDifficulty.Expert);
+
+  // filter a list of components based on which difficulty flags it holds
+  const filterOnDifficulty = (cd: ControlDifficulty) =>
+    getAllCategories(props)
+      .map(([dif, category]) => (dif & cd) && category)
+      .filter((x) => x!=0) // the && operator returns 0 when the condition is false,
+                           // which react renders as actual 0s. we'll filter these to prevent this
+
+  // to prevent a "rendered fewer hooks than expected" error, we preload both configurations
+  // and switch between them
+  const easy = filterOnDifficulty(ControlDifficulty.Easy);
+  const exp = filterOnDifficulty(ControlDifficulty.Expert);
+
+  if (isPaneVisible)
+  {
+    return (
+      <Container direction="vertical" size={space} >
+        { /* hide button */ }
+        <Row justify="end">
+          <ShowHideButton isVisible={isPaneVisible} setVisible={setPaneVisible} />
+        </Row>
+
+        { /* header */ }
+        <Title>Parameters</Title>
+        <Row gutter={16}>
+          <Col className="gutter-row" span={12}>
+        <ParameterButton label="Easy mode" onClick={() => setControlDifficulty(ControlDifficulty.Easy)}/>
+          </Col>
+          <Col className="gutter-row" span={12}>
+            <ParameterButton label="Expert mode" onClick={() => setControlDifficulty(ControlDifficulty.Expert)}/>
+          </Col>
+        </Row>
+
+        <Row/>
+        <Row/>
+
+        { /* render the correct pane based on current control difficulty */ }
+        { controlDifficulty == ControlDifficulty.Easy && easy }
+        { controlDifficulty == ControlDifficulty.Expert && exp }
+
+        </Container>
+    );
+  } else {
+    return(
+      <ButtonDiv>
+        <ShowHideButton isVisible={isPaneVisible} setVisible={setPaneVisible} />
+      </ButtonDiv>
+    );
+  }
+}
+
+// CATEGORIES
+
+// returns a list of categories for the parameter pane
+function getAllCategories(props:{
+  setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
+}): [ControlDifficulty, React.ReactElement][] {
+  // -- Add all the categories here --
+  return [
+    [ControlDifficulty.Easy | ControlDifficulty.Expert, SimulationColour(props)],
+  ]
+}
+
+// allows the user to change the colour of the simulation
+function SimulationColour(props:{
+  setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
+}): React.ReactElement {
+  const setParams = props.setParams;
+
   const [colorLow, setColorLow] = useState<Color | string>('#0000FF');
   const [colorHigh, setColorHigh] = useState<Color | string>('#FF0000');
 
-  const setParams = props.setParams;
 
   const colorLowString = useMemo(
     () => (typeof colorLow === 'string' ? colorLow : colorLow.toHexString()),
@@ -90,8 +177,6 @@ export default function ParametersBar(props: {
     [colorHigh],
   );
 
-  const toggleBar = () => console.log("e");
-
   useEffect(() => {
     setParams((prev) => {
       return {
@@ -101,30 +186,8 @@ export default function ParametersBar(props: {
       };
     });
   }, [colorLowString, colorHighString, setParams]);
-  const space: [SpaceSize, SpaceSize] = ['large', 'small'];
 
-  return (
-    <Container direction="vertical" size={space} >
-      { /* Show/hide button */ }
-      <Row justify="end">
-        <ShowHideButton toggleVisible={toggleBar} />
-      </Row>
-
-      { /* Pane header */ }
-      <Title>Parameters</Title>
-      <Row gutter={16}>
-        <Col className="gutter-row" span={12}>
-          <ParameterButton label="Easy mode"/>
-        </Col>
-        <Col className="gutter-row" span={12}>
-          <ParameterButton label="Expert mode"/>
-        </Col>
-      </Row>
-
-      <Row/>
-      <Row/>
-
-      { /* Simulation colour */ }
+  return(
       <Category title={"Simulation Colour"}>
         <Row justify="start" gutter={16}>
           <Col className="gutter-row" span={12}>
@@ -144,7 +207,5 @@ export default function ParametersBar(props: {
           </Col>
         </Row>
       </Category>
-
-    </Container>
   );
 }

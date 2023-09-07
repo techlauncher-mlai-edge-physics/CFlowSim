@@ -13,10 +13,11 @@ const ParamButton = styled.button`
 `
 
 export default function ParameterButton(props : {
-    label: string
+    label: string;
+    onClick?: () => void;
 }){
     return (
-        <ParamButton>
+        <ParamButton onClick={props.onClick}>
             {props.label}
         </ParamButton>
     )
