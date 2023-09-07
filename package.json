@@ -15,6 +15,7 @@
     "format-check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.5",
     "@react-three/drei": "^9.64.0",
     "@react-three/fiber": "^8.13.7",
     "@vitejs/plugin-react": "^4.0.4",
