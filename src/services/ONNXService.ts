@@ -2,7 +2,7 @@ import * as ort from 'onnxruntime-web';
 import { type Vector2 } from 'three';
 import type Model from './model';
 
-export default class ModelService implements Model {
+export default class ONNXService implements Model {
   session: ort.InferenceSession | null;
   gridSize: [number, number];
   batchSize: number;
@@ -20,12 +20,11 @@ export default class ModelService implements Model {
   // 1, 2: partial velocity
   // 3, 4: Force (currently not used)
 
+  private isPaused: boolean;
+  private curFrameCountbyLastSecond: number;
   // hold constructor private to prevent direct instantiation
   // ort.InferenceSession.create() is async,
   // so we need to use a static async method to create an instance
-  private isPaused: boolean;
-  private curFrameCountbyLastSecond: number;
-
   private constructor() {
     this.session = null;
     this.matrixArray = new Float32Array();
@@ -51,9 +50,9 @@ export default class ModelService implements Model {
     channelSize = 5,
     outputChannelSize = 3,
     fpsLimit = 15,
-  ): Promise<ModelService> {
+  ): Promise<ONNXService> {
     console.log('createModelService called');
-    const modelServices = new ModelService();
+    const modelServices = new ONNXService();
     await modelServices.init(
       modelPath,
       gridSize,
@@ -66,7 +65,7 @@ export default class ModelService implements Model {
     return modelServices;
   }
 
-  async initMatrixFromPath(path: string | URL): Promise<void> {
+  async initMatrxFromPath(path: string | URL): Promise<void> {
     // check if the path is a relative path
     if (typeof path === 'string' && !path.startsWith('http')) {
       path = new URL(path, import.meta.url);
