@@ -1,8 +1,8 @@
 import * as ort from 'onnxruntime-web';
 import { type Vector2 } from 'three';
-import type Model from './model';
+import type ModelService from './modelService';
 
-export default class ONNXService implements Model {
+export default class ONNXService implements ModelService {
   session: ort.InferenceSession | null;
   gridSize: [number, number];
   batchSize: number;
@@ -65,7 +65,7 @@ export default class ONNXService implements Model {
     return modelServices;
   }
 
-  async initMatrxFromPath(path: string | URL): Promise<void> {
+  async loadJSONFileFromUrl(path: string | URL): Promise<void> {
     // check if the path is a relative path
     if (typeof path === 'string' && !path.startsWith('http')) {
       path = new URL(path, import.meta.url);
@@ -388,16 +388,7 @@ export default class ONNXService implements Model {
   private roundFloat(value: number, decimal = 4): number {
     return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
-  getFullMatrix(): Float32Array {
+  getInputTensor(): Float32Array {
     return this.matrixArray;
-  }
-  getDensity(): Float32Array {
-    return this.matrixMap(this.matrixArray, [0, 1], (v) => v);
-  }
-  getVelocity(): Float32Array {
-    return this.matrixMap(this.matrixArray, [1, 3], (v) => v);
-  }
-  getForce(): Float32Array {
-    return this.matrixMap(this.matrixArray, [3, 5], (v) => v);
   }
 }
