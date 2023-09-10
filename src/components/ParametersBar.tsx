@@ -34,6 +34,7 @@ const Container = styled(Space)`
 `;
 
 const ButtonDiv = styled.span`
+  top: calc(6.0rem - 5px);
   position:absolute;
   left:10px;
 `;
@@ -137,8 +138,6 @@ export default function ParametersBar(props: {
 
         { /* add controls to be shown to both here */ }
         <SimulationColour setParams={props.setParams} />
-
-
 
         </Container>
     );
