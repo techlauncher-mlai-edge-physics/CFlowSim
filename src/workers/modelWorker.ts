@@ -54,8 +54,8 @@ export function onmessage(
           .catch((e) => {
             console.error('error in modelDeserialize', e);
           });
+      }
       break;
-
     case 'start':
       if (modelService == null) {
         throw new Error('modelService is null');
@@ -126,13 +126,13 @@ async function initModelService(
 
 // TODO:
 // eslint-disable no-console
-function modelSerialize(model : Model | null) : string
+export function modelSerialize(model : Model | null) : string
 {
     return ""
 }
 
 // TODO:
-function modelDeserialize(data: string): Promise<ModelService>
+export function modelDeserialize(data: string): Promise<ModelService>
 {
     return null;
 }
