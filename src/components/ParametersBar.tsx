@@ -82,8 +82,8 @@ function ShowHideButton(props: {
 
 // whether the pane is in expert or easy mode
 enum ControlDifficulty {
-  Easy   = 1 << 0,
-  Expert = 1 << 1,
+  Easy,
+  Expert
 }
 
 export default function ParametersBar(props: {
@@ -95,18 +95,6 @@ export default function ParametersBar(props: {
 
   // for ease of development, we'll default to expert mode for now
   const [controlDifficulty, setControlDifficulty] = useState<ControlDifficulty>(ControlDifficulty.Expert);
-
-  // filter a list of components based on which difficulty flags it holds
-  const filterOnDifficulty = (cd: ControlDifficulty) =>
-    getAllCategories(props)
-      .map(([dif, category]) => (dif & cd) && category)
-      .filter((x) => x!=0) // the && operator returns 0 when the condition is false,
-                           // which react renders as actual 0s. we'll filter these to prevent this
-
-  // to prevent a "rendered fewer hooks than expected" error, we preload both configurations
-  // and switch between them
-  const easy = filterOnDifficulty(ControlDifficulty.Easy);
-  const exp = filterOnDifficulty(ControlDifficulty.Expert);
 
   if (isPaneVisible)
   {
@@ -132,8 +120,25 @@ export default function ParametersBar(props: {
         <Row/>
 
         { /* render the correct pane based on current control difficulty */ }
-        { controlDifficulty == ControlDifficulty.Easy && easy }
-        { controlDifficulty == ControlDifficulty.Expert && exp }
+        {
+          // add all easy controls here
+          controlDifficulty == ControlDifficulty.Easy &&
+            <>
+            </>
+        }
+
+        {
+
+          // add all expert controls here
+          controlDifficulty == ControlDifficulty.Expert &&
+            <>
+            </>
+        }
+
+        { /* add controls to be shown to both here */ }
+        <SimulationColour setParams={props.setParams} />
+
+
 
         </Container>
     );
@@ -148,15 +153,6 @@ export default function ParametersBar(props: {
 
 // CATEGORIES
 
-// returns a list of categories for the parameter pane
-function getAllCategories(props:{
-  setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
-}): [ControlDifficulty, React.ReactElement][] {
-  // -- Add all the categories here --
-  return [
-    [ControlDifficulty.Easy | ControlDifficulty.Expert, SimulationColour(props)],
-  ]
-}
 
 // allows the user to change the colour of the simulation
 function SimulationColour(props:{
@@ -209,3 +205,4 @@ function SimulationColour(props:{
       </Category>
   );
 }
+
