@@ -401,4 +401,8 @@ export default class ModelService implements Model {
   getForce(): Float32Array {
     return this.matrixMap(this.matrixArray, [3, 5], (v) => v);
   }
+
+  getInputTensor(): Float32Array {
+    return new Float32Array();
+  }
 }

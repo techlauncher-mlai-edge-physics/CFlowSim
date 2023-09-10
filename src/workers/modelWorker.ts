@@ -2,6 +2,7 @@
 
 import { Vector2 } from 'three';
 import ModelService from '../services/modelService';
+import Model from "../services/model"
 import { IncomingMessage } from './modelWorkerMessage';
 
 let modelService: ModelService | null = null;
@@ -24,6 +25,7 @@ export function onmessage(
   }
   console.log('worker received message', data);
   switch (data.func) {
+
     case 'init':
       if (modelService == null) {
         initModelService(this)
@@ -36,6 +38,24 @@ export function onmessage(
           });
       }
       break;
+    case 'save':
+      this.postMessage({
+        type: 'data',
+        data: modelSerialize(modelService)
+      });
+      break;
+    case 'load':
+      if (modelService == null) {
+        modelDeserialize(data.args as string)
+          .then((service) => {
+            modelService = service;
+            this.postMessage({ type: 'init', success: true });
+          })
+          .catch((e) => {
+            console.error('error in modelDeserialize', e);
+          });
+      break;
+
     case 'start':
       if (modelService == null) {
         throw new Error('modelService is null');
@@ -102,4 +122,17 @@ async function initModelService(
   modelService.bindOutput(outputCallback);
   await modelService.initMatrixFromPath(dataPath);
   return modelService;
+}
+
+// TODO:
+// eslint-disable no-console
+function modelSerialize(model : Model | null) : string
+{
+    return ""
+}
+
+// TODO:
+function modelDeserialize(data: string): Promise<ModelService>
+{
+    return null;
 }
