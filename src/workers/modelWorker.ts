@@ -1,7 +1,10 @@
 // a worker that can control the modelService via messages
 
 import { Vector2 } from 'three';
-import ModelService from '../services/modelService';
+import {
+  ModelService,
+  createModelService,
+} from '../services/model/modelService';
 import { IncomingMessage } from './modelWorkerMessage';
 
 let modelService: ModelService | null = null;
@@ -51,22 +54,13 @@ export function onmessage(
     case 'updateForce':
       updateForce(data.args as UpdateForceArgs);
       break;
-    case 'getFullMatrix':
+    case 'getInputTensor':
       if (modelService == null) {
         throw new Error('modelService is null');
       }
       this.postMessage({
-        type: 'fullMatrix',
-        matrix: modelService.getFullMatrix(),
-      });
-      break;
-    case 'getDensity':
-      if (modelService == null) {
-        throw new Error('modelService is null');
-      }
-      this.postMessage({
-        type: 'density',
-        density: modelService.getDensity(),
+        type: 'inputTensor',
+        tensor: modelService.getInputTensor(),
       });
       break;
     default:
@@ -86,7 +80,10 @@ async function initModelService(
   event: DedicatedWorkerGlobalScope,
 ): Promise<ModelService> {
   const modelPath = '/model/bno_small_001.onnx';
-  const dataPath = new URL('/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json', import.meta.url);
+  const dataPath = new URL(
+    '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
+    import.meta.url,
+  );
   const outputCallback = (output: Float32Array): void => {
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
@@ -94,12 +91,12 @@ async function initModelService(
     }
     event.postMessage({ type: 'output', density });
   };
-  const modelService = await ModelService.createModelService(
-    modelPath,
-    [64, 64],
-    1,
-  );
+  const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
-  await modelService.initMatrixFromPath(dataPath);
+  // fetch the data
+  const data = (await fetch(dataPath).then((res) =>
+    res.json(),
+  )) as number[][][][];
+  modelService.loadDataArray(data);
   return modelService;
 }

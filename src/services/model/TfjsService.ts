@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { type Vector2 } from 'three';
-import type ModelService from './modelService';
+import { type ModelService } from './modelService';
 
 export class TfjsService implements ModelService {
   model!: tf.GraphModel;
@@ -29,7 +29,7 @@ export class TfjsService implements ModelService {
     this.curFrameCountbyLastSecond = 0;
   }
 
-  async createService(
+  static async createService(
     modelPath: string,
     gridSize: [number, number] = [64, 64],
     batchSize = 1,
@@ -45,23 +45,10 @@ export class TfjsService implements ModelService {
     service.outputChannelSize = outputChannelSize;
     service.fpsLimit = fpsLimit;
 
-    this.isPaused = false;
-    return this;
+    return service;
   }
 
-  async loadJSONFileFromUrl(url: string): Promise<void> {
-    const response = await fetch(url);
-    const json = (await response.json()) as JSON;
-    // check if json is valid
-    if ('density' in json && 'velocity' in json && 'pressure' in json) {
-      throw new Error('Invalid JSON file');
-    }
-    // turn json into ModelData
-    this.loadMatrixFromJson(json);
-  }
-
-  loadMatrixFromJson(json: JSON /*ModelData*/): void {
-    const array = json as unknown as number[][][][];
+  loadDataArray(array: number[][][][]): void {
     console.log(array);
     const arrayTensor = tf.tensor4d(
       array,
@@ -197,7 +184,7 @@ export class TfjsService implements ModelService {
     setTimeout(() => {
       this.curFrameCountbyLastSecond += 1;
       console.log(this.curFrameCountbyLastSecond);
-      void this.iterate();
+      this.iterate();
     }, 0);
   }
 

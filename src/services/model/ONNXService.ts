@@ -1,6 +1,6 @@
 import * as ort from 'onnxruntime-web';
 import { type Vector2 } from 'three';
-import type ModelService from './modelService';
+import { type ModelService } from './modelService';
 
 export default class ONNXService implements ModelService {
   session: ort.InferenceSession | null;
@@ -43,7 +43,7 @@ export default class ONNXService implements ModelService {
   }
 
   // static async method to create an instance
-  static async createModelService(
+  static async createService(
     modelPath: string,
     gridSize: [number, number] = [64, 64],
     batchSize = 1,
@@ -65,19 +65,6 @@ export default class ONNXService implements ModelService {
     return modelServices;
   }
 
-  async loadJSONFileFromUrl(path: string | URL): Promise<void> {
-    // check if the path is a relative path
-    if (typeof path === 'string' && !path.startsWith('http')) {
-      path = new URL(path, import.meta.url);
-    }
-    const matrix = await fetch(path).then(
-      async (res) => (await res.json()) as number[][][][],
-    );
-    if (matrix == null) {
-      throw new Error('Cannot fetch matrix from path');
-    }
-    this.initMatrixFromArray(matrix);
-  }
 
   bindOutput(callback: (data: Float32Array) => void): void {
     this.outputCallback = callback;
@@ -127,7 +114,7 @@ export default class ONNXService implements ModelService {
     this.outputSize = batchSize * gridSize[0] * gridSize[1] * outputChannelSize;
   }
 
-  private initMatrixFromArray(data: number[][][][]): void {
+  loadDataArray(data: number[][][][]): void {
     console.log(
       '🚀 ~ file: modelService.ts:132 ~ ModelService ~  initMatrixFromJSON ~ data:',
       data,
