@@ -63,11 +63,11 @@ function DiffusionPlane(
   props: ThreeElements['mesh'] & Renderable,
 ): React.ReactElement {
   // INITIALISATION
-  
+
   // WebGPU capability test
-  if ( WebGPU.isAvailable() === true ) {
-    const webgpuRenderer = new WebGPURenderer( { antialias: true } );
-    console.log('browser supports webgpu rendering')
+  if (WebGPU.isAvailable() === true) {
+    const webgpuRenderer = new WebGPURenderer({ antialias: true });
+    console.log('browser supports webgpu rendering');
     console.log('webgpu renderer context', webgpuRenderer);
   } else {
     console.log('browser does not support webgpu rendering');

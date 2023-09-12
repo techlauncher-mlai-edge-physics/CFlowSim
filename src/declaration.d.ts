@@ -15,6 +15,6 @@ declare module 'three/addons/capabilities/WebGPU.js' {
 }
 declare module 'three/addons/renderers/webgpu/WebGPURenderer.js' {
   export default class WebGPURenderer {
-    constructor( parameters: object );
+    constructor(parameters: object);
   }
 }
