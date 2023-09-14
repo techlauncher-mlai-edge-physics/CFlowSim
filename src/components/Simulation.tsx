@@ -10,6 +10,10 @@ import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
 import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 
+// WebGPU imports
+import { default as WebGPU } from 'three/addons/capabilities/WebGPU.js';
+import { default as WebGPURenderer } from 'three/addons/renderers/webgpu/WebGPURenderer.js';
+
 class SimulationParams {
   // render options
   densityLowColour: t.Color = new t.Color('blue');
@@ -59,6 +63,15 @@ function DiffusionPlane(
   props: ThreeElements['mesh'] & Renderable,
 ): React.ReactElement {
   // INITIALISATION
+
+  // WebGPU capability test
+  if (WebGPU.isAvailable() === true) {
+    const webgpuRenderer = new WebGPURenderer({ antialias: true });
+    console.log('browser supports webgpu rendering');
+    console.log('webgpu renderer context', webgpuRenderer);
+  } else {
+    console.log('browser does not support webgpu rendering');
+  }
 
   // reference to the parent mesh
   const ref = useRef<t.Mesh>(null!);
