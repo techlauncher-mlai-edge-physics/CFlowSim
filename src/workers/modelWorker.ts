@@ -1,8 +1,8 @@
 // a worker that can control the modelService via messages
 
-import { Vector2 } from 'three';
+import { type Vector2 } from 'three';
 import ModelService from '../services/modelService';
-import { IncomingMessage } from './modelWorkerMessage';
+import { type IncomingMessage } from './modelWorkerMessage';
 
 let modelService: ModelService | null = null;
 
@@ -73,7 +73,7 @@ export function onmessage(
       throw new Error(`unknown func ${data.func}`);
   }
 }
-function updateForce(args: UpdateForceArgs) {
+function updateForce(args: UpdateForceArgs): void {
   if (modelService == null) {
     throw new Error('modelService is null');
   }

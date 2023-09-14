@@ -389,15 +389,19 @@ export default class ModelService implements Model {
   private roundFloat(value: number, decimal = 4): number {
     return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
+
   getFullMatrix(): Float32Array {
     return this.matrixArray;
   }
+
   getDensity(): Float32Array {
     return this.matrixMap(this.matrixArray, [0, 1], (v) => v);
   }
+
   getVelocity(): Float32Array {
     return this.matrixMap(this.matrixArray, [1, 3], (v) => v);
   }
+
   getForce(): Float32Array {
     return this.matrixMap(this.matrixArray, [3, 5], (v) => v);
   }

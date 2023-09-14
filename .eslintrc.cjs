@@ -1,12 +1,11 @@
 /* eslint-env node */
-module.exports =
-{
+module.exports = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
+    'standard-with-typescript',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:react-hooks/recommended',
     'plugin:react/recommended',
     'prettier',
@@ -48,5 +47,5 @@ module.exports =
       },
     ],
   },
-}
+};
 
