@@ -2,7 +2,7 @@
 
 import { type Vector2 } from 'three';
 import {
-  ModelService,
+  type ModelService,
   createModelService,
 } from '../services/model/modelService';
 import { type IncomingMessage } from './modelWorkerMessage';
@@ -94,8 +94,8 @@ async function initModelService(
   const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
   // fetch the data
-  const data = (await fetch(dataPath).then((res) =>
-    res.json(),
+  const data = (await fetch(dataPath).then(async (res) =>
+    await res.json(),
   )) as number[][][][];
   modelService.loadDataArray(data);
   return modelService;

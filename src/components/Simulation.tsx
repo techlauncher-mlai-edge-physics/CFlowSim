@@ -65,7 +65,7 @@ function DiffusionPlane(
   // INITIALISATION
 
   // WebGPU capability test
-  if (WebGPU.isAvailable() === true) {
+  if (WebGPU.isAvailable()) {
     const webgpuRenderer = new WebGPURenderer({ antialias: true });
     console.log('browser supports webgpu rendering');
     console.log('webgpu renderer context', webgpuRenderer);

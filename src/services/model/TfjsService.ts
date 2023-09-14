@@ -136,12 +136,14 @@ export class TfjsService implements ModelService {
       }
     }, 1000);
   }
+
   getInput(): tf.Tensor<tf.Rank> {
     const pressure = this.pressure.toTensor();
     const input = tf.concat([this.density, this.velocity, pressure], 3);
     pressure.dispose();
     return input;
   }
+
   private iterate(): void {
     if (this.isPaused) {
       return;
@@ -204,12 +206,14 @@ export class TfjsService implements ModelService {
       4,
     );
   }
+
   getInputTensor(): Float32Array {
     const input = this.getInput();
     const data = input.dataSync();
     input.dispose();
     return data as Float32Array;
   }
+
   dispose(): void {
     this.density.dispose();
     this.velocity.dispose();

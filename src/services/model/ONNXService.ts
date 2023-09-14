@@ -375,6 +375,7 @@ export default class ONNXService implements ModelService {
   private roundFloat(value: number, decimal = 4): number {
     return Math.round(value * 10 ** decimal) / 10 ** decimal;
   }
+
   getInputTensor(): Float32Array {
     return this.matrixArray;
   }
