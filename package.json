@@ -20,7 +20,7 @@
     "@react-three/fiber": "^8.13.7",
     "@tensorflow/tfjs": "^4.10.0",
     "@vitejs/plugin-react": "^4.0.4",
-    "antd": "^5.8.4",
+    "antd": "^5.9.0",
     "onnxruntime-web": "^1.15.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
