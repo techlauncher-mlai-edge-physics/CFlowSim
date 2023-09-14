@@ -15,7 +15,7 @@
     "format-check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.5",
+    "@ant-design/icons": "^5.2.6",
     "@react-three/drei": "^9.83.3",
     "@react-three/fiber": "^8.13.7",
     "@tensorflow/tfjs": "^4.10.0",
