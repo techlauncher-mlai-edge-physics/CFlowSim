@@ -13,4 +13,12 @@ export default defineConfig({
       rehypePlugins: [rehypeSanitize],
     }),
   ],
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
+  build: {
+    target: 'esnext',
+  },
 });
