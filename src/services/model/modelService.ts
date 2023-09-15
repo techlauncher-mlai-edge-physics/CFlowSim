@@ -25,7 +25,7 @@ export async function createModelService(
   const modelType = modelPath.split('.').pop();
   switch (modelType) {
     case 'json':
-      return TfjsService.createService(
+      return await TfjsService.createService(
         modelPath,
         gridSize,
         batchSize,
@@ -34,7 +34,7 @@ export async function createModelService(
         fpsLimit,
       );
     case 'onnx':
-      return ONNXService.createService(
+      return await ONNXService.createService(
         modelPath,
         gridSize,
         batchSize,

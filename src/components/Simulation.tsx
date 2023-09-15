@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as t from 'three';
 import {
   useFrame,
   type ThreeElements,
   type ThreeEvent,
 } from '@react-three/fiber';
-import React, { useEffect, useMemo, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
-import { OutgoingMessage } from '../workers/modelWorkerMessage';
+import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 
 // WebGPU imports
 import { default as WebGPU } from 'three/addons/capabilities/WebGPU.js';
@@ -65,7 +65,7 @@ function DiffusionPlane(
   // INITIALISATION
 
   // WebGPU capability test
-  if (WebGPU.isAvailable() === true) {
+  if (WebGPU.isAvailable()) {
     const webgpuRenderer = new WebGPURenderer({ antialias: true });
     console.log('browser supports webgpu rendering');
     console.log('webgpu renderer context', webgpuRenderer);
@@ -116,7 +116,7 @@ function DiffusionPlane(
   // create a worker and assign it the model computations
   const { worker } = props;
   useEffect(() => {
-    void (() => {
+    (() => {
       worker.onmessage = (e) => {
         const data = e.data as OutgoingMessage;
 
@@ -141,7 +141,6 @@ function DiffusionPlane(
     })();
 
     // SUBSCRIPTIONS
-
     // update the density uniforms every time
     // output is received
     function output(data: Float32Array): void {
