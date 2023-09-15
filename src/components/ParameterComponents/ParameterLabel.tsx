@@ -8,6 +8,13 @@ const Lab = styled.div`
   display: flex;
 `;
 
+const Styled = styled(Tooltip)`
+  .ant-tooltip-inner {
+    font-weight: normal;
+    color: #cfcfcf;
+  }
+`;
+
 export default function ParameterLabel(props: {
   title: string;
   tooltip?: string;
@@ -15,9 +22,15 @@ export default function ParameterLabel(props: {
   const tooltip: React.ReactElement[] = [];
   if (props.tooltip) {
     tooltip.push(
-      <Tooltip placement="right" title={props.tooltip}>
-        <QuestionCircleOutlined />
-      </Tooltip>,
+      <Styled>
+        <Tooltip
+          placement="right"
+          title={props.tooltip}
+          getPopupContainer={(tn) => tn}
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Styled>,
     );
   }
 
