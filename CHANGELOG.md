@@ -3,12 +3,13 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-09-14
+## Unreleased - 2023-09-15
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
 - **commit:** add pre-commit hook for the project ([#18](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/18))
 - **deps:** add dependabot, bump dependencies ([#46](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/46))
+- **eslint:** create workflow file for eslint ([#100](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/100))
 
 ### Docs
 - **ISSUE_TEMPLATE:** add issue templates ([#26](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/26))
