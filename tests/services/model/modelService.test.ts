@@ -1,12 +1,12 @@
-import { modelSerialize as ser, modelDeserialize as des } from "../../../src/services/model/modelService"
-import { ModelService } from "../../../src/services/model/modelService"
+import { modelSerialize as ser, modelDeserialize as des , type ModelService } from "../../../src/services/model/modelService"
+
 import { type Vector2 } from 'three';
 import { expect, test } from "@jest/globals"
 
 // define a mock model
 class MockModelService implements ModelService
 {
-    private inputTensor: Float32Array;
+    private readonly inputTensor: Float32Array;
 
     constructor (inputTensor: Float32Array) {
         this.inputTensor = inputTensor;
