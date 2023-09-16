@@ -100,3 +100,24 @@ async function initModelService(
   modelService.loadDataArray(data);
   return modelService;
 }
+
+interface ModelData {
+  name: string;
+  inputTensor: Float32Array;
+}
+
+export function modelSerialize(model : ModelService | null) : string {
+  if (model == null)
+    return ""
+
+  const data: ModelData = {
+    name: "test",
+    inputTensor: model.getInputTensor()
+  }
+  return JSON.stringify(data);
+}
+
+export function modelDeserialize(input: string): Promise<ModelService>
+{
+  return new Promise((_, __) => JSON.parse(input) as ModelData)
+}
