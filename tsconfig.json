@@ -24,7 +24,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["src/workers/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

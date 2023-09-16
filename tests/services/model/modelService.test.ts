@@ -1,4 +1,4 @@
-import { modelSerialize as ser, modelDeserialize as des } from "../../../src/workers/modelWorker"
+import { modelSerialize as ser, modelDeserialize as des } from "../../../src/services/model/modelService"
 import { ModelService } from "../../../src/services/model/modelService"
 import { type Vector2 } from 'three';
 import { expect, test } from "@jest/globals"

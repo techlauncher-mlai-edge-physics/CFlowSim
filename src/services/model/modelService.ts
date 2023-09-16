@@ -46,3 +46,22 @@ export async function createModelService(
       throw new Error('Invalid model type');
   }
 }
+
+interface ModelData {
+  name: string;
+  inputTensor: Float32Array;
+}
+
+export function modelSerialize(model: ModelService | null): string {
+  if (model == null) return '';
+
+  const data: ModelData = {
+    name: 'test',
+    inputTensor: model.getInputTensor(),
+  };
+  return JSON.stringify(data);
+}
+
+export async function modelDeserialize(_input: string): Promise<ModelService> {
+  return await createModelService('/model/bno_small_001.onnx');
+}
