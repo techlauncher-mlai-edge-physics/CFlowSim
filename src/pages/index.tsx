@@ -39,7 +39,7 @@ interface IndexProp {
 export default function Home(props: IndexProp): React.ReactElement {
   const { simulationParams, setSimulationParams, worker } = props;
   useEffect(() => {
-    const confirmExit = (e: BeforeUnloadEvent) => {
+    const confirmExit = (e: BeforeUnloadEvent): void => {
       console.log('beforeunload event triggered');
       e.preventDefault();
       e.returnValue = '';
