@@ -44,7 +44,7 @@ jobs:
           npm install @microsoft/eslint-formatter-sarif@2.1.7
 
       - name: Run ESLint
-        run: npx eslint src
+        run: npx eslint src tests
           --report-unused-disable-directives
           --max-warnings 0
           --config .eslintrc.cjs
