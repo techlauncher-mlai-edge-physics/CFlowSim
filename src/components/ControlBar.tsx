@@ -9,6 +9,36 @@ export const ControlBarContainer = styled(Space)`
   display: flex;
 `;
 
+export const SaveBtn = styled(Button)`
+  position: absolute;
+  bottom: 4rem;
+  right: 11rem;
+  color: #eeeeee;
+  background-color: #555555;
+  height: 3.2rem;
+  width: 8rem;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  @media (max-width: 760px) {
+    margin-bottom: 0.2rem;
+  }
+`;
+
+export const RestoreBtn = styled(Button)`
+  position: absolute;
+  bottom: 4rem;
+  right: 2rem;
+  color: #eeeeee;
+  background-color: #555555;
+  height: 3.2rem;
+  width: 8rem;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  @media (max-width: 760px) {
+    margin-bottom: 0.2rem;
+  }
+`;
+
 interface ControlBarProps {
   worker: Worker;
 }
@@ -16,35 +46,51 @@ interface ControlBarProps {
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
   const { worker } = props;
   return (
-    <ControlBarContainer size="small" direction="horizontal">
-      <Button
+    <>
+      <SaveBtn
         onClick={() => {
-          worker.postMessage({ func: 'start' });
+          console.log('Click Save');
         }}
       >
-        Play
-      </Button>
-      <Button
+        Save Model
+      </SaveBtn>
+      <RestoreBtn
         onClick={() => {
-          worker.postMessage({ func: 'pause' });
+          console.log('Click Restore');
         }}
       >
-        Pause
-      </Button>
-      <Button
-        onClick={() => {
-          worker.postMessage({ func: 'stop' });
-        }}
-      >
-        Stop
-      </Button>
-      <Button
-        onClick={() => {
-          worker.terminate();
-        }}
-      >
-        TERMINATE
-      </Button>
-    </ControlBarContainer>
+        Restore Model
+      </RestoreBtn>
+      <ControlBarContainer size="small" direction="horizontal">
+        <Button
+          onClick={() => {
+            worker.postMessage({ func: 'start' });
+          }}
+        >
+          Play
+        </Button>
+        <Button
+          onClick={() => {
+            worker.postMessage({ func: 'pause' });
+          }}
+        >
+          Pause
+        </Button>
+        <Button
+          onClick={() => {
+            worker.postMessage({ func: 'stop' });
+          }}
+        >
+          Stop
+        </Button>
+        <Button
+          onClick={() => {
+            worker.terminate();
+          }}
+        >
+          TERMINATE
+        </Button>
+      </ControlBarContainer>
+    </>
   );
 }
