@@ -6,6 +6,7 @@ const Lab = styled.div`
   align-items: center;
   height: 100%;
   display: flex;
+  font-weight: bold;
 `;
 
 const Styled = styled(Tooltip)`
