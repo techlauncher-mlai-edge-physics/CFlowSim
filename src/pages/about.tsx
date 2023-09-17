@@ -2,7 +2,7 @@ import aboutContent from '../../README.md';
 import styled from 'styled-components';
 
 const Content = styled.div`
-  text-align:justify;
+  text-align: justify;
   margin-left: 25%;
   margin-right: 25%;
   margin-top: 4%;
