@@ -1,8 +1,11 @@
 // a worker that can control the modelService via messages
 
-import { Vector2 } from 'three';
-import ModelService from '../services/modelService';
-import { IncomingMessage } from './modelWorkerMessage';
+import { type Vector2 } from 'three';
+import {
+  type ModelService,
+  createModelService,
+} from '../services/model/modelService';
+import { type IncomingMessage } from './modelWorkerMessage';
 
 let modelService: ModelService | null = null;
 
@@ -51,29 +54,20 @@ export function onmessage(
     case 'updateForce':
       updateForce(data.args as UpdateForceArgs);
       break;
-    case 'getFullMatrix':
+    case 'getInputTensor':
       if (modelService == null) {
         throw new Error('modelService is null');
       }
       this.postMessage({
-        type: 'fullMatrix',
-        matrix: modelService.getFullMatrix(),
-      });
-      break;
-    case 'getDensity':
-      if (modelService == null) {
-        throw new Error('modelService is null');
-      }
-      this.postMessage({
-        type: 'density',
-        density: modelService.getDensity(),
+        type: 'inputTensor',
+        tensor: modelService.getInputTensor(),
       });
       break;
     default:
       throw new Error(`unknown func ${data.func}`);
   }
 }
-function updateForce(args: UpdateForceArgs) {
+function updateForce(args: UpdateForceArgs): void {
   if (modelService == null) {
     throw new Error('modelService is null');
   }
@@ -97,12 +91,12 @@ async function initModelService(
     }
     event.postMessage({ type: 'output', density });
   };
-  const modelService = await ModelService.createModelService(
-    modelPath,
-    [64, 64],
-    1,
-  );
+  const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
-  await modelService.initMatrixFromPath(dataPath);
+  // fetch the data
+  const data = (await fetch(dataPath).then(async (res) =>
+    await res.json(),
+  )) as number[][][][];
+  modelService.loadDataArray(data);
   return modelService;
 }

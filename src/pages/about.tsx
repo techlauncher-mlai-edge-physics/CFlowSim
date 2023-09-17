@@ -8,7 +8,7 @@ const Content = styled.div`
   margin-top: 4%;
   margin-bottom: 8%;
   font-family: 'Roboto', sans-serif;
-  color: ${(props) => (props.theme.light ? '#333333' : '#c9c9c9')};
+  color: ${(props) => (props.theme.light as boolean ? '#333333' : '#c9c9c9' )};
   a:link {
     text-decoration: none;
   }

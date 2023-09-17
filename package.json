@@ -16,16 +16,17 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
-    "@react-three/drei": "^9.64.0",
+    "@react-three/drei": "^9.83.3",
     "@react-three/fiber": "^8.13.7",
+    "@tensorflow/tfjs": "^4.11.0",
     "@vitejs/plugin-react": "^4.0.4",
     "antd": "^5.8.4",
     "onnxruntime-web": "^1.15.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rehype-sanitize": "^5.0.1",
+    "rehype-sanitize": "^6.0.0",
     "styled-components": "^6.0.7",
-    "three": "^0.155.0",
+    "three": "^0.156.1",
     "vite": "^4.4.9"
   },
   "devDependencies": {
@@ -36,11 +37,11 @@
     "@types/react-dom": "^18.2.7",
     "@types/three": "^0.151.0",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.4.1",
+    "@typescript-eslint/parser": "^6.7.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.48.0",
+    "eslint": "^8.49.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-config-standard-with-typescript": "^39.0.0",
     "eslint-plugin-import": "^2.28.1",
@@ -63,6 +64,6 @@
     }
   },
   "volta": {
-    "node": "18.15.0"
+    "node": "18.17.1"
   }
 }

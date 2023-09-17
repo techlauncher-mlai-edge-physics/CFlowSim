@@ -1,14 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as t from 'three';
 import {
   useFrame,
   type ThreeElements,
   type ThreeEvent,
 } from '@react-three/fiber';
-import React, { useEffect, useMemo, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
-import { OutgoingMessage } from '../workers/modelWorkerMessage';
+import { type OutgoingMessage } from '../workers/modelWorkerMessage';
+
+// WebGPU imports
+import { default as WebGPU } from 'three/addons/capabilities/WebGPU.js';
+import { default as WebGPURenderer } from 'three/addons/renderers/webgpu/WebGPURenderer.js';
 
 class SimulationParams {
   // render options
@@ -60,6 +64,15 @@ function DiffusionPlane(
 ): React.ReactElement {
   // INITIALISATION
 
+  // WebGPU capability test
+  if (WebGPU.isAvailable()) {
+    const webgpuRenderer = new WebGPURenderer({ antialias: true });
+    console.log('browser supports webgpu rendering');
+    console.log('webgpu renderer context', webgpuRenderer);
+  } else {
+    console.log('browser does not support webgpu rendering');
+  }
+
   // reference to the parent mesh
   const ref = useRef<t.Mesh>(null!);
 
@@ -103,7 +116,7 @@ function DiffusionPlane(
   // create a worker and assign it the model computations
   const { worker } = props;
   useEffect(() => {
-    void (() => {
+    (() => {
       worker.onmessage = (e) => {
         const data = e.data as OutgoingMessage;
 
@@ -128,7 +141,6 @@ function DiffusionPlane(
     })();
 
     // SUBSCRIPTIONS
-
     // update the density uniforms every time
     // output is received
     function output(data: Float32Array): void {

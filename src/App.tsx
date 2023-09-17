@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import styled, { ThemeProvider } from 'styled-components';
@@ -6,7 +7,7 @@ import './App.css';
 import Home from './pages';
 import AboutPage from './pages/about';
 import { SimulationParams } from './components/Simulation';
-import { IncomingMessage } from './workers/modelWorkerMessage';
+import { type IncomingMessage } from './workers/modelWorkerMessage';
 
 const Main = styled.main`
   position: absolute;
@@ -14,7 +15,7 @@ const Main = styled.main`
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: ${(props) => (props.theme.light ? '#ffffff' : '#707070')};
+  background: ${(props) => ((props.theme.light as boolean) ? '#ffffff' : '#707070')};
   z-index: 0;
 `;
 
@@ -25,7 +26,7 @@ const NavBarContainer = styled.div`
   font-family: 'Titillium Web', sans-serif;
 `;
 
-function App() {
+function App(): React.ReactElement {
   // save the current page in state
   // 0 = home(index,simulation) 1 = about
   const [page, setPage] = useState(0);
@@ -35,7 +36,6 @@ function App() {
 
   const [lightTheme, setlightTheme] = useState<boolean>(false);
   // TODO: implement auto theme ui switch
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [curThemeMode, setCurThemeMode] = useState<string>('auto'); // 'dark' or 'light' or 'auto'
 
   useEffect(() => {
@@ -62,9 +62,10 @@ function App() {
       },
     );
     setSimWorker(worker);
-    worker.postMessage({
+    const message: IncomingMessage = {
       func: 'init',
-    } as IncomingMessage);
+    };
+    worker.postMessage(message);
   }, []);
 
   let mainPageComponent;
