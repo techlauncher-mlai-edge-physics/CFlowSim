@@ -214,6 +214,19 @@ export class TfjsService implements ModelService {
     return data as Float32Array;
   }
 
+  getMass(): number {
+    return this.mass.dataSync()[0];
+  }
+
+  getInputShape(): [number, number, number, number] {
+    return [this.batchSize, ...this.gridSize, this.channelSize];
+  }
+
+  setMass(mass: number): void {
+    this.mass.dispose();
+    this.mass = tf.scalar(mass);
+  }
+
   dispose(): void {
     this.density.dispose();
     this.velocity.dispose();

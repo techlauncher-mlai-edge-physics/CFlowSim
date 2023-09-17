@@ -29,8 +29,19 @@ class MockModelService implements ModelService
         return this.inputTensor;
     }
 
-    loadDataArray(_: number[][][][])
-    {}
+    loadDataArray(_: number[][][][]): void {
+    }
+    
+    getMass(): number {
+        return 0;
+    }
+
+    getInputShape(): [number, number, number, number] {
+        return [0,0,0,0];
+    }
+
+    setMass(_: number): void {
+    }
 }
 
 // serialise tests

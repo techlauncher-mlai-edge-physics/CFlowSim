@@ -65,7 +65,6 @@ export default class ONNXService implements ModelService {
     return modelServices;
   }
 
-
   bindOutput(callback: (data: Float32Array) => void): void {
     this.outputCallback = callback;
   }
@@ -378,5 +377,17 @@ export default class ONNXService implements ModelService {
 
   getInputTensor(): Float32Array {
     return this.matrixArray;
+  }
+
+  getMass(): number {
+    return this.mass;
+  }
+
+  getInputShape(): [number, number, number, number] {
+    return this.tensorShape;
+  }
+
+  setMass(mass: number): void {
+    this.mass = mass;
   }
 }
