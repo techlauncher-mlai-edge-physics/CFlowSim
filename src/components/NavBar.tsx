@@ -13,8 +13,9 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   height: 5rem;
-  background-color: ${(props) => (props.theme.light as boolean ? '#004b87' : '#142c3f')};
-  color: ${(props) => (props.theme.light as boolean ? '#f5f5f5' : '#9faee5')};
+  background-color: ${(props) =>
+    (props.theme.light as boolean) ? '#004b87' : '#142c3f'};
+  color: ${(props) => ((props.theme.light as boolean) ? '#f5f5f5' : '#9faee5')};
 `;
 
 const LogoAnchor = styled.a`
@@ -132,10 +133,20 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
       </HamburgerBar>
 
       <ButtonGroup>
-        <NavButton type="primary" onClick={() => { setPage(0); }}>
+        <NavButton
+          type="primary"
+          onClick={() => {
+            setPage(0);
+          }}
+        >
           Simulations
         </NavButton>
-        <NavButton type="primary" onClick={() => { setPage(1); }}>
+        <NavButton
+          type="primary"
+          onClick={() => {
+            setPage(1);
+          }}
+        >
           About
         </NavButton>
         <ThemeButton
@@ -155,10 +166,20 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
       </ButtonGroup>
       {isShowExtend ? (
         <ExtendContainer>
-          <NavButton type="primary" onClick={() => { setPage(0); }}>
+          <NavButton
+            type="primary"
+            onClick={() => {
+              setPage(0);
+            }}
+          >
             Simulations
           </NavButton>
-          <NavButton type="primary" onClick={() => { setPage(1); }}>
+          <NavButton
+            type="primary"
+            onClick={() => {
+              setPage(1);
+            }}
+          >
             About
           </NavButton>
           <ThemeButton

@@ -94,10 +94,9 @@ async function initModelService(
   const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
   // fetch the data
-  const data = (await fetch(dataPath).then(async (res) =>
-    await res.json(),
+  const data = (await fetch(dataPath).then(
+    async (res) => await res.json(),
   )) as number[][][][];
   modelService.loadDataArray(data);
   return modelService;
 }
-

@@ -1,6 +1,9 @@
 import ParBar from '../components/ParametersBar';
 import ControlBar from '../components/ControlBar';
-import { DiffusionPlane, type SimulationParams } from '../components/Simulation';
+import {
+  DiffusionPlane,
+  type SimulationParams,
+} from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 
