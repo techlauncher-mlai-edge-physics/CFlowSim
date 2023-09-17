@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-09-16
+## Unreleased - 2023-09-17
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -79,6 +79,7 @@
 - **components:** relocate the components from the pages folder to the root folder
 - **index:** remove the unused imports and variables
 - **modelService:** refactor the normalization function ([#8](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/8))
+- **parameter-pane:** implement the new parameter pane ([#82](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/82))
 - **project:** add type delcaretion for functions
 - **styles:** remove deprecated style sheets ([#53](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/53))
 
