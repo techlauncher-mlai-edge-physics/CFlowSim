@@ -12,6 +12,7 @@ export interface ModelService {
   updateForce: (pos: Vector2, forceDelta: Vector2) => void;
   loadDataArray: (array: number[][][][]) => void;
   setMass: (mass: number) => void;
+  getType: () => string
 }
 
 // a simple factory function to create a model service
@@ -26,6 +27,7 @@ export async function createModelService(
   // detect the model type
   // TODO: read the model type from the model definition file
   const modelType = modelPath.split('.').pop();
+  console.log(modelType)
   switch (modelType) {
     case 'json':
       return await TfjsService.createService(
@@ -50,29 +52,39 @@ export async function createModelService(
   }
 }
 
-export function modelSerialize(model: ModelService | null): ModelSave | null {
+export function modelSerialize(url: string, model: ModelService | null): ModelSave | null {
   if (model == null) return null;
   // export a JSON as ModelSave
+
   return {
     inputTensor: reshape(model.getInputTensor(), model.getInputShape()),
     mass: model.getMass(),
-    modelType: getModelType(model),
-    modelUrl: '', // a placeholder, actual url should be stored in main thread
+    modelType: model.getType(),
+    modelUrl: url,
     time: new Date().toISOString(),
   };
 }
 
 export async function modelDeserialize(
   input: ModelSave,
+  modelFactory:
+    (mp:string,
+     gs:[number,number],
+     bs:number,
+     cs:number,
+     ocs:number,
+     fpslim:number)
+    => Promise<ModelService> = createModelService
 ): Promise<ModelService> {
   // create a model service from a ModelSave object
   // TODO: read the model type from the model definition file
-  const modelService = await createModelService(
+  const modelService = await modelFactory(
     input.modelUrl,
     [input.inputTensor[0].length, input.inputTensor[0][0].length],
     input.inputTensor.length,
     input.inputTensor[0][0][0].length,
     input.inputTensor[0][0][0].length,
+    15
   );
   modelService.loadDataArray(input.inputTensor);
   modelService.setMass(input.mass);
@@ -80,11 +92,11 @@ export async function modelDeserialize(
 }
 
 export interface ModelSave {
-  inputTensor: number[][][][];
-  mass: number;
   modelType: string;
   modelUrl: string;
   time: string;
+  inputTensor: number[][][][];
+  mass: number;
 }
 
 function reshape(
@@ -107,14 +119,4 @@ function reshape(
     }
   }
   return result;
-}
-
-function getModelType(model: ModelService): string {
-  if (model instanceof TfjsService) {
-    return 'tfjs';
-  } else if (model instanceof ONNXService) {
-    return 'onnx';
-  } else {
-    throw new Error('Unknown model type');
-  }
 }

@@ -390,4 +390,6 @@ export default class ONNXService implements ModelService {
   setMass(mass: number): void {
     this.mass = mass;
   }
+
+  getType(): string { return "onnx" }
 }
