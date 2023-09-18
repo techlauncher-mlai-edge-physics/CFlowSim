@@ -6,6 +6,7 @@ import {
 } from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
 const SimulatorContainer = styled.div`
   position: relative;
@@ -37,7 +38,17 @@ interface IndexProp {
 
 export default function Home(props: IndexProp): React.ReactElement {
   const { simulationParams, setSimulationParams, worker } = props;
-
+  useEffect(() => {
+    const confirmExit = (e: BeforeUnloadEvent): void => {
+      console.log('beforeunload event triggered');
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', confirmExit);
+    return () => {
+      window.removeEventListener('beforeunload', confirmExit);
+    };
+  }, []);
   return (
     <>
       <ParBar params={simulationParams} setParams={setSimulationParams} />

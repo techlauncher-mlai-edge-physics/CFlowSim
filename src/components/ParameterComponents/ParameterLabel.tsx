@@ -1,5 +1,20 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
+import styled from 'styled-components';
+
+const Lab = styled.div`
+  align-items: center;
+  height: 100%;
+  display: flex;
+  font-weight: bold;
+`;
+
+const Styled = styled(Tooltip)`
+  .ant-tooltip-inner {
+    font-weight: normal;
+    color: #cfcfcf;
+  }
+`;
 
 export default function ParameterLabel(props: {
   title: string;
@@ -8,15 +23,21 @@ export default function ParameterLabel(props: {
   const tooltip: React.ReactElement[] = [];
   if (props.tooltip) {
     tooltip.push(
-      <Tooltip placement="right" title={props.tooltip}>
-        <QuestionCircleOutlined />
-      </Tooltip>,
+      <Styled>
+        <Tooltip
+          placement="right"
+          title={props.tooltip}
+          getPopupContainer={(tn) => tn}
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Styled>,
     );
   }
-  const label = (
-    <div>
+
+  return (
+    <Lab>
       {props.title}&nbsp;&nbsp;{tooltip}
-    </div>
+    </Lab>
   );
-  return label;
 }

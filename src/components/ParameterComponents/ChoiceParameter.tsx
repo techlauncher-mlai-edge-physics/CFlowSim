@@ -28,7 +28,7 @@ export default function ChoiceParameter(props: {
   initValue?: string;
 }): React.ReactElement {
   const [value, setValue] = useState(props.values[0]);
-  if (props.initValue != null) {
+  if (props.initValue) {
     setValue(props.initValue);
   }
   // split values into rows of 3
