@@ -3,7 +3,10 @@
 import { type Vector2 } from 'three';
 import {
   type ModelService,
+  type ModelSave,
   createModelService,
+  modelSerialize,
+  // modelDeserialize
 } from '../services/model/modelService';
 import { type IncomingMessage } from './modelWorkerMessage';
 
@@ -29,7 +32,17 @@ export function onmessage(
   switch (data.func) {
     case 'init':
       if (modelService == null) {
-        initModelService(this)
+        const [path, base] = data.args as [string, string];
+        const url = new URL(path, base)
+        // fetch the data
+        console.log("FETCHING");
+        const fetchFunc = async (dataPath: URL): Promise<number[][][][]> => {
+          return (await fetch(dataPath).then(
+            async (res) => await res.json(),
+          )) as number[][][][];
+        }
+
+        initModelService<URL>(this, url, fetchFunc)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: 'init', success: true });
@@ -63,6 +76,16 @@ export function onmessage(
         tensor: modelService.getInputTensor(),
       });
       break;
+
+    case 'serialize':
+      this.postMessage({
+        type: 'modelSave',
+        save: workerSerialize()
+      });
+      break;
+    case 'deserialize':
+      break;
+
     default:
       throw new Error(`unknown func ${data.func}`);
   }
@@ -76,14 +99,25 @@ function updateForce(args: UpdateForceArgs): void {
 
 self.onmessage = onmessage;
 
-async function initModelService(
-  event: DedicatedWorkerGlobalScope,
-): Promise<ModelService> {
+// serialise the current model service
+function workerSerialize(): ModelSave {
+  // return a modelsave with the current model
+  if (modelService == null)
+    throw new Error('modelService is null, cannot serialise');
+  // TODO: implement a way to change the model path
   const modelPath = '/model/bno_small_001.onnx';
-  const dataPath = new URL(
-    '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
-    import.meta.url,
-  );
+  const save = modelSerialize(modelPath, modelService)
+  if (save == null)
+    throw new Error('something went wrong during model serialisation')
+  return save
+}
+
+async function initModelService<T>(
+  event: DedicatedWorkerGlobalScope,
+  initialDataPath: T,
+  fetchData: (dataPath: T) => Promise<number[][][][]>,
+  modelPath: string = '/model/bno_small_001.onnx',
+): Promise<ModelService> {
   const outputCallback = (output: Float32Array): void => {
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
@@ -94,9 +128,7 @@ async function initModelService(
   const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
   // fetch the data
-  const data = (await fetch(dataPath).then(
-    async (res) => await res.json(),
-  )) as number[][][][];
+  const data = await fetchData(initialDataPath)
   modelService.loadDataArray(data);
   return modelService;
 }
