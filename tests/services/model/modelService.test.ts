@@ -117,13 +117,16 @@ test("serialise valid model", async() => {
 // deserialise tests
 
 async function mockModelFactory(
-  _a: string,
-  _b: [number, number] = [64, 64],
-  _c: number,
-  _d: number,
-  _e: number,
-  _f: number,
+  _modelpath: string,
+  _gridisize: [number, number] = [64, 64],
+  _batchsize: number,
+  _channelsize: number,
+  _outputchannelsize: number,
+  _fpslim: number,
 ): Promise<ModelService> {
+    // unlike conventional model services, this one doesn't require
+    // a worker to construct so no async await is used
+    // we'll ignore the required awaited promise error in this case
     return Promise.resolve(new MockModelService()) // eslint-disable-line
 }
 

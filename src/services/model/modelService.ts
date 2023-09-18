@@ -68,11 +68,11 @@ export function modelSerialize(url: string, model: ModelService | null): ModelSa
 export async function modelDeserialize(
   input: ModelSave,
   modelFactory:
-    (mp:string,
-     gs:[number,number],
-     bs:number,
-     cs:number,
-     ocs:number,
+    (modelpath:string,
+     gridsize:[number,number],
+     batchsize:number,
+     channelsize:number,
+     outputchannelsize:number,
      fpslim:number)
     => Promise<ModelService> = createModelService
 ): Promise<ModelService> {
