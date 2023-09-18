@@ -1,0 +1,20 @@
+{
+    "inputTensor": [
+        [
+            [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        ]
+    ],
+    "mass": 0.1,
+    "modelType": "tfjs",
+    "modelUrl": "http://techlauncher-mlai-edge-physics.github.io/model/bno_small_new_web/model.json",
+    "time": "2019-12-12 16:00:00"
+}

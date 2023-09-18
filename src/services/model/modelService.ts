@@ -7,8 +7,12 @@ export interface ModelService {
   pauseSimulation: () => void;
   bindOutput: (callback: (data: Float32Array) => void) => void;
   getInputTensor: () => Float32Array;
+  getMass: () => number;
+  getInputShape: () => [number, number, number, number];
   updateForce: (pos: Vector2, forceDelta: Vector2) => void;
   loadDataArray: (array: number[][][][]) => void;
+  setMass: (mass: number) => void;
+  getType: () => string
 }
 
 // a simple factory function to create a model service
@@ -23,6 +27,7 @@ export async function createModelService(
   // detect the model type
   // TODO: read the model type from the model definition file
   const modelType = modelPath.split('.').pop();
+  console.log(modelType)
   switch (modelType) {
     case 'json':
       return await TfjsService.createService(
@@ -45,4 +50,73 @@ export async function createModelService(
     default:
       throw new Error('Invalid model type');
   }
+}
+
+export function modelSerialize(url: string, model: ModelService | null): ModelSave | null {
+  if (model == null) return null;
+  // export a JSON as ModelSave
+
+  return {
+    inputTensor: reshape(model.getInputTensor(), model.getInputShape()),
+    mass: model.getMass(),
+    modelType: model.getType(),
+    modelUrl: url,
+    time: new Date().toISOString(),
+  };
+}
+
+export async function modelDeserialize(
+  input: ModelSave,
+  modelFactory:
+    (modelpath:string,
+     gridsize:[number,number],
+     batchsize:number,
+     channelsize:number,
+     outputchannelsize:number,
+     fpslim:number)
+    => Promise<ModelService> = createModelService
+): Promise<ModelService> {
+  // create a model service from a ModelSave object
+  // TODO: read the model type from the model definition file
+  const modelService = await modelFactory(
+    input.modelUrl,
+    [input.inputTensor[0].length, input.inputTensor[0][0].length],
+    input.inputTensor.length,
+    input.inputTensor[0][0][0].length,
+    input.inputTensor[0][0][0].length,
+    15
+  );
+  modelService.loadDataArray(input.inputTensor);
+  modelService.setMass(input.mass);
+  return modelService;
+}
+
+export interface ModelSave {
+  modelType: string;
+  modelUrl: string;
+  time: string;
+  inputTensor: number[][][][];
+  mass: number;
+}
+
+function reshape(
+  arr: Float32Array,
+  shape: [number, number, number, number],
+): number[][][][] {
+  const [d1, d2, d3, d4] = shape;
+  const result = new Array(d1);
+  let offset = 0;
+  for (let i = 0; i < d1; i++) {
+    result[i] = new Array(d2);
+    for (let j = 0; j < d2; j++) {
+      result[i][j] = new Array(d3);
+      for (let k = 0; k < d3; k++) {
+        result[i][j][k] = new Array(d4);
+        for (let l = 0; l < d4; l++) {
+          result[i][j][k][l] = arr[offset++];
+        }
+      }
+    }
+  }
+  return result;
 }

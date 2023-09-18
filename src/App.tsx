@@ -15,7 +15,8 @@ const Main = styled.main`
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: ${(props) => ((props.theme.light as boolean) ? '#ffffff' : '#707070')};
+  background: ${(props) =>
+    (props.theme.light as boolean) ? '#ffffff' : '#707070'};
   z-index: 0;
 `;
 
