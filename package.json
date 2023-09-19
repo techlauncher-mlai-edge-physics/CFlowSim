@@ -34,7 +34,7 @@
     "@axe-core/react": "^4.7.3",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
-    "@types/react": "^18.2.21",
+    "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "@types/three": "^0.156.0",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
