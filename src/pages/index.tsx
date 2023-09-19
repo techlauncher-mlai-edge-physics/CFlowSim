@@ -6,7 +6,9 @@ import {
 } from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { type OutgoingMessage } from '../workers/modelWorkerMessage';
+import { type ModelSave } from '../services/model/modelService';
 
 const SimulatorContainer = styled.div`
   position: relative;
@@ -49,6 +51,47 @@ export default function Home(props: IndexProp): React.ReactElement {
       window.removeEventListener('beforeunload', confirmExit);
     };
   }, []);
+
+  // to distribute the worker messages across different components
+  // we utilise an observer pattern where components can subscribe
+  // their functions to different message types
+
+  const outputSubs: Array<(density: Float32Array) => void> = useMemo(
+    () => [],
+    [],
+  );
+  const initSubs: Array<() => void> = useMemo(() => [], []);
+  const modelSaveSubs: Array<(save: ModelSave) => void> = useMemo(() => [], []);
+
+  // distribute the worker callback
+  useEffect(() => {
+    if (worker !== null) {
+      worker.onmessage = (e) => {
+        const data = e.data as OutgoingMessage;
+
+        switch (data.type) {
+          case 'output':
+            for (const x of outputSubs)
+              if (data.density !== undefined) x(data.density);
+            break;
+
+          case 'init':
+            for (const x of initSubs) x();
+            break;
+
+          case 'modelSave':
+            for (const x of modelSaveSubs) {
+              x(data.save);
+            }
+            break;
+        }
+      };
+      worker.onerror = (e) => {
+        console.log(e);
+      };
+    }
+  }, [worker, initSubs, outputSubs, modelSaveSubs]);
+
   return (
     <>
       <ParBar params={simulationParams} setParams={setSimulationParams} />
@@ -64,11 +107,13 @@ export default function Home(props: IndexProp): React.ReactElement {
             disableInteraction={false}
             position={[0, 0, 0]}
             params={simulationParams}
+            initSubs={initSubs}
+            outputSubs={outputSubs}
             worker={worker}
           />
         </Simulator>
       </SimulatorContainer>
-      <ControlBar worker={worker} />
+      <ControlBar worker={worker} modelSaveSubs={modelSaveSubs} />
     </>
   );
 }

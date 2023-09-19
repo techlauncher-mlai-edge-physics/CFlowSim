@@ -13,7 +13,7 @@ export interface ModelService {
   updateForce: (pos: Vector2, forceDelta: Vector2) => void;
   loadDataArray: (array: number[][][][]) => void;
   setMass: (mass: number) => void;
-  getType: () => string
+  getType: () => string;
 }
 
 // a simple factory function to create a model service
@@ -28,7 +28,7 @@ export async function createModelService(
   // detect the model type
   // TODO: read the model type from the model definition file
   const modelType = modelPath.split('.').pop();
-  console.log(modelType)
+  console.log(modelType);
   switch (modelType) {
     case 'json':
       return await TfjsService.createService(
@@ -62,7 +62,10 @@ export async function createModelService(
   }
 }
 
-export function modelSerialize(url: string, model: ModelService | null): ModelSave | null {
+export function modelSerialize(
+  url: string,
+  model: ModelService | null,
+): ModelSave | null {
   if (model == null) return null;
   // export a JSON as ModelSave
 
@@ -86,7 +89,7 @@ export async function modelDeserialize(
     input.inputTensor.length,
     input.inputTensor[0][0][0].length,
     input.inputTensor[0][0][0].length,
-    15
+    15,
   );
   modelService.loadDataArray(input.inputTensor);
   modelService.setMass(input.mass);

@@ -69,7 +69,7 @@ function App(): React.ReactElement {
       args: [
         '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
         import.meta.url,
-      ]
+      ],
     };
     worker.postMessage(message);
   }, []);

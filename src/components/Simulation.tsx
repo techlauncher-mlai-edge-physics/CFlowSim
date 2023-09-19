@@ -8,11 +8,10 @@ import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
-import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 
 // WebGPU imports
-import { default as WebGPU } from 'three/addons/capabilities/WebGPU.js';
-import { default as WebGPURenderer } from 'three/addons/renderers/webgpu/WebGPURenderer.js';
+import WebGPU from 'three/addons/capabilities/WebGPU.js';
+import WebGPURenderer from 'three/addons/renderers/webgpu/WebGPURenderer.js';
 
 class SimulationParams {
   // render options
@@ -24,6 +23,8 @@ class SimulationParams {
 // we can pass the parameter object directly
 interface Renderable {
   params: SimulationParams;
+  outputSubs: Array<(density: Float32Array) => void>;
+  initSubs: Array<(w: Worker) => void>;
   worker: Worker;
   disableInteraction: boolean;
 }
@@ -114,31 +115,16 @@ function DiffusionPlane(
   });
 
   // create a worker and assign it the model computations
-  const { worker } = props;
+  const { outputSubs, initSubs, worker } = props;
+
   useEffect(() => {
-    (() => {
-      worker.onmessage = (e) => {
-        const data = e.data as OutgoingMessage;
-
-        switch (data.type) {
-          case 'init':
-            console.log('starting');
-            worker.postMessage({ func: 'start' });
-            break;
-
-          case 'output':
-            if (data.density !== undefined) {
-              output(data.density);
-            }
-            break;
-        }
-      };
-      worker.onerror = (e) => {
-        console.log(e);
-      };
-
-      console.log('worker created', worker);
-    })();
+    outputSubs.push((density: Float32Array) => {
+      output(density);
+    });
+    initSubs.push((): void => {
+      console.log('starting');
+      worker.postMessage({ func: 'start' });
+    });
 
     // SUBSCRIPTIONS
     // update the density uniforms every time
@@ -161,7 +147,7 @@ function DiffusionPlane(
       tex.needsUpdate = true;
       shaderMat.uniforms.density.value = tex;
     }
-  }, [shaderMat, worker]);
+  }, [shaderMat, outputSubs, initSubs, worker]);
 
   const { disableInteraction } = props;
   let pointMoved = false;

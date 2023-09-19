@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "prepare": "husky install",
     "format-check": "prettier --check \"src/**/*.{ts,tsx}\"",
-    "test" : "jest"
+    "test": "jest"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
@@ -22,6 +22,7 @@
     "@tensorflow/tfjs": "^4.11.0",
     "@vitejs/plugin-react": "^4.0.4",
     "antd": "^5.8.4",
+    "file-dialog": "^0.0.8",
     "onnxruntime-web": "^1.15.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

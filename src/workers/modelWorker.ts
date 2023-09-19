@@ -33,22 +33,14 @@ export function onmessage(
     case 'init':
       if (modelService == null) {
         const [path, base] = data.args as [string, string];
-        const url = new URL(path, base)
-        // fetch the data
-        console.log("FETCHING");
-        const fetchFunc = async (dataPath: URL): Promise<number[][][][]> => {
-          return (await fetch(dataPath).then(
-            async (res) => await res.json(),
-          )) as number[][][][];
-        }
-
-        initModelService<URL>(this, url, fetchFunc)
+        const url = new URL(path, base);
+        getServiceFromInitCond(this, url)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: 'init', success: true });
           })
           .catch((e) => {
-            console.error('error in initModelService', e);
+            console.error('error in createNewModelService', e);
           });
       }
       break;
@@ -76,16 +68,26 @@ export function onmessage(
         tensor: modelService.getInputTensor(),
       });
       break;
-
     case 'serialize':
       this.postMessage({
         type: 'modelSave',
-        save: workerSerialize()
+        save: workerSerialize(),
       });
       break;
     case 'deserialize':
+      if (modelService == null) throw new Error('modelService is null');
+      modelService.pauseSimulation();
+      getServiceFromSave(this, data.args as ModelSave)
+        .then((ms) => {
+          modelService = ms;
+          console.log('successfully restored model service with', ms);
+          modelService.startSimulation();
+          this.postMessage({ type: 'deserialize', success: true });
+        })
+        .catch((e) => {
+          throw new Error(`something went wrong with deserialisation ${e}`);
+        });
       break;
-
     default:
       throw new Error(`unknown func ${data.func}`);
   }
@@ -100,24 +102,54 @@ function updateForce(args: UpdateForceArgs): void {
 self.onmessage = onmessage;
 
 // serialise the current model service
-function workerSerialize(): ModelSave {
+export function workerSerialize(): ModelSave {
   // return a modelsave with the current model
   if (modelService == null)
     throw new Error('modelService is null, cannot serialise');
   // TODO: implement a way to change the model path
   const modelPath = '/model/bno_small_001.onnx';
-  const save = modelSerialize(modelPath, modelService)
+  const save = modelSerialize(modelPath, modelService);
   if (save == null)
-    throw new Error('something went wrong during model serialisation')
-  return save
+    throw new Error('something went wrong during model serialisation');
+  return save;
 }
 
-async function initModelService<T>(
+// create a model service and restore
+// all of its state from a ModelSave
+async function getServiceFromSave(
   event: DedicatedWorkerGlobalScope,
-  initialDataPath: T,
-  fetchData: (dataPath: T) => Promise<number[][][][]>,
+  save: ModelSave,
+): Promise<ModelService> {
+  const modelService = await createModelService(save.modelUrl, [64, 64], 1);
+  bindCallback(event, modelService);
+  // restore previous state
+  modelService.loadDataArray(save.inputTensor);
+  modelService.setMass(save.mass);
+  return modelService;
+}
+
+// create a new model service and load the data array
+// from a file containing initial conditions
+async function getServiceFromInitCond(
+  event: DedicatedWorkerGlobalScope,
+  dataPath: URL,
   modelPath: string = '/model/bno_small_001.onnx',
 ): Promise<ModelService> {
+  const modelService = await createModelService(modelPath, [64, 64], 1);
+  bindCallback(event, modelService);
+  // fetch the data
+  const data = (await fetch(dataPath).then(
+    async (res) => await res.json(),
+  )) as number[][][][];
+  modelService.loadDataArray(data);
+  return modelService;
+}
+
+// bind this worker's output callback to a service
+function bindCallback(
+  event: DedicatedWorkerGlobalScope,
+  modelService: ModelService,
+): void {
   const outputCallback = (output: Float32Array): void => {
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
@@ -125,10 +157,5 @@ async function initModelService<T>(
     }
     event.postMessage({ type: 'output', density });
   };
-  const modelService = await createModelService(modelPath, [64, 64], 1);
   modelService.bindOutput(outputCallback);
-  // fetch the data
-  const data = await fetchData(initialDataPath)
-  modelService.loadDataArray(data);
-  return modelService;
 }

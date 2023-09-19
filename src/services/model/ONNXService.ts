@@ -391,5 +391,7 @@ export default class ONNXService implements ModelService {
     this.mass = mass;
   }
 
-  getType(): string { return "onnx" }
+  getType(): string {
+    return 'onnx';
+  }
 }
