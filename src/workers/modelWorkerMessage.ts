@@ -9,5 +9,5 @@ export interface OutgoingMessage {
   density?: Float32Array;
   success: boolean;
   matrix?: Float32Array;
-  save: ModelSave;
+  save?: ModelSave;
 }

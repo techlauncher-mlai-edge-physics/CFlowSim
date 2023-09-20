@@ -8,6 +8,7 @@ import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
+import { type IncomingMessage } from '../workers/modelWorkerMessage';
 
 // WebGPU imports
 import WebGPU from 'three/addons/capabilities/WebGPU.js';
@@ -25,7 +26,7 @@ interface Renderable {
   params: SimulationParams;
   outputSubs: Array<(density: Float32Array) => void>;
   initSubs: Array<(w: Worker) => void>;
-  worker: Worker;
+  postMsg: (data: IncomingMessage) => void;
   disableInteraction: boolean;
 }
 
@@ -115,7 +116,7 @@ function DiffusionPlane(
   });
 
   // create a worker and assign it the model computations
-  const { outputSubs, initSubs, worker } = props;
+  const { outputSubs, initSubs, postMsg } = props;
 
   useEffect(() => {
     outputSubs.push((density: Float32Array) => {
@@ -123,7 +124,7 @@ function DiffusionPlane(
     });
     initSubs.push((): void => {
       console.log('starting');
-      worker.postMessage({ func: 'start' });
+      postMsg({ func: 'start' });
     });
 
     // SUBSCRIPTIONS
@@ -147,7 +148,7 @@ function DiffusionPlane(
       tex.needsUpdate = true;
       shaderMat.uniforms.density.value = tex;
     }
-  }, [shaderMat, outputSubs, initSubs, worker]);
+  }, [shaderMat, outputSubs, initSubs, postMsg]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
@@ -188,7 +189,7 @@ function DiffusionPlane(
     pointMoved = false;
     console.log('[event] Applying force', forceDelta, 'at', loc);
     // call model with param
-    worker.postMessage({
+    postMsg({
       func: 'updateForce',
       args: {
         loc,

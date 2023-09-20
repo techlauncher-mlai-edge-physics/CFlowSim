@@ -32,9 +32,12 @@ export function onmessage(
   switch (data.func) {
     case 'init':
       if (modelService == null) {
-        const [path, base] = data.args as [string, string];
+        const [[path, base], modelurl] = data.args as [
+          [string, string],
+          string,
+        ];
         const url = new URL(path, base);
-        getServiceFromInitCond(this, url)
+        getServiceFromInitCond(this, url, modelurl)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: 'init', success: true });
@@ -133,7 +136,7 @@ async function getServiceFromSave(
 async function getServiceFromInitCond(
   event: DedicatedWorkerGlobalScope,
   dataPath: URL,
-  modelPath: string = '/model/bno_small_001.onnx',
+  modelPath: string,
 ): Promise<ModelService> {
   const modelService = await createModelService(modelPath, [64, 64], 1);
   bindCallback(event, modelService);

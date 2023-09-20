@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
 import { useEffect } from 'react';
 import fileDialog from 'file-dialog';
+import { type IncomingMessage } from '../workers/modelWorkerMessage';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -44,11 +45,12 @@ export const RestoreBtn = styled(Button)`
 
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
-  worker: Worker;
+  terminate: () => void;
+  postMsg: (data: IncomingMessage) => void;
 }
 
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
-  const { modelSaveSubs, worker } = props;
+  const { modelSaveSubs, postMsg } = props;
 
   useEffect(() => {
     modelSaveSubs.push((sav: ModelSave) => {
@@ -58,7 +60,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
     // take the json and have the user download it
     function save(sav: ModelSave): void {
-      const filename = `${sav.modelType}@${sav.time}.CFSS`;
+      const filename = `${sav.modelType}@${sav.time}`;
       const dat = JSON.stringify(sav);
       const blob = new Blob([dat], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -87,7 +89,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       const text: string = reader.result?.toString() ?? '';
       const data = JSON.parse(text) as ModelSave;
       console.log('got', data);
-      worker.postMessage({ func: 'deserialize', args: data });
+      postMsg({ func: 'deserialize', args: data });
     };
     reader.readAsText(file);
   }
@@ -96,7 +98,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     <>
       <SaveBtn
         onClick={() => {
-          worker.postMessage({ func: 'serialize' });
+          postMsg({ func: 'serialize' });
         }}
       >
         Save Model
@@ -119,28 +121,28 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       <ControlBarContainer size="small" direction="horizontal">
         <Button
           onClick={() => {
-            worker.postMessage({ func: 'start' });
+            postMsg({ func: 'start' });
           }}
         >
           Play
         </Button>
         <Button
           onClick={() => {
-            worker.postMessage({ func: 'pause' });
+            postMsg({ func: 'pause' });
           }}
         >
           Pause
         </Button>
         <Button
           onClick={() => {
-            worker.postMessage({ func: 'stop' });
+            postMsg({ func: 'stop' });
           }}
         >
           Stop
         </Button>
         <Button
           onClick={() => {
-            worker.terminate();
+            props.terminate();
           }}
         >
           TERMINATE
