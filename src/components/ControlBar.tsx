@@ -1,8 +1,7 @@
 import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
-import { useEffect, useRef } from 'react';
-import fileDialog from 'file-dialog';
+import { useEffect, useRef, type ChangeEvent } from 'react';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -97,8 +96,15 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     reader.readAsText(file);
   }
 
+  const inputFile = useRef<HTMLInputElement | null> (null)
+  const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    e.persist()
+    load(e.target.files![0])
+  }
+
   return (
     <>
+      <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={onChange}/>
       <SaveBtn
         onClick={() => {
           worker.current?.postMessage({ func: 'serialize' });
@@ -108,15 +114,8 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       </SaveBtn>
       <RestoreBtn
         onClick={() => {
-          fileDialog()
-            .then((files) => {
-              if (files.length > 0) {
-                load(files[0]);
-              }
-            })
-            .catch((e) => {
-              throw e;
-            });
+          inputFile.current?.click()
+
         }}
       >
         Restore Model
