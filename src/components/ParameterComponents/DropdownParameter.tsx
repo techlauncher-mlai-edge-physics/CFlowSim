@@ -19,15 +19,16 @@ export default function DropdownParameter(props: {
   initValue?: string;
 }): React.ReactElement {
   const [value, setValue] = useState(props.values[0]);
-  if (props.initValue) {
+  if (props.initValue !== undefined) {
     setValue(props.initValue);
   }
   return (
     <Select
       value={value}
-      onChange={(e) => (
-        setValue(e.target.value), props.onChange(e.target.value)
-      )}
+      onChange={(e) => {
+        setValue(e.target.value);
+        props.onChange(e.target.value);
+      }}
     >
       {props.values.map((val, i) => (
         <option key={i} value={val}>

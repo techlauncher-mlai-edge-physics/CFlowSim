@@ -11,8 +11,8 @@ import fragmentShader from '../shaders/frag.glsl';
 import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 
 // WebGPU imports
-import { default as WebGPU } from 'three/addons/capabilities/WebGPU.js';
-import { default as WebGPURenderer } from 'three/addons/renderers/webgpu/WebGPURenderer.js';
+import WebGPU from 'three/addons/capabilities/WebGPU.js';
+import WebGPURenderer from 'three/addons/renderers/webgpu/WebGPURenderer.js';
 
 class SimulationParams {
   // render options
