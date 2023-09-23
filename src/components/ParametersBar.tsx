@@ -75,7 +75,11 @@ function ShowHideButton(props: {
   const setVisible = props.setVisible;
 
   return (
-    <BackButton onClick={() => {setVisible(!isVisible)}}>
+    <BackButton
+      onClick={() => {
+        setVisible(!isVisible);
+      }}
+    >
       {isVisible ? <DoubleLeftOutlined /> : <DoubleRightOutlined />}
     </BackButton>
   );
@@ -116,13 +120,17 @@ export default function ParametersBar(props: {
           <Col className="gutter-row" span={12}>
             <ParameterButton
               label="Easy mode"
-              onClick={() => {setControlDifficulty(ControlDifficulty.Easy)}}
+              onClick={() => {
+                setControlDifficulty(ControlDifficulty.Easy);
+              }}
             />
           </Col>
           <Col className="gutter-row" span={12}>
             <ParameterButton
               label="Expert mode"
-              onClick={() => {setControlDifficulty(ControlDifficulty.Expert)}}
+              onClick={() => {
+                setControlDifficulty(ControlDifficulty.Expert);
+              }}
             />
           </Col>
         </Row>
