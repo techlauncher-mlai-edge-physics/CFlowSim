@@ -7,7 +7,7 @@ import {
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
-import { type OutgoingMessage } from '../workers/modelWorkerMessage';
+import { type IncomingMessage, type OutgoingMessage } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 
 const SimulatorContainer = styled.div`
@@ -55,13 +55,12 @@ export default function Home(props: IndexProp): React.ReactElement {
   // to distribute the worker messages across different components
   // we utilise an observer pattern where components can subscribe
   // their functions to different message types
-  // *never directly share the worker*
 
   const outputSubs: Array<(density: Float32Array) => void> = useMemo(
     () => [],
     [],
   );
-  const initSubs: Array<() => void> = useMemo(() => [], []);
+  const initSubs: Array<(wkr: Worker) => void> = useMemo(() => [], []);
   const modelSaveSubs: Array<(save: ModelSave) => void> = useMemo(() => [], []);
 
   // distribute the worker callback
@@ -77,7 +76,7 @@ export default function Home(props: IndexProp): React.ReactElement {
             break;
 
           case 'init':
-            for (const x of initSubs) x();
+            for (const x of initSubs) x(worker);
             break;
 
           case 'modelSave':
@@ -114,15 +113,16 @@ export default function Home(props: IndexProp): React.ReactElement {
             params={simulationParams}
             initSubs={initSubs}
             outputSubs={outputSubs}
-            postMsg={worker.postMessage}
           />
         </Simulator>
       </SimulatorContainer>
       <ControlBar
-        postMsg={worker.postMessage}
-        terminate={worker.terminate}
         modelSaveSubs={modelSaveSubs}
+        initSubs={initSubs}
       />
     </>
   );
 }
+/*
+ *
+ */

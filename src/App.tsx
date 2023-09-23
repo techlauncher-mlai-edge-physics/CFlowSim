@@ -67,10 +67,7 @@ function App(): React.ReactElement {
     const message: IncomingMessage = {
       func: 'init',
       args: [
-        [
-          '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
-          import.meta.url,
-        ],
+        ['/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json', import.meta.url],
         '/model/bno_small_001.onnx',
       ],
     };

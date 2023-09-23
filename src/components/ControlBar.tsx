@@ -1,9 +1,8 @@
 import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import fileDialog from 'file-dialog';
-import { type IncomingMessage } from '../workers/modelWorkerMessage';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -45,18 +44,22 @@ export const RestoreBtn = styled(Button)`
 
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
-  terminate: () => void;
-  postMsg: (data: IncomingMessage) => void;
+  initSubs: Array<(w: Worker) => void>;
 }
 
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
-  const { modelSaveSubs, postMsg } = props;
+  const { modelSaveSubs, initSubs } = props;
+
+  const worker = useRef<Worker>()
 
   useEffect(() => {
     modelSaveSubs.push((sav: ModelSave) => {
       save(sav);
-      console.log('wrote a save');
     });
+
+    initSubs.push((w: Worker) => {
+      worker.current = w;
+    })
 
     // take the json and have the user download it
     function save(sav: ModelSave): void {
@@ -78,7 +81,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
       console.log('wrote a save to ' + filename, sav);
     }
-  }, [modelSaveSubs]);
+  }, [modelSaveSubs, initSubs]);
 
   // take a file and send its contents to the worker
   function load(file: File): void {
@@ -89,7 +92,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       const text: string = reader.result?.toString() ?? '';
       const data = JSON.parse(text) as ModelSave;
       console.log('got', data);
-      postMsg({ func: 'deserialize', args: data });
+      worker.current?.postMessage({ func: 'deserialize', args: data });
     };
     reader.readAsText(file);
   }
@@ -98,7 +101,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     <>
       <SaveBtn
         onClick={() => {
-          postMsg({ func: 'serialize' });
+          worker.current?.postMessage({ func: 'serialize' });
         }}
       >
         Save Model
@@ -121,28 +124,28 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       <ControlBarContainer size="small" direction="horizontal">
         <Button
           onClick={() => {
-            postMsg({ func: 'start' });
+            worker.current?.postMessage({ func: 'start' });
           }}
         >
           Play
         </Button>
         <Button
           onClick={() => {
-            postMsg({ func: 'pause' });
+            worker.current?.postMessage({ func: 'pause' });
           }}
         >
           Pause
         </Button>
         <Button
           onClick={() => {
-            postMsg({ func: 'stop' });
+            worker.current?.postMessage({ func: 'stop' });
           }}
         >
           Stop
         </Button>
         <Button
           onClick={() => {
-            props.terminate();
+            worker.current?.terminate();
           }}
         >
           TERMINATE
