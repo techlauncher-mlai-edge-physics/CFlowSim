@@ -8,7 +8,6 @@ import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
 import {
-  type IncomingMessage,
   type OutgoingMessage,
 } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
@@ -58,7 +57,7 @@ export default function Home(props: IndexProp): React.ReactElement {
   // to distribute the worker messages across different components
   // we utilise an observer pattern where components can subscribe
   // their functions to different message types
-
+  
   const outputSubs: Array<(density: Float32Array) => void> = useMemo(
     () => [],
     [],

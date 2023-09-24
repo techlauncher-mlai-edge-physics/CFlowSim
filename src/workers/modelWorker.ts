@@ -36,8 +36,8 @@ export function onmessage(
           [string, string],
           string,
         ];
-        const url = new URL(path, base);
-        getServiceFromInitCond(this, url, modelurl)
+        if(base!==import.meta.url) throw new Error('import from other url is not supported due to security concerns');
+        getServiceFromInitCond(this, path, modelurl)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: 'init', success: true });
@@ -135,13 +135,13 @@ async function getServiceFromSave(
 // from a file containing initial conditions
 async function getServiceFromInitCond(
   event: DedicatedWorkerGlobalScope,
-  dataPath: URL,
+  dataPath: string,
   modelPath: string,
 ): Promise<ModelService> {
   const modelService = await createModelService(modelPath, [64, 64], 1);
   bindCallback(event, modelService);
   // fetch the data
-  const data = (await fetch(dataPath).then(
+  const data = (await fetch(new URL(dataPath, import.meta.url)).then(
     async (res) => await res.json(),
   )) as number[][][][];
   modelService.loadDataArray(data);
