@@ -49,7 +49,7 @@ interface ControlBarProps {
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
   const { modelSaveSubs, initSubs } = props;
 
-  const worker = useRef<Worker>()
+  const worker = useRef<Worker>();
 
   useEffect(() => {
     modelSaveSubs.push((sav: ModelSave) => {
@@ -58,7 +58,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
     initSubs.push((w: Worker) => {
       worker.current = w;
-    })
+    });
 
     // take the json and have the user download it
     function save(sav: ModelSave): void {
@@ -96,15 +96,21 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     reader.readAsText(file);
   }
 
-  const inputFile = useRef<HTMLInputElement | null> (null)
+  const inputFile = useRef<HTMLInputElement | null>(null);
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    e.persist()
-    load(e.target.files![0])
-  }
+    e.persist();
+    load(e.target.files![0]);
+  };
 
   return (
     <>
-      <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={onChange}/>
+      <input
+        type="file"
+        id="file"
+        ref={inputFile}
+        style={{ display: 'none' }}
+        onChange={onChange}
+      />
       <SaveBtn
         onClick={() => {
           worker.current?.postMessage({ func: 'serialize' });
@@ -114,8 +120,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       </SaveBtn>
       <RestoreBtn
         onClick={() => {
-          inputFile.current?.click()
-
+          inputFile.current?.click();
         }}
       >
         Restore Model

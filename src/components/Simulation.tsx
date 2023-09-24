@@ -149,7 +149,7 @@ function DiffusionPlane(
       tex.needsUpdate = true;
       shaderMat.uniforms.density.value = tex;
     }
-  }, [shaderMat, outputSubs, initSubs ]);
+  }, [shaderMat, outputSubs, initSubs]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
@@ -196,7 +196,7 @@ function DiffusionPlane(
         loc,
         forceDelta,
       },
-    })
+    });
   }, forceInterval);
 
   return (

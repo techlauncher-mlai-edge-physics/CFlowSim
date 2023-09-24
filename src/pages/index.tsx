@@ -7,7 +7,10 @@ import {
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
-import { type IncomingMessage, type OutgoingMessage } from '../workers/modelWorkerMessage';
+import {
+  type IncomingMessage,
+  type OutgoingMessage,
+} from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 
 const SimulatorContainer = styled.div`
@@ -116,10 +119,7 @@ export default function Home(props: IndexProp): React.ReactElement {
           />
         </Simulator>
       </SimulatorContainer>
-      <ControlBar
-        modelSaveSubs={modelSaveSubs}
-        initSubs={initSubs}
-      />
+      <ControlBar modelSaveSubs={modelSaveSubs} initSubs={initSubs} />
     </>
   );
 }
