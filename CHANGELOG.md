@@ -67,6 +67,7 @@
 - **modelService:** fix a error blocks model running
 - **modelService:** fix not restoring the simulation after hit fps limit
 - **modelWorker:** fix a bug that may prevent message passing
+- **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
 - **project:** add/update return type for react funtions
 - **styles:** remove the margin for body element
