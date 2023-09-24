@@ -28,7 +28,7 @@ export default function ChoiceParameter(props: {
   initValue?: string;
 }): React.ReactElement {
   const [value, setValue] = useState(props.values[0]);
-  if (props.initValue) {
+  if (props.initValue !== undefined) {
     setValue(props.initValue);
   }
   // split values into rows of 3
@@ -46,7 +46,8 @@ export default function ChoiceParameter(props: {
               <Button
                 data-value={val}
                 onClick={() => {
-                  setValue(val), props.onChange(val);
+                  setValue(val);
+                  props.onChange(val);
                 }}
                 className={val === value ? 'primary' : 'default'}
               >

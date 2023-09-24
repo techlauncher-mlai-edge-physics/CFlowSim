@@ -70,12 +70,16 @@ const BackButton = styled.button`
 function ShowHideButton(props: {
   isVisible: boolean;
   setVisible: (inp: boolean) => void;
-}) {
+}): React.ReactElement {
   const isVisible = props.isVisible;
   const setVisible = props.setVisible;
 
   return (
-    <BackButton onClick={() => setVisible(!isVisible)}>
+    <BackButton
+      onClick={() => {
+        setVisible(!isVisible);
+      }}
+    >
       {isVisible ? <DoubleLeftOutlined /> : <DoubleRightOutlined />}
     </BackButton>
   );
@@ -116,13 +120,17 @@ export default function ParametersBar(props: {
           <Col className="gutter-row" span={12}>
             <ParameterButton
               label="Easy mode"
-              onClick={() => setControlDifficulty(ControlDifficulty.Easy)}
+              onClick={() => {
+                setControlDifficulty(ControlDifficulty.Easy);
+              }}
             />
           </Col>
           <Col className="gutter-row" span={12}>
             <ParameterButton
               label="Expert mode"
-              onClick={() => setControlDifficulty(ControlDifficulty.Expert)}
+              onClick={() => {
+                setControlDifficulty(ControlDifficulty.Expert);
+              }}
             />
           </Col>
         </Row>
@@ -133,12 +141,12 @@ export default function ParametersBar(props: {
         {/* render the correct pane based on current control difficulty */}
         {
           // add all easy controls here
-          controlDifficulty == ControlDifficulty.Easy && <></>
+          controlDifficulty === ControlDifficulty.Easy && <></>
         }
 
         {
           // add all expert controls here
-          controlDifficulty == ControlDifficulty.Expert && <></>
+          controlDifficulty === ControlDifficulty.Expert && <></>
         }
 
         {/* add controls to be shown to both here */}
