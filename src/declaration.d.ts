@@ -8,13 +8,13 @@ declare module '*.md' {
 }
 
 declare module 'three/addons/capabilities/WebGPU.js' {
-  export default class WebGPU {
+  export default class WebGPU extends object {
     static isAvailable(): boolean;
     static getErrorMessage(): HTMLDivElement;
   }
 }
 declare module 'three/addons/renderers/webgpu/WebGPURenderer.js' {
-  export default class WebGPURenderer {
+  export default class WebGPURenderer extends Renderer {
     constructor(parameters: object);
   }
 }

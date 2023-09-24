@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-09-18
+## Unreleased - 2023-09-24
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -62,10 +62,12 @@
 - **Simulator:** remove bands on renderer
 - **about:** add types declaration, replace <a> with <Link>
 - **component:** use a uniform style for components
+- **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
 - **git:** fix merge conflicts for simulator team
-- **modelService:** fix not restoring the simulation after hit fps limit
 - **modelService:** fix a error blocks model running
+- **modelService:** fix not restoring the simulation after hit fps limit
 - **modelWorker:** fix a bug that may prevent message passing
+- **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
 - **project:** add/update return type for react funtions
 - **styles:** remove the margin for body element

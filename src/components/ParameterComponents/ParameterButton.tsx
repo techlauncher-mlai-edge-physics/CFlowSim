@@ -15,6 +15,6 @@ const ParamButton = styled.button`
 export default function ParameterButton(props: {
   label: string;
   onClick?: () => void;
-}) {
+}): React.ReactElement {
   return <ParamButton onClick={props.onClick}>{props.label}</ParamButton>;
 }

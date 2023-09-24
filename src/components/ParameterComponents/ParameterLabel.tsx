@@ -21,7 +21,7 @@ export default function ParameterLabel(props: {
   tooltip?: string;
 }): React.ReactElement {
   const tooltip: React.ReactElement[] = [];
-  if (props.tooltip !== null) {
+  if (props.tooltip !== undefined) {
     tooltip.push(
       <Styled>
         <Tooltip

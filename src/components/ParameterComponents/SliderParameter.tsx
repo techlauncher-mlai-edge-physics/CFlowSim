@@ -46,7 +46,7 @@ export default function SliderParameter(props: {
   initValue?: number;
 }): React.ReactElement {
   const [value, setValue] = useState(props.lowerBound);
-  if (props.initValue) {
+  if (props.initValue !== undefined) {
     setValue(props.initValue);
   }
 
@@ -59,7 +59,8 @@ export default function SliderParameter(props: {
         defaultValue={value}
         onChange={(e) => {
           const val = parseFloat(e.target.value);
-          setValue(val), props.onChange(val);
+          setValue(val);
+          props.onChange(val);
         }}
       />
     </>
