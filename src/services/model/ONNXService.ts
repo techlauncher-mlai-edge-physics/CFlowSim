@@ -60,7 +60,7 @@ export default class ONNXService implements ModelService {
       batchSize,
       channelSize,
       outputChannelSize,
-      backend
+      backend,
     );
     modelServices.fpsLimit = fpsLimit;
     console.log('createModelService finished');

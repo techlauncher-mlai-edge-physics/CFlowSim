@@ -45,7 +45,7 @@ export class TfjsService implements ModelService {
     await tf.setBackend(backend);
     const service = new TfjsService();
     service.model = await tf.loadGraphModel(modelPath);
-    
+
     service.gridSize = gridSize;
     service.batchSize = batchSize;
     service.channelSize = channelSize;

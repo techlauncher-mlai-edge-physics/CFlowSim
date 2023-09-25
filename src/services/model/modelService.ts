@@ -3,7 +3,6 @@ import { TfjsService } from './TfjsService';
 import ONNXService from './ONNXService';
 import MockModelService from './MockModelService';
 import WebGPU from 'three/addons/capabilities/WebGPU.js';
-import WebGPURenderer from 'three/addons/renderers/webgpu/WebGPURenderer.js';
 
 export interface ModelService {
   startSimulation: () => void;
