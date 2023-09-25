@@ -1,0 +1,30 @@
+{
+    "normalization": {
+        "density":{
+            "needsInitializeNormalization": true,
+            "initNormMethod": "standard",
+            "initNormParams": {
+                "mean": 0,
+                "std": 1
+            },
+            "needsNormalization": true,
+            "normMethod": "constantSinceStart",
+            "normParams": {
+                "method": ["sum"]
+            }
+        },
+        "velocity":{
+            "needsInitializeNormalization": true,
+            "initNormMethod": "standard",
+            "initNormParams": {
+                "mean": 0,
+                "std": 1
+            },
+            "needsNormalization": true,
+            "normMethod": "constantSinceInference",
+            "normParams": {
+                "method": ["square", "sum"]
+            }
+        }
+    }
+}

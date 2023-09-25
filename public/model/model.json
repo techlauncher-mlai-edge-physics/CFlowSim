@@ -1,0 +1,34 @@
+[
+    {
+        "name": "bno_small_navier_stokes_onnx",
+        "path": "/model/bno_small_001.onnx",
+        "problem": "navier_stokes",
+        "backend": "tfjs",
+        "inputlastdim": {
+            "density":0,
+            "velocity":[1,2],
+            "pressure":[3,4]
+        },
+        "outputlastdim": {
+            "density":0,
+            "velocity":[1,2]
+        },
+        "gridsize": 64
+    },
+    {
+        "name": "bno_small_navier_stokes_tfjs",
+        "path": "/model/bno_small_new_web/model.json",
+        "problem": "navier_stokes",
+        "backend": "tfjs",
+        "inputlastdim": {
+            "density":0,
+            "velocity":[1,2],
+            "pressure":[3,4]
+        },
+        "outputlastdim": {
+            "density":0,
+            "velocity":[1,2]
+        },
+        "gridsize": 64
+    }
+]
