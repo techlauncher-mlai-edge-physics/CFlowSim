@@ -32,12 +32,11 @@ export function onmessage(
   switch (data.func) {
     case 'init':
       if (modelService == null) {
-        const [[path, base], modelurl] = data.args as [
-          [string, string],
+        const [dataPath, modelurl] = data.args as [
+          string,
           string,
         ];
-        if(base!==import.meta.url) throw new Error('import from other url is not supported due to security concerns');
-        getServiceFromInitCond(this, path, modelurl)
+        getServiceFromInitCond(this, dataPath, modelurl)
           .then((service) => {
             modelService = service;
             this.postMessage({ type: 'init', success: true });
@@ -141,9 +140,21 @@ async function getServiceFromInitCond(
   const modelService = await createModelService(modelPath, [64, 64], 1);
   bindCallback(event, modelService);
   // fetch the data
-  const data = (await fetch(new URL(dataPath, import.meta.url)).then(
-    async (res) => await res.json(),
-  )) as number[][][][];
+  // check the content type
+  // dataPath should be start with /initData/ and end with .json
+  if (!dataPath.startsWith('/initData/') || !dataPath.endsWith('.json')) {
+    throw new Error(`invalid data path ${dataPath}`);
+  }
+
+  const response = await fetch(dataPath);
+  if (!response.ok) {
+    throw new Error(`failed to fetch data from ${dataPath}`);
+  }
+  const contentType = response.headers.get('content-type');
+  if (contentType != null && !contentType.startsWith('application/json')) {
+    throw new Error(`invalid content type ${contentType}`);
+  }
+  const data = await response.json();
   modelService.loadDataArray(data);
   return modelService;
 }

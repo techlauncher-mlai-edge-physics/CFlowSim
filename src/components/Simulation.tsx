@@ -24,7 +24,7 @@ class SimulationParams {
 interface Renderable {
   params: SimulationParams;
   outputSubs: Array<(density: Float32Array) => void>;
-  initSubs: Array<(w: Worker) => void>;
+  worker: Worker;
   disableInteraction: boolean;
 }
 
@@ -114,18 +114,11 @@ function DiffusionPlane(
   });
 
   // create a worker and assign it the model computations
-  const { outputSubs, initSubs } = props;
-
-  const worker = useRef<Worker>();
+  const { outputSubs, worker } = props;
 
   useEffect(() => {
     outputSubs.push((density: Float32Array) => {
       output(density);
-    });
-    initSubs.push((w: Worker): void => {
-      console.log('starting');
-      w.postMessage({ func: 'start' });
-      worker.current = w;
     });
 
     // SUBSCRIPTIONS
@@ -149,7 +142,7 @@ function DiffusionPlane(
       tex.needsUpdate = true;
       shaderMat.uniforms.density.value = tex;
     }
-  }, [shaderMat, outputSubs, initSubs]);
+  }, [shaderMat, outputSubs]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
@@ -190,7 +183,7 @@ function DiffusionPlane(
     pointMoved = false;
     console.log('[event] Applying force', forceDelta, 'at', loc);
     // call model with param
-    worker.current?.postMessage({
+    worker.postMessage({
       func: 'updateForce',
       args: {
         loc,

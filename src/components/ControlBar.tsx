@@ -43,23 +43,16 @@ export const RestoreBtn = styled(Button)`
 
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
-  initSubs: Array<(w: Worker) => void>;
+  worker: Worker;
 }
 
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
-  const { modelSaveSubs, initSubs } = props;
-
-  const worker = useRef<Worker>();
+  const { modelSaveSubs, worker } = props;
 
   useEffect(() => {
     modelSaveSubs.push((sav: ModelSave) => {
       save(sav);
     });
-
-    initSubs.push((w: Worker) => {
-      worker.current = w;
-    });
-
     // take the json and have the user download it
     function save(sav: ModelSave): void {
       const filename = `${sav.modelType}@${sav.time}`;
@@ -80,7 +73,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
       console.log('wrote a save to ' + filename, sav);
     }
-  }, [modelSaveSubs, initSubs]);
+  }, [modelSaveSubs]);
 
   // take a file and send its contents to the worker
   function load(file: File): void {
@@ -91,7 +84,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       const text: string = reader.result?.toString() ?? '';
       const data = JSON.parse(text) as ModelSave;
       console.log('got', data);
-      worker.current?.postMessage({ func: 'deserialize', args: data });
+      worker.postMessage({ func: 'deserialize', args: data });
     };
     reader.readAsText(file);
   }
@@ -113,7 +106,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       />
       <SaveBtn
         onClick={() => {
-          worker.current?.postMessage({ func: 'serialize' });
+          worker.postMessage({ func: 'serialize' });
         }}
       >
         Save Model
@@ -128,28 +121,28 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       <ControlBarContainer size="small" direction="horizontal">
         <Button
           onClick={() => {
-            worker.current?.postMessage({ func: 'start' });
+            worker.postMessage({ func: 'start' });
           }}
         >
           Play
         </Button>
         <Button
           onClick={() => {
-            worker.current?.postMessage({ func: 'pause' });
+            worker.postMessage({ func: 'pause' });
           }}
         >
           Pause
         </Button>
         <Button
           onClick={() => {
-            worker.current?.postMessage({ func: 'stop' });
+            worker.postMessage({ func: 'stop' });
           }}
         >
           Stop
         </Button>
         <Button
           onClick={() => {
-            worker.current?.terminate();
+            worker.terminate();
           }}
         >
           TERMINATE

@@ -57,12 +57,11 @@ export default function Home(props: IndexProp): React.ReactElement {
   // to distribute the worker messages across different components
   // we utilise an observer pattern where components can subscribe
   // their functions to different message types
-  
   const outputSubs: Array<(density: Float32Array) => void> = useMemo(
     () => [],
     [],
   );
-  const initSubs: Array<(wkr: Worker) => void> = useMemo(() => [], []);
+
   const modelSaveSubs: Array<(save: ModelSave) => void> = useMemo(() => [], []);
 
   // distribute the worker callback
@@ -75,10 +74,6 @@ export default function Home(props: IndexProp): React.ReactElement {
           case 'output':
             for (const x of outputSubs)
               if (data.density !== undefined) x(data.density);
-            break;
-
-          case 'init':
-            for (const x of initSubs) x(worker);
             break;
 
           case 'modelSave':
@@ -96,7 +91,7 @@ export default function Home(props: IndexProp): React.ReactElement {
         console.log(e);
       };
     }
-  }, [worker, initSubs, outputSubs, modelSaveSubs]);
+  }, [worker, outputSubs, modelSaveSubs]);
 
   return (
     <>
@@ -113,15 +108,12 @@ export default function Home(props: IndexProp): React.ReactElement {
             disableInteraction={false}
             position={[0, 0, 0]}
             params={simulationParams}
-            initSubs={initSubs}
+            worker={worker}
             outputSubs={outputSubs}
           />
         </Simulator>
       </SimulatorContainer>
-      <ControlBar modelSaveSubs={modelSaveSubs} initSubs={initSubs} />
+      <ControlBar modelSaveSubs={modelSaveSubs} worker={worker} />
     </>
   );
 }
-/*
- *
- */

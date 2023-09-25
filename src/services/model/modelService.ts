@@ -25,6 +25,14 @@ export async function createModelService(
   outputChannelSize = 3,
   fpsLimit = 15,
 ): Promise<ModelService> {
+  // deal with internal paths
+  console.log(modelPath);
+
+  if (modelPath.startsWith('/model/')) {
+    modelPath = new URL(modelPath, import.meta.url).href;
+  }
+  console.log(modelPath);
+
   // detect the model type
   // TODO: read the model type from the model definition file
   const modelType = modelPath.split('.').pop();
