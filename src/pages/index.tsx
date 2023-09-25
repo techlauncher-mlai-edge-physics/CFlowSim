@@ -7,9 +7,7 @@ import {
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
-import {
-  type OutgoingMessage,
-} from '../workers/modelWorkerMessage';
+import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 
 const SimulatorContainer = styled.div`

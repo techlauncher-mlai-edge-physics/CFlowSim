@@ -32,10 +32,7 @@ export function onmessage(
   switch (data.func) {
     case 'init':
       if (modelService == null) {
-        const [dataPath, modelurl] = data.args as [
-          string,
-          string,
-        ];
+        const [dataPath, modelurl] = data.args as [string, string];
         getServiceFromInitCond(this, dataPath, modelurl)
           .then((service) => {
             modelService = service;
