@@ -2,7 +2,6 @@ import { type Vector2 } from 'three';
 import { TfjsService } from './TfjsService';
 import ONNXService from './ONNXService';
 import MockModelService from './MockModelService';
-import WebGPU from 'three/addons/capabilities/WebGPU.js';
 
 export interface ModelService {
   startSimulation: () => void;
@@ -47,7 +46,7 @@ export async function createModelService(
         channelSize,
         outputChannelSize,
         fpsLimit,
-        WebGPU.isAvailable() ? 'webgpu' : 'webgl',
+        (await isWebGPUAvailable()) ? 'webgpu' : 'webgl',
       );
     case 'onnx':
       return await ONNXService.createService(
@@ -59,7 +58,7 @@ export async function createModelService(
         fpsLimit,
         // ignore the backend setting for now
         // since ONNXRuntime doesn't support all ops we are using in webgpu
-        // WebGPU.isAvailable() ? 'webgpu' : 'wasm',
+        // await isWebGPUAvailable() ? 'webgpu' : 'wasm',
       );
     case 'mock':
       return MockModelService.createService(
@@ -137,4 +136,15 @@ function reshape(
     }
   }
   return result;
+}
+
+// check if webgpu is available
+async function isWebGPUAvailable(): Promise<boolean> {
+  if ('gpu' in navigator) {
+    const gpu = await navigator.gpu.requestAdapter();
+    if (gpu !== null) {
+      return true;
+    }
+  }
+  return false;
 }

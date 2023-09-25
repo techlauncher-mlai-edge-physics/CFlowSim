@@ -104,8 +104,7 @@ export class TfjsService implements ModelService {
       .concat([normalizedPressureX, normalizedPressureY], 3)
       .bufferSync() as tf.TensorBuffer<tf.Rank.R4>;
     normalizedPressureX.dispose();
-
-    this.density.assign(this.density.mul(this.mass));
+    this.density.assign(this.density.maximum(0));
     this.mass = this.density.sum();
     this.mass.print();
   }
