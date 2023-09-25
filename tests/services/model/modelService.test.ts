@@ -1,59 +1,10 @@
 import {
     modelSerialize as ser,
     modelDeserialize as des,
-    type ModelService
 } from "../../../src/services/model/modelService"
 
-import { type Vector2 } from 'three';
+import MockModelService from "../../../src/services/model/MockModelService"
 import { expect, test } from "@jest/globals"
-
-// define a mock model
-class MockModelService implements ModelService
-{
-    inputTensor: Float32Array
-    mass: number;
-    shape: [number,number,number,number]
-
-    constructor (it: Float32Array = new Float32Array(), m: number = 5, shape: [number,number,number,number] = [0,0,0,0]) {
-        this.inputTensor = it
-        this.mass = m
-        this.shape = shape;
-    }
-
-    updateForce(_: Vector2, __: Vector2): void {
-    }
-
-    startSimulation (): void {
-    }
-
-    pauseSimulation(): void {
-
-    }
-
-    bindOutput (_: (data: Float32Array) => void): void {
-    }
-
-    getInputTensor(): Float32Array {
-        return this.inputTensor;
-    }
-
-    loadDataArray(input: number[][][][]): void {
-        this.inputTensor = new Float32Array(input.flat(3))
-    }
-    
-    getMass(): number {
-        return this.mass
-    }
-
-    getInputShape(): [number, number, number, number] {
-        return this.shape
-    }
-
-    setMass(_: number): void {
-    }
-
-    getType(): string { return "mock" }
-}
 
 function buildRandomTensor(shape: [number,number,number,number]): number[][][][]{
     const [d1,d2,d3,d4] = shape
@@ -116,20 +67,6 @@ test("serialise valid model", async() => {
 
 // deserialise tests
 
-async function mockModelFactory(
-  _modelpath: string,
-  _gridisize: [number, number] = [64, 64],
-  _batchsize: number,
-  _channelsize: number,
-  _outputchannelsize: number,
-  _fpslim: number,
-): Promise<ModelService> {
-    // unlike conventional model services, this one doesn't require
-    // a worker to construct so no async await is used
-    // we'll ignore the required awaited promise error in this case
-    return Promise.resolve(new MockModelService()) // eslint-disable-line
-}
-
 test("deserialise valid model", async() => {
     const shape = [5,3,4,2] as [number,number,number,number]
     const shapedTensor: number[][][][] = buildRandomTensor(shape)
@@ -137,12 +74,12 @@ test("deserialise valid model", async() => {
     const save = {
         inputTensor: shapedTensor,
         mass: 8,
-        modelType: "onnx",
-        modelUrl: "/model/bno_small_001.onnx",
+        modelType: "mock",
+        modelUrl: "/model/mymodel.mock",
         time: new Date().toISOString()
     }
 
-    const ms = await des(save, mockModelFactory)
+    const ms = await des(save)
 
     const actual = ms.getInputTensor()
     const expected = shapedTensor.flat(3)

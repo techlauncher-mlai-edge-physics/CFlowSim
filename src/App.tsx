@@ -63,8 +63,13 @@ function App(): React.ReactElement {
       },
     );
     setSimWorker(worker);
+
     const message: IncomingMessage = {
       func: 'init',
+      args: [
+        '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
+        '/model/bno_small_001.onnx',
+      ],
     };
     worker.postMessage(message);
   }, []);

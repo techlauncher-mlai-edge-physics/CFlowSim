@@ -99,6 +99,10 @@ export default class ONNXService implements ModelService {
     outputChannelSize: number,
   ): Promise<void> {
     console.log('init called');
+    const metaUrl = new URL(import.meta.url);
+    console.log('metaUrl', metaUrl);
+    // only keep the path part
+    ort.env.wasm.wasmPaths = metaUrl.protocol + '//' + metaUrl.host + '/';
     this.session = await ort.InferenceSession.create(modelPath, {
       executionProviders: ['wasm'],
       graphOptimizationLevel: 'all',
@@ -391,5 +395,7 @@ export default class ONNXService implements ModelService {
     this.mass = mass;
   }
 
-  getType(): string { return "onnx" }
+  getType(): string {
+    return 'onnx';
+  }
 }

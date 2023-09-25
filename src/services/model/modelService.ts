@@ -1,6 +1,7 @@
 import { type Vector2 } from 'three';
 import { TfjsService } from './TfjsService';
 import ONNXService from './ONNXService';
+import MockModelService from './MockModelService';
 
 export interface ModelService {
   startSimulation: () => void;
@@ -12,7 +13,7 @@ export interface ModelService {
   updateForce: (pos: Vector2, forceDelta: Vector2) => void;
   loadDataArray: (array: number[][][][]) => void;
   setMass: (mass: number) => void;
-  getType: () => string
+  getType: () => string;
 }
 
 // a simple factory function to create a model service
@@ -24,10 +25,18 @@ export async function createModelService(
   outputChannelSize = 3,
   fpsLimit = 15,
 ): Promise<ModelService> {
+  // deal with internal paths
+  console.log(modelPath);
+
+  if (modelPath.startsWith('/model/')) {
+    modelPath = new URL(modelPath, import.meta.url).href;
+  }
+  console.log(modelPath);
+
   // detect the model type
   // TODO: read the model type from the model definition file
   const modelType = modelPath.split('.').pop();
-  console.log(modelType)
+  console.log(modelType);
   switch (modelType) {
     case 'json':
       return await TfjsService.createService(
@@ -47,12 +56,24 @@ export async function createModelService(
         outputChannelSize,
         fpsLimit,
       );
+    case 'mock':
+      return MockModelService.createService(
+        modelPath,
+        gridSize,
+        batchSize,
+        channelSize,
+        outputChannelSize,
+        fpsLimit,
+      );
     default:
       throw new Error('Invalid model type');
   }
 }
 
-export function modelSerialize(url: string, model: ModelService | null): ModelSave | null {
+export function modelSerialize(
+  url: string,
+  model: ModelService | null,
+): ModelSave | null {
   if (model == null) return null;
   // export a JSON as ModelSave
 
@@ -67,24 +88,16 @@ export function modelSerialize(url: string, model: ModelService | null): ModelSa
 
 export async function modelDeserialize(
   input: ModelSave,
-  modelFactory:
-    (modelpath:string,
-     gridsize:[number,number],
-     batchsize:number,
-     channelsize:number,
-     outputchannelsize:number,
-     fpslim:number)
-    => Promise<ModelService> = createModelService
 ): Promise<ModelService> {
   // create a model service from a ModelSave object
   // TODO: read the model type from the model definition file
-  const modelService = await modelFactory(
+  const modelService = await createModelService(
     input.modelUrl,
     [input.inputTensor[0].length, input.inputTensor[0][0].length],
     input.inputTensor.length,
     input.inputTensor[0][0][0].length,
     input.inputTensor[0][0][0].length,
-    15
+    15,
   );
   modelService.loadDataArray(input.inputTensor);
   modelService.setMass(input.mass);

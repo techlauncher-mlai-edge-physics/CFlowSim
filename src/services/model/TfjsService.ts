@@ -233,5 +233,7 @@ export class TfjsService implements ModelService {
     this.model.dispose();
   }
 
-  getType(): string { return "tfjs" }
+  getType(): string {
+    return 'tfjs';
+  }
 }

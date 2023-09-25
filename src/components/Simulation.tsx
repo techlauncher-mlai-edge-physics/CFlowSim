@@ -8,7 +8,6 @@ import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import fragmentShader from '../shaders/frag.glsl';
-import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 
 // WebGPU imports
 import WebGPU from 'three/addons/capabilities/WebGPU.js';
@@ -24,6 +23,7 @@ class SimulationParams {
 // we can pass the parameter object directly
 interface Renderable {
   params: SimulationParams;
+  outputSubs: Array<(density: Float32Array) => void>;
   worker: Worker;
   disableInteraction: boolean;
 }
@@ -114,31 +114,12 @@ function DiffusionPlane(
   });
 
   // create a worker and assign it the model computations
-  const { worker } = props;
+  const { outputSubs, worker } = props;
+
   useEffect(() => {
-    (() => {
-      worker.onmessage = (e) => {
-        const data = e.data as OutgoingMessage;
-
-        switch (data.type) {
-          case 'init':
-            console.log('starting');
-            worker.postMessage({ func: 'start' });
-            break;
-
-          case 'output':
-            if (data.density !== undefined) {
-              output(data.density);
-            }
-            break;
-        }
-      };
-      worker.onerror = (e) => {
-        console.log(e);
-      };
-
-      console.log('worker created', worker);
-    })();
+    outputSubs.push((density: Float32Array) => {
+      output(density);
+    });
 
     // SUBSCRIPTIONS
     // update the density uniforms every time
@@ -161,7 +142,7 @@ function DiffusionPlane(
       tex.needsUpdate = true;
       shaderMat.uniforms.density.value = tex;
     }
-  }, [shaderMat, worker]);
+  }, [shaderMat, outputSubs]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
