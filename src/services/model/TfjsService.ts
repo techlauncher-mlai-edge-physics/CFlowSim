@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { type Vector2 } from 'three';
 import { type ModelService } from './modelService';
+import '@tensorflow/tfjs-backend-webgpu';
 
 export class TfjsService implements ModelService {
   model!: tf.GraphModel;
@@ -19,12 +20,15 @@ export class TfjsService implements ModelService {
   private outputCallback!: (data: Float32Array) => void;
 
   constructor() {
+    this.density = tf.variable(tf.zeros([0, 0, 0, 0]));
+    this.velocity = tf.variable(tf.zeros([0, 0, 0, 0]));
+    this.pressure = tf.buffer([0, 0, 0, 0]);
+    this.mass = tf.variable(tf.zeros([0]));
     this.gridSize = [0, 0];
     this.batchSize = 0;
     this.isPaused = true;
     this.channelSize = 0;
     this.outputChannelSize = 0;
-    this.mass = tf.variable(tf.zeros([0]));
     this.fpsLimit = 30;
     this.curFrameCountbyLastSecond = 0;
   }
@@ -36,15 +40,17 @@ export class TfjsService implements ModelService {
     channelSize = 5,
     outputChannelSize = 3,
     fpsLimit = 15,
+    backend = 'webgl',
   ): Promise<TfjsService> {
+    await tf.setBackend(backend);
     const service = new TfjsService();
     service.model = await tf.loadGraphModel(modelPath);
+    
     service.gridSize = gridSize;
     service.batchSize = batchSize;
     service.channelSize = channelSize;
     service.outputChannelSize = outputChannelSize;
     service.fpsLimit = fpsLimit;
-
     return service;
   }
 
@@ -99,7 +105,7 @@ export class TfjsService implements ModelService {
       .bufferSync() as tf.TensorBuffer<tf.Rank.R4>;
     normalizedPressureX.dispose();
 
-    this.density = this.density.maximum(0);
+    this.density.assign(this.density.mul(this.mass));
     this.mass = this.density.sum();
     this.mass.print();
   }
@@ -151,43 +157,46 @@ export class TfjsService implements ModelService {
     this.curFrameCountbyLastSecond += 1;
     const input = this.getInput();
     const energy = this.velocity.square().sum();
-    const output = this.model?.predict(input) as tf.Tensor<tf.Rank>;
-    // update density, velocity
-    this.density.assign(
-      output?.slice(
-        [0, 0, 0, 0],
-        [this.batchSize, ...this.gridSize, 1],
-      ) as tf.Tensor4D,
-    );
-    this.velocity.assign(
-      output?.slice(
-        [0, 0, 0, 1],
-        [this.batchSize, ...this.gridSize, 2],
-      ) as tf.Tensor4D,
-    );
-    // update density, velocity
-    const newEnergy = this.velocity.square().sum();
-    const energyScale = energy.div(newEnergy);
-    energyScale.print();
+    // const output = this.model?.predict(input);
+    void this.model?.predictAsync(input).then((a) => {
+      const output = a as tf.Tensor<tf.Rank>;
+      // update density, velocity
+      this.density.assign(
+        output?.slice(
+          [0, 0, 0, 0],
+          [this.batchSize, ...this.gridSize, 1],
+        ) as tf.Tensor4D,
+      );
+      this.velocity.assign(
+        output?.slice(
+          [0, 0, 0, 1],
+          [this.batchSize, ...this.gridSize, 2],
+        ) as tf.Tensor4D,
+      );
+      // update density, velocity
+      const newEnergy = this.velocity.square().sum();
+      const energyScale = energy.div(newEnergy);
+      energyScale.print();
 
-    this.velocity = this.velocity.mul(energyScale.sqrt());
-    const newMass = this.density.sum();
-    const massScale = this.mass.div(newMass);
-    this.density = this.density.mul(massScale);
-    massScale.print();
-    newMass.dispose();
-    newEnergy.dispose();
-    energy.dispose();
-    energyScale.dispose();
+      this.velocity.assign(this.velocity.mul(energyScale.sqrt()));
+      const newMass = this.density.sum();
+      const massScale = this.mass.div(newMass);
+      this.density.assign(this.density.mul(massScale));
+      massScale.print();
+      newMass.dispose();
+      newEnergy.dispose();
+      energy.dispose();
+      energyScale.dispose();
 
-    this.outputCallback(output?.dataSync() as Float32Array);
-    output.dispose();
-    // set timeout to 0 to allow other tasks to run, like pause and apply force
-    setTimeout(() => {
-      this.curFrameCountbyLastSecond += 1;
-      console.log(this.curFrameCountbyLastSecond);
-      this.iterate();
-    }, 0);
+      this.outputCallback(output?.dataSync() as Float32Array);
+      output.dispose();
+      // set timeout to 0 to allow other tasks to run, like pause and apply force
+      setTimeout(() => {
+        this.curFrameCountbyLastSecond += 1;
+        console.log(this.curFrameCountbyLastSecond);
+        this.iterate();
+      }, 0);
+    });
   }
 
   updateForce(pos: Vector2, forceDelta: Vector2, batchIndex = 0): void {

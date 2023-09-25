@@ -68,7 +68,7 @@ function App(): React.ReactElement {
       func: 'init',
       args: [
         '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
-        '/model/bno_small_001.onnx',
+        '/model/bno_small_new_web/model.json',
       ],
     };
     worker.postMessage(message);

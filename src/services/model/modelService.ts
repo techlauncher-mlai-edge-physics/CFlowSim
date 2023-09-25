@@ -46,6 +46,7 @@ export async function createModelService(
         channelSize,
         outputChannelSize,
         fpsLimit,
+        'webgpu'
       );
     case 'onnx':
       return await ONNXService.createService(
