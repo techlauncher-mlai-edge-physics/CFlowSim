@@ -69,6 +69,12 @@ export default function Home(props: IndexProp): React.ReactElement {
         const data = e.data as OutgoingMessage;
 
         switch (data.type) {
+          case 'init':
+            console.log('worker initialised');
+            worker.postMessage({
+              type: 'start'
+            });
+            break;
           case 'output':
             for (const x of outputSubs)
               if (data.density !== undefined) x(data.density);
