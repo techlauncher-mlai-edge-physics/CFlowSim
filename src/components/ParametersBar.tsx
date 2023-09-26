@@ -76,11 +76,13 @@ function ShowHideButton(props: {
 
   return (
     <BackButton
+      data-testid="back"
+
       onClick={() => {
         setVisible(!isVisible);
       }}
     >
-      {isVisible ? <DoubleLeftOutlined /> : <DoubleRightOutlined />}
+      {isVisible ? <DoubleLeftOutlined data-testid='leftarrow' /> : <DoubleRightOutlined data-testid='rightarrow' />}
     </BackButton>
   );
 }
@@ -92,8 +94,8 @@ enum ControlDifficulty {
 }
 
 export default function ParametersBar(props: {
-  params: SimulationParams;
-  setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
+  params: SimulationParams | null;
+  setParams: React.Dispatch<React.SetStateAction<SimulationParams>> | null;
 }): React.ReactElement {
   const [isPaneVisible, setPaneVisible] = useState<boolean>(true);
   const space: [SpaceSize, SpaceSize] = ['large', 'small'];
@@ -105,7 +107,7 @@ export default function ParametersBar(props: {
 
   if (isPaneVisible) {
     return (
-      <Container direction="vertical" size={space}>
+      <Container direction="vertical" size={space} data-testid="pane">
         {/* hide button */}
         <Row justify="end">
           <ShowHideButton
@@ -166,7 +168,7 @@ export default function ParametersBar(props: {
 
 // allows the user to change the colour of the simulation
 function SimulationColour(props: {
-  setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
+  setParams: React.Dispatch<React.SetStateAction<SimulationParams>> | null;
 }): React.ReactElement {
   const setParams = props.setParams;
 
@@ -183,13 +185,16 @@ function SimulationColour(props: {
   );
 
   useEffect(() => {
+    if (setParams === null)
+      return
+
     setParams((prev) => {
       return {
         ...prev,
         densityLowColour: new ThreeColor(colorLowString),
         densityHighColour: new ThreeColor(colorHighString),
       };
-    });
+    })
   }, [colorLowString, colorHighString, setParams]);
 
   return (
