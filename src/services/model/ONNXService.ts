@@ -1,4 +1,4 @@
-import * as ort from 'onnxruntime-web';
+import * as ort from 'onnxruntime-web/webgpu';
 import { type Vector2 } from 'three';
 import { type ModelService } from './modelService';
 
@@ -50,6 +50,7 @@ export default class ONNXService implements ModelService {
     channelSize = 5,
     outputChannelSize = 3,
     fpsLimit = 15,
+    backend = 'wasm',
   ): Promise<ONNXService> {
     console.log('createModelService called');
     const modelServices = new ONNXService();
@@ -59,6 +60,7 @@ export default class ONNXService implements ModelService {
       batchSize,
       channelSize,
       outputChannelSize,
+      backend,
     );
     modelServices.fpsLimit = fpsLimit;
     console.log('createModelService finished');
@@ -97,6 +99,7 @@ export default class ONNXService implements ModelService {
     batchSize: number,
     channelSize: number,
     outputChannelSize: number,
+    backend: string,
   ): Promise<void> {
     console.log('init called');
     const metaUrl = new URL(import.meta.url);
@@ -104,7 +107,7 @@ export default class ONNXService implements ModelService {
     // only keep the path part
     ort.env.wasm.wasmPaths = metaUrl.protocol + '//' + metaUrl.host + '/';
     this.session = await ort.InferenceSession.create(modelPath, {
-      executionProviders: ['wasm'],
+      executionProviders: [backend],
       graphOptimizationLevel: 'all',
     });
     console.log('init session created');

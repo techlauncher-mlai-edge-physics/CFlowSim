@@ -46,6 +46,7 @@ export async function createModelService(
         channelSize,
         outputChannelSize,
         fpsLimit,
+        (await isWebGPUAvailable()) ? 'webgpu' : 'webgl',
       );
     case 'onnx':
       return await ONNXService.createService(
@@ -55,6 +56,9 @@ export async function createModelService(
         channelSize,
         outputChannelSize,
         fpsLimit,
+        // ignore the backend setting for now
+        // since ONNXRuntime doesn't support all ops we are using in webgpu
+        // await isWebGPUAvailable() ? 'webgpu' : 'wasm',
       );
     case 'mock':
       return MockModelService.createService(
@@ -132,4 +136,15 @@ function reshape(
     }
   }
   return result;
+}
+
+// check if webgpu is available
+async function isWebGPUAvailable(): Promise<boolean> {
+  if ('gpu' in navigator) {
+    const gpu = await navigator.gpu.requestAdapter();
+    if (gpu !== null) {
+      return true;
+    }
+  }
+  return false;
 }
