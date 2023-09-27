@@ -6,12 +6,13 @@ import {
 } from '@react-three/fiber';
 import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import vertexShader from '../shaders/vert.glsl';
-import fragmentShader from '../shaders/frag.glsl';
 
 // WebGPU imports
 import WebGPU from 'three/addons/capabilities/WebGPU.js';
 import WebGPURenderer from 'three/addons/renderers/webgpu/WebGPURenderer.js';
+
+import vertexShader from '../shaders/vert.glsl';
+import fragmentShader from '../shaders/frag.glsl';
 
 class SimulationParams {
   // render options

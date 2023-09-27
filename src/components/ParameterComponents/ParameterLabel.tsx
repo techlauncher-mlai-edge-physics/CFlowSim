@@ -20,24 +20,23 @@ export default function ParameterLabel(props: {
   title: string;
   tooltip?: string;
 }): React.ReactElement {
-  const tooltip: React.ReactElement[] = [];
-  if (props.tooltip !== undefined) {
-    tooltip.push(
-      <Styled>
-        <Tooltip
-          placement="right"
-          title={props.tooltip}
-          getPopupContainer={(tn) => tn}
-        >
-          <QuestionCircleOutlined />
-        </Tooltip>
-      </Styled>,
-    );
-  }
-
   return (
-    <Lab>
-      {props.title}&nbsp;&nbsp;{tooltip}
+    <Lab key={props.title}>
+      <>
+      {props.title}&nbsp;&nbsp;
+      { props.tooltip !== undefined &&
+        <Styled>
+          <Tooltip
+            placement="right"
+            title={props.tooltip}
+            key={props.tooltip}
+            getPopupContainer={(tn) => tn}
+          >
+            <QuestionCircleOutlined />
+          </Tooltip>
+        </Styled>
+      }
+      </>
     </Lab>
   );
 }

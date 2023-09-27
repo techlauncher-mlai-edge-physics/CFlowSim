@@ -6,7 +6,6 @@ import styled, { ThemeProvider } from 'styled-components';
 import './App.css';
 import Home from './pages';
 import AboutPage from './pages/about';
-import { SimulationParams } from './components/Simulation';
 import { type IncomingMessage } from './workers/modelWorkerMessage';
 
 const Main = styled.main`
@@ -31,9 +30,6 @@ function App(): React.ReactElement {
   // save the current page in state
   // 0 = home(index,simulation) 1 = about
   const [page, setPage] = useState(0);
-  const [simulationParams, setSimulationParams] = useState<SimulationParams>(
-    new SimulationParams(),
-  );
 
   const [lightTheme, setlightTheme] = useState<boolean>(false);
   // TODO: implement auto theme ui switch
@@ -82,11 +78,7 @@ function App(): React.ReactElement {
     case 0:
     default:
       mainPageComponent = (
-        <Home
-          worker={simWorker}
-          simulationParams={simulationParams}
-          setSimulationParams={setSimulationParams}
-        />
+        <Home worker={simWorker} />
       );
       break;
   }

@@ -2,11 +2,11 @@ import ParBar from '../components/ParametersBar';
 import ControlBar from '../components/ControlBar';
 import {
   DiffusionPlane,
-  type SimulationParams,
+  SimulationParams,
 } from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { type OutgoingMessage } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 
@@ -33,13 +33,16 @@ const Simulator = styled(Canvas)`
 `;
 
 interface IndexProp {
-  simulationParams: SimulationParams;
-  setSimulationParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
   worker: Worker;
 }
 
 export default function Home(props: IndexProp): React.ReactElement {
-  const { simulationParams, setSimulationParams, worker } = props;
+  const { worker } = props;
+
+  const [simulationParams, setSimulationParams] = useState<SimulationParams>(
+    new SimulationParams(),
+  );
+
   useEffect(() => {
     const confirmExit = (e: BeforeUnloadEvent): void => {
       console.log('beforeunload event triggered');
