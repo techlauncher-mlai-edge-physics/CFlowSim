@@ -1,5 +1,5 @@
 import { type Vector2 } from 'three';
-import { TfjsService } from './TfjsService';
+import TfjsService from './TfjsService';
 import ONNXService from './ONNXService';
 import MockModelService from './MockModelService';
 

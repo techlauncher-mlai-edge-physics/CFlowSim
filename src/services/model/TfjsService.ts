@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { type Vector2 } from 'three';
 import { type ModelService } from './modelService';
 
-export class TfjsService implements ModelService {
+export default class TfjsService implements ModelService {
   model!: tf.GraphModel;
   gridSize: [number, number];
   batchSize: number;
@@ -37,6 +37,7 @@ export class TfjsService implements ModelService {
     outputChannelSize = 3,
     fpsLimit = 15,
   ): Promise<TfjsService> {
+
     const service = new TfjsService();
     service.model = await tf.loadGraphModel(modelPath);
     service.gridSize = gridSize;
