@@ -44,3 +44,18 @@ test('should hide and show pane', async() => {
     fireEvent.click(backbutton)
     expect(pane).not.toBeInTheDocument()
 })
+
+
+test('back button should retain equal y position between states', async() => {
+    const { getByTestId } = render(<ParametersBar params={null} setParams={null}/>)
+    const backbutton = getByTestId('back')
+
+    expect(backbutton).toBeInTheDocument()
+    const openypos = backbutton.getBoundingClientRect().top
+    fireEvent.click(backbutton)
+    const closedypos = backbutton.getBoundingClientRect().top
+    expect(openypos).toBe(closedypos)
+})
+
+// TODO: there aren't any easy/expert mode specific parameters yet. once they are added
+// we should make sure to test them here
