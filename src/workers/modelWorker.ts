@@ -9,8 +9,10 @@ import {
   // modelDeserialize
 } from '../services/model/modelService';
 import { type IncomingMessage } from './modelWorkerMessage';
+import AutoSaveService from '../services/autoSave/autoSaveService';
 
 let modelService: ModelService | null = null;
+let autoSaveService: AutoSaveService | null = null;
 
 interface UpdateForceArgs {
   loc: Vector2;
@@ -36,6 +38,9 @@ export function onmessage(
         getServiceFromInitCond(this, dataPath, modelurl)
           .then((service) => {
             modelService = service;
+            autoSaveService = new AutoSaveService(1000, 5, () => {
+              return modelSerialize(modelurl, modelService);
+            });
             this.postMessage({ type: 'init', success: true });
           })
           .catch((e) => {
@@ -48,6 +53,7 @@ export function onmessage(
         throw new Error('modelService is null');
       }
       modelService.startSimulation();
+      
       break;
     case 'pause':
       if (modelService == null) {

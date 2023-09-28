@@ -77,8 +77,10 @@ export async function createModelService(
 export function modelSerialize(
   url: string,
   model: ModelService | null,
-): ModelSave | null {
-  if (model == null) return null;
+): ModelSave {
+  if (model == null) {
+    throw new Error('model is null, cannot serialise, check model is initialised or not');
+  }
   // export a JSON as ModelSave
 
   return {
