@@ -7,7 +7,7 @@ import {
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
-import { type OutgoingMessage } from '../workers/modelWorkerMessage';
+import { type IncomingMessage, type OutgoingMessage } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 
 const SimulatorContainer = styled.div`
@@ -72,8 +72,8 @@ export default function Home(props: IndexProp): React.ReactElement {
           case 'init':
             console.log('worker initialised');
             worker.postMessage({
-              type: 'start'
-            });
+              func: 'start'
+            } satisfies IncomingMessage);
             break;
           case 'output':
             for (const x of outputSubs)
