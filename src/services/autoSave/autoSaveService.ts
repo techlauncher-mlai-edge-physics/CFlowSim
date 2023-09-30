@@ -5,63 +5,93 @@ import { type ModelSave } from '../model/modelService';
 
 export default class AutoSaveService {
   saveInterval: number;
-  intervalObj: number | undefined;
+  intervalObj: ReturnType<typeof setInterval> | undefined;
   maxAutoSaves: number;
   getModelSerialized: () => ModelSave;
-  dbRequest: IDBOpenDBRequest;
   db!: IDBDatabase;
   constructor(
-    saveInterval = 1000,
-    maxAutoSaves = 5,
     getModelSerialized: () => ModelSave,
+    saveInterval = 10000,
+    maxAutoSaves = 5,
   ) {
     this.saveInterval = saveInterval;
     this.maxAutoSaves = maxAutoSaves;
     this.getModelSerialized = getModelSerialized;
-    this.dbRequest = indexedDB.open('modelAutoSave', 1);
-    this.dbRequest.onupgradeneeded = () => {
-      const db = this.dbRequest.result;
-      db.createObjectStore('modelSave');
+    const dbRequest = indexedDB.open('modelAutoSave', 1);
+    dbRequest.onupgradeneeded = () => {
+      const db = dbRequest.result;
       this.db = db;
+      const objectStore = this.db.createObjectStore('modelSave', {
+        autoIncrement: true,
+      });
+      objectStore.transaction.oncomplete = () => {
+        console.log('Successfully created object store');
+      };
+    };
+    dbRequest.onsuccess = () => {
+      console.log('Successfully opened IndexedDB');
+      this.db = dbRequest.result;
+
       this.startAutoSave();
     };
-    this.dbRequest.onsuccess = () => {
-      this.db = this.dbRequest.result;
-      this.startAutoSave();
-    };
-    this.dbRequest.onerror = () => {
+    dbRequest.onerror = () => {
       throw new Error('Failed to open IndexedDB');
     };
   }
 
   startAutoSave(): void {
+    if (this.intervalObj != null) {
+      throw new Error('intervalObj is not null');
+    }
     this.intervalObj = setInterval(() => {
       const serialisationData = this.getModelSerialized();
       const modelSaveString = JSON.stringify(serialisationData);
-      const transaction = this.db.transaction('modelSave', 'readwrite');
+      console.log('saving model');
+      const transaction = this.db.transaction(['modelSave'], 'readwrite');
+      transaction.onerror = () => {
+        throw new Error('Failed to open transaction');
+      };
       const objectStore = transaction.objectStore('modelSave');
-      const newKey = Date.now();
-      const request = objectStore.put(modelSaveString, newKey);
+      const request = objectStore.add(modelSaveString);
+      request.onsuccess = () => {
+        console.log('successfully saved model');
+      };
       request.onerror = () => {
         throw new Error('Failed to save model');
       };
-      // remove old auto saves if there are more than maxAutoSaves
-      const objectStoreRequest = objectStore.getAllKeys();
-      objectStoreRequest.onsuccess = (event) => {
-        const keys = (event.target as IDBRequest).result as number[];
-        if (keys.length > this.maxAutoSaves) {
-          // remove the oldest auto save
-          const oldestKey = Math.min(...keys);
-          const deleteRequest = objectStore.delete(oldestKey.toString());
-          deleteRequest.onerror = () => {
-            throw new Error('Failed to delete oldest auto save');
-          };
+      const request2 = objectStore.count();
+      request2.onsuccess = () => {
+        let count = request2.result;
+        console.log('count', count);
+        if (count > this.maxAutoSaves) {
+          console.log('deleting old model');
+          // use while loop to delete all but the last 5 models
+          while (count > this.maxAutoSaves) {
+            const request3 = objectStore.delete(count - this.maxAutoSaves);
+            request3.onsuccess = () => {
+              console.log('successfully deleted model');
+            };
+            request3.onerror = () => {
+              throw new Error('Failed to delete model');
+            };
+            count -= 1;
+          }
         }
+      };
+      request2.onerror = () => {
+        throw new Error('Failed to count models');
       };
     }, this.saveInterval);
   }
 
   pauseAutoSave(): void {
-    clearInterval(this.intervalObj);
+    setTimeout(() => {
+      console.log('pausing auto save');
+      clearInterval(this.intervalObj);
+    }, 0);
+  }
+
+  close(): void {
+    this.db.close();
   }
 }

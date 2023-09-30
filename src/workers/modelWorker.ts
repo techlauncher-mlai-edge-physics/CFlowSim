@@ -38,7 +38,7 @@ export function onmessage(
         getServiceFromInitCond(this, dataPath, modelurl)
           .then((service) => {
             modelService = service;
-            autoSaveService = new AutoSaveService(1000, 5, () => {
+            autoSaveService = new AutoSaveService(() => {
               return modelSerialize(modelurl, modelService);
             });
             this.postMessage({ type: 'init', success: true });
@@ -53,13 +53,18 @@ export function onmessage(
         throw new Error('modelService is null');
       }
       modelService.startSimulation();
-      
+      if (autoSaveService != null) {
+        autoSaveService.startAutoSave();
+      }
       break;
     case 'pause':
       if (modelService == null) {
         throw new Error('modelService is null');
       }
       modelService.pauseSimulation();
+      if (autoSaveService != null) {
+        autoSaveService.pauseAutoSave();
+      }
       break;
     case 'updateForce':
       updateForce(data.args as UpdateForceArgs);
