@@ -54,7 +54,19 @@ export function onmessage(
       }
       modelService.startSimulation();
       if (autoSaveService != null) {
-        autoSaveService.startAutoSave();
+        try {
+          autoSaveService.startAutoSave();
+        } catch (e) {
+          // if error is not ready, retry in 1 second
+          const error = e as Error;
+          if (error.message === 'IndexedDB not ready') {
+            setTimeout(() => {
+              autoSaveService?.startAutoSave();
+            }, 500);
+          } else {
+            throw e;
+          }
+        }
       }
       break;
     case 'pause':

@@ -64,6 +64,12 @@ function App(): React.ReactElement {
     );
     setSimWorker(worker);
 
+    return () => {
+      worker.terminate();
+    }
+  }, []);
+
+  useEffect(() => {
     const message: IncomingMessage = {
       func: 'init',
       args: [
@@ -71,8 +77,9 @@ function App(): React.ReactElement {
         '/model/bno_small_new_web/model.json',
       ],
     };
-    worker.postMessage(message);
-  }, []);
+    if (simWorker === null) return;
+    simWorker.postMessage(message);
+  }, [simWorker]);
 
   let mainPageComponent;
   switch (page) {
