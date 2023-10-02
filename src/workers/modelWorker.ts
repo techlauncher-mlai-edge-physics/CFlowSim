@@ -13,6 +13,7 @@ import AutoSaveService from '../services/autoSave/autoSaveService';
 
 let modelService: ModelService | null = null;
 let autoSaveService: AutoSaveService | null = null;
+let modelUrl: string = '';
 
 interface UpdateForceArgs {
   loc: Vector2;
@@ -35,6 +36,7 @@ export function onmessage(
     case 'init':
       if (modelService == null) {
         const [dataPath, modelurl] = data.args as [string, string];
+        modelUrl = modelurl;
         getServiceFromInitCond(this, dataPath, modelurl)
           .then((service) => {
             modelService = service;
@@ -97,13 +99,12 @@ export function onmessage(
       });
       break;
     case 'deserialize':
-      if (modelService == null) throw new Error('modelService is null');
-      modelService.pauseSimulation();
+      // if (modelService == null) throw new Error('modelService is null');
+      // modelService.pauseSimulation();
       getServiceFromSave(this, data.args as ModelSave)
         .then((ms) => {
           modelService = ms;
           console.log('successfully restored model service with', ms);
-          modelService.startSimulation();
           this.postMessage({ type: 'deserialize', success: true });
         })
         .catch((e) => {
@@ -129,7 +130,7 @@ export function workerSerialize(): ModelSave {
   if (modelService == null)
     throw new Error('modelService is null, cannot serialise');
   // TODO: implement a way to change the model path
-  const modelPath = '/model/bno_small_001.onnx';
+  const modelPath = modelUrl;
   const save = modelSerialize(modelPath, modelService);
   if (save == null)
     throw new Error('something went wrong during model serialisation');
@@ -143,6 +144,7 @@ async function getServiceFromSave(
   save: ModelSave,
 ): Promise<ModelService> {
   const modelService = await createModelService(save.modelUrl, [64, 64], 1);
+  modelUrl = save.modelUrl;
   bindCallback(event, modelService);
   // restore previous state
   modelService.loadDataArray(save.inputTensor);
