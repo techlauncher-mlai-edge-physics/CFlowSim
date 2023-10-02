@@ -18,7 +18,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
     "@react-three/drei": "^9.83.3",
-    "@react-three/fiber": "^8.13.7",
+    "@react-three/fiber": "^8.14.4",
     "@tensorflow/tfjs": "^4.11.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.11.0",
     "@vitejs/plugin-react": "^4.1.0",
