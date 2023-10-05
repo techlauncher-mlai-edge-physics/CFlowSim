@@ -7,8 +7,12 @@ import {
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useEffect, useMemo } from 'react';
-import { type IncomingMessage, type OutgoingMessage } from '../workers/modelWorkerMessage';
+import {
+  type IncomingMessage,
+  type OutgoingMessage,
+} from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
+import { OrbitControls } from '@react-three/drei';
 
 const SimulatorContainer = styled.div`
   position: relative;
@@ -72,7 +76,7 @@ export default function Home(props: IndexProp): React.ReactElement {
           case 'init':
             console.log('worker initialised');
             worker.postMessage({
-              func: 'start'
+              func: 'start',
             } satisfies IncomingMessage);
             break;
           case 'output':
@@ -108,8 +112,12 @@ export default function Home(props: IndexProp): React.ReactElement {
           }}
         >
           <ambientLight />
+          <OrbitControls
+            target={[0, 0, 0]}
+            enabled={simulationParams.isCameraControlMode}
+          ></OrbitControls>
           <DiffusionPlane
-            disableInteraction={false}
+            disableInteraction={simulationParams.isCameraControlMode}
             position={[0, 0, 0]}
             params={simulationParams}
             worker={worker}

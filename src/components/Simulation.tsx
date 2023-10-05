@@ -7,6 +7,7 @@ import {
 import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
+import vertexShaderForHeightMap from '../shaders/vert_height.glsl';
 import fragmentShader from '../shaders/frag.glsl';
 
 // WebGPU imports
@@ -17,6 +18,9 @@ class SimulationParams {
   // render options
   densityLowColour: t.Color = new t.Color('blue');
   densityHighColour: t.Color = new t.Color('red');
+
+  renderHeightMap: boolean = false;
+  isCameraControlMode: boolean = false;
 }
 
 // we will store the parameters in an interface explicitly so
@@ -79,8 +83,15 @@ function DiffusionPlane(
   // create the shader
   const shaderMat = useMemo(() => {
     const shaderMat = new t.ShaderMaterial();
-    shaderMat.vertexShader = applyConfigToShader(vertexShader as string);
+    if (props.params.renderHeightMap) {
+      shaderMat.vertexShader = applyConfigToShader(
+        vertexShaderForHeightMap as string,
+      );
+    } else {
+      shaderMat.vertexShader = applyConfigToShader(vertexShader as string);
+    }
     shaderMat.fragmentShader = applyConfigToShader(fragmentShader as string);
+    shaderMat.side = t.DoubleSide;
 
     // provide a dummy density field first
 
@@ -103,13 +114,19 @@ function DiffusionPlane(
     };
 
     return shaderMat;
-  }, [props.params.densityHighColour, props.params.densityLowColour]);
+  }, [
+    props.params.densityHighColour,
+    props.params.densityLowColour,
+    props.params.renderHeightMap,
+  ]);
 
   // HOOKS
 
   useFrame((state) => {
+    if (disableInteraction) return;
     // potential performance issue?
     state.camera.setRotationFromAxisAngle(new t.Vector3(1, 0, 0), -Math.PI / 2);
+    state.camera.position.set(0, 10, 0);
     ref.current.lookAt(0, 99, 0);
   });
 
@@ -125,6 +142,8 @@ function DiffusionPlane(
     // update the density uniforms every time
     // output is received
     function output(data: Float32Array): void {
+      // create a copy to prevent modifying original data
+      data = data.slice(0);
       const param: Record<string, number> = {
         densityRangeHigh: parseFloat(renderConfig.densityRangeHigh),
         densityRangeLow: parseFloat(renderConfig.densityRangeLow),
