@@ -8,7 +8,7 @@ import { CaretRightOutlined, PauseOutlined, } from '@ant-design/icons';
 export const ControlBarContainer = styled(Space)`
   position: absolute;
   bottom: 4rem;
-  right: 30rem;
+  right: 40%;
   z-index: 100;
   display: flex;
   gap: 1.8rem;
