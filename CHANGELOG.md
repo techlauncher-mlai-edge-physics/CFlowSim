@@ -75,6 +75,7 @@
 - **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
 - **project:** add/update return type for react funtions
+- **style:** fix style issue in index page & about page ([#163](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/163))
 - **styles:** remove the margin for body element
 - **styles:** declare css module
 
