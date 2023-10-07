@@ -17,7 +17,7 @@ import RestorePopup from '../components/RestoreComponents/restorePopUp';
 const SimulatorContainer = styled.div`
   position: relative;
   left: 21rem;
-  top: 6rem;
+  top: 1rem;
   width: calc(100vw - 22rem);
   height: calc(100vh - 7rem);
   z-index: 0;
