@@ -1,6 +1,19 @@
-import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
+import {
+  DoubleRightOutlined,
+  DoubleLeftOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
 import styled from 'styled-components';
-import { ColorPicker, Col, Space, Row, Card } from 'antd';
+import {
+  ColorPicker,
+  Col,
+  Space,
+  Row,
+  Card,
+  Dropdown,
+  message,
+  type MenuProps,
+} from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import type { Color } from 'antd/es/color-picker';
 import { Color as ThreeColor } from 'three';
@@ -51,7 +64,7 @@ const Title = styled.span`
 const Category = styled(Card)`
   font-family: 'Roboto', sans-serif;
   background-color: #797979;
-  text-align: 'left';
+  text-align: left;
   font-size: 1rem;
   color: #ffffff;
 `;
@@ -65,6 +78,12 @@ const BackButton = styled.button`
   font-size: 16px;
   border: none;
   cursor: pointer;
+`;
+
+const DropdownMenu = styled.a`
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  color: #000000;
 `;
 
 function ShowHideButton(props: {
@@ -90,6 +109,25 @@ enum ControlDifficulty {
   Easy,
   Expert,
 }
+
+const onClick: MenuProps['onClick'] = ({ key }) => {
+  void message.info(`Click on item ${key}`);
+};
+
+const items: MenuProps['items'] = [
+  {
+    label: '1st menu item',
+    key: '1',
+  },
+  {
+    label: '2nd menu item',
+    key: '2',
+  },
+  {
+    label: '3rd menu item',
+    key: '3',
+  },
+];
 
 export default function ParametersBar(props: {
   params: SimulationParams;
@@ -135,9 +173,6 @@ export default function ParametersBar(props: {
           </Col>
         </Row>
 
-        <Row />
-        <Row />
-
         {/* render the correct pane based on current control difficulty */}
         {
           // add all easy controls here
@@ -148,9 +183,36 @@ export default function ParametersBar(props: {
           // add all expert controls here
           controlDifficulty === ControlDifficulty.Expert && <></>
         }
-
         {/* add controls to be shown to both here */}
         <SimulationColour setParams={props.setParams} />
+
+        {/* choose initial model */}
+        <Dropdown menu={{ items, onClick }}>
+          <DropdownMenu
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Space>
+              Choose Model
+              <DownOutlined />
+            </Space>
+          </DropdownMenu>
+        </Dropdown>
+
+        {/* choose initial state */}
+        <Dropdown menu={{ items, onClick }}>
+          <DropdownMenu
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Space>
+              Choose Initial State
+              <DownOutlined />
+            </Space>
+          </DropdownMenu>
+        </Dropdown>
       </Container>
     );
   } else {
