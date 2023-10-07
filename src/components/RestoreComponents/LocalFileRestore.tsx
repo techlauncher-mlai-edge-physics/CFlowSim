@@ -10,10 +10,9 @@ import { type RcFile } from 'antd/es/upload';
 const { Dragger } = Upload;
 
 const DragandDrop = styled.div`
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   z-index: 100;
-  transform: translate(5%, 5%);
 `;
 
 export default function LocalFileRestore(

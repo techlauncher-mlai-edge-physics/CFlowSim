@@ -1,7 +1,7 @@
 import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
-import { useEffect, useRef, type ChangeEvent } from 'react';
+import { useEffect } from 'react';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -44,10 +44,11 @@ export const RestoreBtn = styled(Button)`
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
   worker: Worker;
+  setRestorePopupVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
-  const { modelSaveSubs, worker } = props;
+  const { modelSaveSubs, worker, setRestorePopupVisible } = props;
 
   useEffect(() => {
     modelSaveSubs.push((sav: ModelSave) => {
@@ -89,7 +90,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       <RestoreBtn
         onClick={() => {
           // create a RestorePopup component to handle input
-          
+          setRestorePopupVisible(true);
         }}
       >
         Restore Model

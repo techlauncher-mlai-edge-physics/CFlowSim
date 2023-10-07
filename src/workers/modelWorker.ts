@@ -98,10 +98,11 @@ export function onmessage(
         save: workerSerialize(),
       });
       break;
-    case 'deserialize':
+    case 'deserialize': {
       // if (modelService == null) throw new Error('modelService is null');
       // modelService.pauseSimulation();
-      getServiceFromSave(this, data.args as ModelSave)
+      const modelSave = JSON.parse(data.args as string) as ModelSave;
+      getServiceFromSave(this, modelSave)
         .then((ms) => {
           modelService = ms;
           console.log('successfully restored model service with', ms);
@@ -111,6 +112,7 @@ export function onmessage(
           throw new Error(`something went wrong with deserialisation ${e}`);
         });
       break;
+    }
     default:
       throw new Error(`unknown func ${data.func}`);
   }
@@ -143,6 +145,7 @@ async function getServiceFromSave(
   event: DedicatedWorkerGlobalScope,
   save: ModelSave,
 ): Promise<ModelService> {
+  console.log('restoring model service from', save);
   const modelService = await createModelService(save.modelUrl, [64, 64], 1);
   modelUrl = save.modelUrl;
   bindCallback(event, modelService);
