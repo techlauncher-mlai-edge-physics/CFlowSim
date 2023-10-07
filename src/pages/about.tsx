@@ -2,7 +2,8 @@ import aboutContent from '../../README.md';
 import styled from 'styled-components';
 
 const PageWrapper = styled.div`
-  background-color: ${(props) => ((props.theme.light as boolean) ? '#ffffff' : '#707070')};
+  background-color: ${(props) =>
+    (props.theme.light as boolean) ? '#ffffff' : '#707070'};
 `;
 
 const Content = styled.div`
@@ -29,11 +30,11 @@ const Content = styled.div`
 export default function AboutPage(): React.ReactElement {
   return (
     <>
-        <PageWrapper>
-      <Content>
-        <div dangerouslySetInnerHTML={{ __html: aboutContent as string }} />
-      </Content>
-        </PageWrapper>
+      <PageWrapper>
+        <Content>
+          <div dangerouslySetInnerHTML={{ __html: aboutContent as string }} />
+        </Content>
+      </PageWrapper>
     </>
   );
   // return aboutContent as React.ReactElement
