@@ -6,18 +6,19 @@ import {
 } from '../components/Simulation';
 import { Canvas } from '@react-three/fiber';
 import styled from 'styled-components';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   type IncomingMessage,
   type OutgoingMessage,
 } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 import { OrbitControls } from '@react-three/drei';
+import RestorePopup from '../components/RestoreComponents/restorePopUp';
 
 const SimulatorContainer = styled.div`
   position: relative;
   left: 21rem;
-  top: 6rem;
+  top: 1rem;
   width: calc(100vw - 22rem);
   height: calc(100vh - 7rem);
   z-index: 0;
@@ -65,6 +66,7 @@ export default function Home(props: IndexProp): React.ReactElement {
   );
 
   const modelSaveSubs: Array<(save: ModelSave) => void> = useMemo(() => [], []);
+  const [restorePopupVisible, setRestorePopupVisible] = useState(false);
 
   // distribute the worker callback
   useEffect(() => {
@@ -125,7 +127,12 @@ export default function Home(props: IndexProp): React.ReactElement {
           />
         </Simulator>
       </SimulatorContainer>
-      <ControlBar modelSaveSubs={modelSaveSubs} worker={worker} />
+      {restorePopupVisible && <RestorePopup worker={worker} />}
+      <ControlBar
+        modelSaveSubs={modelSaveSubs}
+        worker={worker}
+        setRestorePopupVisible={setRestorePopupVisible}
+      />
     </>
   );
 }
