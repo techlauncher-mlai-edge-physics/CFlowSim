@@ -122,7 +122,12 @@ export default function Home(props: IndexProp): React.ReactElement {
           />
         </Simulator>
       </SimulatorContainer>
-      {restorePopupVisible && <RestorePopup worker={worker} />}
+      {restorePopupVisible && (
+        <RestorePopup
+          worker={worker}
+          setRestorePopupVisible={setRestorePopupVisible}
+        />
+      )}
       <ControlBar
         modelSaveSubs={modelSaveSubs}
         worker={worker}

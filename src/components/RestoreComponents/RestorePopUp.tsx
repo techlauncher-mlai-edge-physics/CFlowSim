@@ -78,6 +78,7 @@ const MenuContainer = styled(Menu)`
 `;
 
 export default function RestorePopup(props: RestoreProps): React.ReactElement {
+  const setRestorePopupVisible = props.setRestorePopupVisible;
   const [selectedItem, setSelectedItem] = useState('');
 
   const handleItemClick = (item: {
@@ -98,12 +99,7 @@ export default function RestorePopup(props: RestoreProps): React.ReactElement {
   };
 
   const handleCloseClick = (): void => {
-    // handle close button click here
-    // remove the popup from the DOM
-    const popup = document.getElementById('restore-popup');
-    if (popup !== null) {
-      popup.remove();
-    }
+    setRestorePopupVisible(false);
   };
 
   return (
