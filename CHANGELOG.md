@@ -63,19 +63,20 @@
 ### Fix
 - **NavBar:** change the position of the logo
 - **Simulator:** hotfix for previous commit
-- **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
 - **Simulator:** remove bands on renderer
+- **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
 - **about:** add types declaration, replace <a> with <Link>
 - **component:** use a uniform style for components
 - **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
 - **git:** fix merge conflicts for simulator team
 - **index:** restore auto start function ([#135](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/135))
-- **modelService:** fix not restoring the simulation after hit fps limit
 - **modelService:** fix a error blocks model running
+- **modelService:** fix not restoring the simulation after hit fps limit
 - **modelWorker:** fix a bug that may prevent message passing
 - **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
 - **project:** add/update return type for react funtions
+- **restorePopup:** fix the issue that it can only show once ([#168](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/168))
 - **style:** fix style issue in index page & about page ([#163](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/163))
 - **styles:** remove the margin for body element
 - **styles:** declare css module
