@@ -51,30 +51,37 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
   const { modelSaveSubs, worker, setRestorePopupVisible } = props;
 
   useEffect(() => {
-    modelSaveSubs.push((sav: ModelSave) => {
-      save(sav);
-    });
-    // take the json and have the user download it
-    function save(sav: ModelSave): void {
-      const filename = `${sav.modelType}@${sav.time}`;
-      const dat = JSON.stringify(sav);
-      const blob = new Blob([dat], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-
-      link.click();
-
-      URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-
-      console.log('wrote a save to ' + filename, sav);
+    if (!modelSaveSubs.includes(save)) {
+      modelSaveSubs.push(save);
     }
+    return () => {
+      const index = modelSaveSubs.findIndex((value) => value === save);
+      if (index !== -1) {
+        modelSaveSubs.splice(index, 1);
+      }
+    };
   }, [modelSaveSubs]);
+
+  // take the json and have the user download it
+  function save(sav: ModelSave): void {
+    const filename = `${sav.modelType}@${sav.time}.json`;
+    const dat = JSON.stringify(sav);
+    const blob = new Blob([dat], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+
+    console.log('wrote a save to ' + filename, sav);
+  }
 
   // take a file and send its contents to the worker
 
