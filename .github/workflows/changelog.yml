@@ -24,6 +24,8 @@ jobs:
         run: go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
       - name: Generate changelog
         run: git-chglog --next-tag 'Unreleased' --output CHANGELOG.md
+      - name: Pull changes
+        run: git pull origin main --rebase
       - name: Commit changelog
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -31,4 +33,3 @@ jobs:
           commit_options: '--no-verify --signoff'
           file_pattern: CHANGELOG.md
           push_options: --force
-          
