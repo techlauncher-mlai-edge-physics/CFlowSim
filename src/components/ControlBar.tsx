@@ -81,57 +81,45 @@ export const ControlBarBtnWithAttr = styled(ControlBarBtn)`
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
   worker: Worker;
+  setRestorePopupVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ControlBar(props: ControlBarProps): React.ReactElement {
-  const { modelSaveSubs, worker } = props;
+  const { modelSaveSubs, worker, setRestorePopupVisible } = props;
 
   useEffect(() => {
-    modelSaveSubs.push((sav: ModelSave) => {
-      save(sav);
-    });
-    // take the json and have the user download it
-    function save(sav: ModelSave): void {
-      const filename = `${sav.modelType}@${sav.time}`;
-      const dat = JSON.stringify(sav);
-      const blob = new Blob([dat], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-
-      link.click();
-
-      URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-
-      console.log('wrote a save to ' + filename, sav);
+    if (!modelSaveSubs.includes(save)) {
+      modelSaveSubs.push(save);
     }
+    return () => {
+      const index = modelSaveSubs.findIndex((value) => value === save);
+      if (index !== -1) {
+        modelSaveSubs.splice(index, 1);
+      }
+    };
   }, [modelSaveSubs]);
 
-  // take a file and send its contents to the worker
-  function load(file: File): void {
-    console.log('reading file ', file);
+  // take the json and have the user download it
+  function save(sav: ModelSave): void {
+    const filename = `${sav.modelType}@${sav.time}.json`;
+    const dat = JSON.stringify(sav);
+    const blob = new Blob([dat], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text: string = reader.result?.toString() ?? '';
-      const data = JSON.parse(text) as ModelSave;
-      console.log('got', data);
-      worker.postMessage({ func: 'deserialize', args: data });
-    };
-    reader.readAsText(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+
+    console.log('wrote a save to ' + filename, sav);
   }
-
-  const inputFile = useRef<HTMLInputElement | null>(null);
-  const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    e.persist();
-    load(e.target.files![0]);
-  };
-
+  
   const [isPlaying, setIsPlaying] = useState(true);
   const handleIconClick = (): void => {
     if (isPlaying) {
@@ -144,13 +132,6 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
   return (
     <>
-      <input
-        type="file"
-        id="file"
-        ref={inputFile}
-        style={{ display: 'none' }}
-        onChange={onChange}
-      />
       <SaveBtn
         onClick={() => {
           worker.postMessage({ func: 'serialize' });
@@ -160,7 +141,8 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       </SaveBtn>
       <RestoreBtn
         onClick={() => {
-          inputFile.current?.click();
+          // create a RestorePopup component to handle input
+          setRestorePopupVisible(true);
         }}
       >
         Restore Model
