@@ -2,7 +2,7 @@ import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
 import type React from 'react';
-import { useEffect, useRef, type ChangeEvent, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 
 export const ControlBarContainer = styled(Space)`
