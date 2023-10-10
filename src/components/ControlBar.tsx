@@ -2,8 +2,8 @@ import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
 import type React from 'react';
-import {useEffect, useRef, type ChangeEvent, useState} from 'react';
-import { CaretRightOutlined, PauseOutlined, } from '@ant-design/icons';
+import { useEffect, useRef, type ChangeEvent, useState } from 'react';
+import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -12,7 +12,7 @@ export const ControlBarContainer = styled(Space)`
   z-index: 100;
   display: flex;
   gap: 1.8rem;
-  background-color: #C5C5C5;
+  background-color: #c5c5c5;
   padding-top: 0.5rem;
   padding-right: 1.8rem;
   padding-bottom: 0.5rem;
@@ -66,18 +66,17 @@ export const ControlBarBtn = styled(Button)`
 `;
 
 export const ControlBarBtnWithAttr = styled(ControlBarBtn)`
-    &[data-icon="square"]::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 40%; 
-        height: 40%; 
-        background-color: white;
-        transform: translate(-50%, -50%);
-    }
+  &[data-icon='square']::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    height: 40%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+  }
 `;
-
 
 interface ControlBarProps {
   modelSaveSubs: Array<(save: ModelSave) => void>;
@@ -141,48 +140,52 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       worker.postMessage({ func: 'start' });
     }
     setIsPlaying(!isPlaying);
-
   };
 
-
   return (
-      <>
-        <input
-            type="file"
-            id="file"
-            ref={inputFile}
-            style={{display: 'none'}}
-            onChange={onChange}
-        />
-        <SaveBtn
-            onClick={() => {
-              worker.postMessage({func: 'serialize'});
-            }}
-        >
-          Save Model
-        </SaveBtn>
-        <RestoreBtn
-            onClick={() => {
-              inputFile.current?.click();
-            }}
-        >
-          Restore Model
-        </RestoreBtn>
-        <ControlBarContainer size="small" direction="horizontal">
-          <ControlBarBtn
-              onClick={handleIconClick}>
-                {isPlaying ?
-                    <PauseOutlined style={{ color: 'white' }}/>  :
-                    <CaretRightOutlined style={{ color: 'white', fontSize: '1.4em', marginLeft: '0.15em' }}/>}
-          </ControlBarBtn>
-            <ControlBarBtnWithAttr
-                data-icon="square"
-                onClick={() => {
-                    worker.postMessage({ func: 'stop' });
-                }}
+    <>
+      <input
+        type="file"
+        id="file"
+        ref={inputFile}
+        style={{ display: 'none' }}
+        onChange={onChange}
+      />
+      <SaveBtn
+        onClick={() => {
+          worker.postMessage({ func: 'serialize' });
+        }}
+      >
+        Save Model
+      </SaveBtn>
+      <RestoreBtn
+        onClick={() => {
+          inputFile.current?.click();
+        }}
+      >
+        Restore Model
+      </RestoreBtn>
+      <ControlBarContainer size="small" direction="horizontal">
+        <ControlBarBtn onClick={handleIconClick}>
+          {isPlaying ? (
+            <PauseOutlined style={{ color: 'white' }} />
+          ) : (
+            <CaretRightOutlined
+              style={{
+                color: 'white',
+                fontSize: '1.4em',
+                marginLeft: '0.15em',
+              }}
             />
-        </ControlBarContainer>
-      </>
+          )}
+        </ControlBarBtn>
+        <ControlBarBtnWithAttr
+          data-icon="square"
+          onClick={() => {
+            worker.postMessage({ func: 'stop' });
+          }}
+        />
+      </ControlBarContainer>
+    </>
   );
-
 }
