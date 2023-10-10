@@ -61,10 +61,11 @@
 - **website analytics:** add GA to web application
 
 ### Fix
+- **ControlBar:** optimize model saving process in ControlBar component ([#177](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/177))
 - **NavBar:** change the position of the logo
 - **Simulator:** hotfix for previous commit
-- **Simulator:** remove bands on renderer
 - **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
+- **Simulator:** remove bands on renderer
 - **about:** add types declaration, replace <a> with <Link>
 - **component:** use a uniform style for components
 - **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
