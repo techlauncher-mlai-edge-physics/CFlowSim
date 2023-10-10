@@ -5,7 +5,7 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 
-export const ControlBarContainer = styled(Space)`
+const ControlBarContainer = styled(Space)`
   position: absolute;
   bottom: 4rem;
   right: 40%;
@@ -20,7 +20,7 @@ export const ControlBarContainer = styled(Space)`
   border-radius: 25px;
 `;
 
-export const SaveBtn = styled(Button)`
+const SaveBtn = styled(Button)`
   position: absolute;
   bottom: 4rem;
   right: 11rem;
@@ -35,7 +35,7 @@ export const SaveBtn = styled(Button)`
   }
 `;
 
-export const RestoreBtn = styled(Button)`
+const RestoreBtn = styled(Button)`
   position: absolute;
   bottom: 4rem;
   right: 2rem;
@@ -50,7 +50,7 @@ export const RestoreBtn = styled(Button)`
   }
 `;
 
-export const ControlBarBtn = styled(Button)`
+const ControlBarBtn = styled(Button)`
   shape: circle;
   border: none;
   cursor: pointer;
@@ -65,7 +65,7 @@ export const ControlBarBtn = styled(Button)`
   font-size: 1rem;
 `;
 
-export const ControlBarBtnWithAttr = styled(ControlBarBtn)`
+const ControlBarBtnWithAttr = styled(ControlBarBtn)`
   &[data-icon='square']::after {
     content: '';
     position: absolute;
@@ -119,7 +119,7 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
 
     console.log('wrote a save to ' + filename, sav);
   }
-  
+
   const [isPlaying, setIsPlaying] = useState(true);
   const handleIconClick = (): void => {
     if (isPlaying) {
