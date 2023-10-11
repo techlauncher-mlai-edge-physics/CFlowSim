@@ -12,6 +12,7 @@ import {
   type OutgoingMessage,
 } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
+import { OrbitControls } from '@react-three/drei';
 import RestorePopup from '../components/RestoreComponents/restorePopUp';
 
 const SimulatorContainer = styled.div`
@@ -113,8 +114,12 @@ export default function Home(props: IndexProp): React.ReactElement {
           }}
         >
           <ambientLight />
+          <OrbitControls
+            target={[0, 0, 0]}
+            enabled={simulationParams.isCameraControlMode}
+          ></OrbitControls>
           <DiffusionPlane
-            disableInteraction={false}
+            disableInteraction={simulationParams.isCameraControlMode}
             position={[0, 0, 0]}
             params={simulationParams}
             worker={worker}

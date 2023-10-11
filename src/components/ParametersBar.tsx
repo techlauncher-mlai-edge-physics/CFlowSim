@@ -141,6 +141,20 @@ export default function ParametersBar(props: {
     ControlDifficulty.Expert,
   );
 
+  const setParams = props.setParams;
+  const [renderHeightMap, setRenderHeightMap] = useState(false);
+  const [isCameraControlMode, setIsCameraControlMode] = useState(false);
+
+  useEffect(() => {
+    setParams((prev) => {
+      return {
+        ...prev,
+        renderHeightMap,
+        isCameraControlMode,
+      };
+    });
+  }, [renderHeightMap, isCameraControlMode, setParams]);
+
   if (isPaneVisible) {
     return (
       <Container direction="vertical" size={space}>
@@ -186,6 +200,49 @@ export default function ParametersBar(props: {
         {/* add controls to be shown to both here */}
         <SimulationColour setParams={props.setParams} />
 
+        <Row gutter={16}>
+          <ParameterLabel title="Rendering mode"></ParameterLabel>
+        </Row>
+        <Row gutter={16}>
+          <Col className="gutter-row" span={12}>
+            <ParameterButton
+              label="Flat surface"
+              onClick={() => {
+                setIsCameraControlMode(false);
+                setRenderHeightMap(false);
+              }}
+            />
+          </Col>
+          <Col className="gutter-row" span={12}>
+            <ParameterButton
+              label="Height map"
+              onClick={() => {
+                setRenderHeightMap(true);
+              }}
+            />
+          </Col>
+        </Row>
+        <Row gutter={16} style={renderHeightMap ? {} : { display: 'none' }}>
+          <ParameterLabel title="Current Control"></ParameterLabel>
+        </Row>
+        <Row gutter={16} style={renderHeightMap ? {} : { display: 'none' }}>
+          <Col className="gutter-row" span={12}>
+            <ParameterButton
+              label="Apply force"
+              onClick={() => {
+                setIsCameraControlMode(false);
+              }}
+            />
+          </Col>
+          <Col className="gutter-row" span={12}>
+            <ParameterButton
+              label="Spin camera"
+              onClick={() => {
+                setIsCameraControlMode(true);
+              }}
+            />
+          </Col>
+        </Row>
         {/* choose initial model */}
         <Dropdown menu={{ items, onClick }}>
           <DropdownMenu
