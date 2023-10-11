@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-10-10
+## Unreleased - 2023-10-11
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
@@ -27,37 +27,38 @@
 - **README:** add badges
 - **Simulation:** completed the data interchange between the shader and the model
 - **Simulator:** added base code for rendering model output.
-- **Simulator:** readd basic hardware accelerated rendering of float arrays Co-authored-by: Chenzhu <u7171958[@anu](https://github.com/anu).edu.au>
-- **Simulator:** add proper rendering of model output
 - **Simulator:** readd basic hardware accelerated rendering of float arrays
-- **Simulator:** added base code for rendering model output.
 - **Simulator:** implement force interaction with model ([#13](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/13))
-- **about:** add content for about page ([#12](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/12))
+- **Simulator:** add proper rendering of model output
+- **Simulator:** readd basic hardware accelerated rendering of float arrays Co-authored-by: Chenzhu <u7171958[@anu](https://github.com/anu).edu.au>
+- **Simulator:** added base code for rendering model output.
 - **about:** changed styling and content of about page and refactored docs
+- **about:** add content for about page ([#12](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/12))
 - **app:** create the template for further development
 - **autosave:** implement autosave for models ([#147](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/147))
 - **index:** add ControlBar for simulation ([#21](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/21))
 - **index:** add simulator integration ([#14](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/14))
 - **model:** add model defination file to public ([#128](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/128))
 - **model-runtime:** add tfjs as a backend ([#88](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/88))
+- **modelService:** add fps limitation when model running
 - **modelService:** add support for switching backends ([#129](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/129))
 - **modelService:** add fps limitation when model running ([#9](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/9))
-- **modelService:** add fps limitation when model running
-- **modelWorker:** add modelWorker to resolve foreground blocking ([#4](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/4))
 - **modelWorker:** change the output to density
+- **modelWorker:** add modelWorker to resolve foreground blocking ([#4](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/4))
 - **para-bar:** add ui to choose between model and initial statement ([#164](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/164))
 - **parameter-pane:** create components for parameter pane ([#52](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/52))
 - **persistence:** add save/load to worker and buttons ([#116](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/116))
 - **persistence:** add the ability to serialize the model when needed ([#105](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/105))
 - **project:** re-init the project to use Nextjs, add contribution guide and related deps ([#2](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/2))
+- **renderer:** add ability to render a height map & add camera controls ([#159](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/159))
 - **simulator:** render a colored plane with threejs
-- **simulator:** add parameters setting ([#7](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/7))
 - **simulator:** convert rendering to texture ([#19](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/19))
+- **simulator:** add parameters setting ([#7](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/7))
 - **simulator:** add basic renderer and physics engine support
 - **theme:** add initial code for website themes ([#16](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/16))
 - **webgpu-rendering-context:** import webgpu renderer ([#99](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/99))
-- **website:** add Navbar to the website;
 - **website:** implement the responsive design ([#45](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/45))
+- **website:** add Navbar to the website;
 - **website analytics:** add GA to web application
 
 ### Fix
