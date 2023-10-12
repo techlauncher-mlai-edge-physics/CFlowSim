@@ -3,9 +3,11 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-10-11
+## Unreleased - 2023-10-12
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
+- **changelog:** fix pull issue ([#182](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/182))
+- **changelog:** pull repo before push ([#178](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/178))
 - **changelog:** fix the permission error ([#25](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/25))
 - **commit:** add pre-commit hook for the project ([#18](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/18))
 - **deps:** add dependabot, bump dependencies ([#46](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/46))
@@ -65,12 +67,13 @@
 - **ControlBar:** optimize model saving process in ControlBar component ([#177](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/177))
 - **NavBar:** change the position of the logo
 - **Simulator:** hotfix for previous commit
-- **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
 - **Simulator:** remove bands on renderer
+- **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
 - **about:** add types declaration, replace <a> with <Link>
 - **component:** use a uniform style for components
 - **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
 - **git:** fix merge conflicts for simulator team
+- **index:** fix typo of restore popup ([#181](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/181))
 - **index:** restore auto start function ([#135](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/135))
 - **modelService:** fix a error blocks model running
 - **modelService:** fix not restoring the simulation after hit fps limit
