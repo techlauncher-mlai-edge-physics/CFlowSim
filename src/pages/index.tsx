@@ -13,7 +13,7 @@ import {
 } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 import { OrbitControls } from '@react-three/drei';
-import RestorePopup from '../components/RestoreComponents/restorePopUp';
+import RestorePopup from '../components/RestoreComponents/RestorePopUp';
 
 const SimulatorContainer = styled.div`
   position: relative;
