@@ -18,6 +18,9 @@ const ControlBarContainer = styled(Space)`
   padding-bottom: 0.5rem;
   padding-left: 1.8rem;
   border-radius: 25px;
+  @media (max-width: 760px) {
+    right: 65%;
+  }
 `;
 
 const SaveBtn = styled(Button)`
