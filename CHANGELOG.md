@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-11-20
+## Unreleased - 2023-11-26
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix pull issue ([#182](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/182))
@@ -73,13 +73,14 @@
 - **component:** use a uniform style for components
 - **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
 - **git:** fix merge conflicts for simulator team
-- **index:** fix typo of restore popup ([#181](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/181))
 - **index:** restore auto start function ([#135](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/135))
-- **modelService:** fix a error blocks model running
+- **index:** fix typo of restore popup ([#181](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/181))
 - **modelService:** fix not restoring the simulation after hit fps limit
+- **modelService:** fix a error blocks model running
 - **modelWorker:** fix a bug that may prevent message passing
 - **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
+- **parBar:** fix parameters bar rerender issue ([#207](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/207))
 - **project:** add/update return type for react funtions
 - **restorePopup:** fix the issue that it can only show once ([#168](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/168))
 - **style:** fix style issue in index page & about page ([#163](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/163))
