@@ -142,8 +142,13 @@ export default function ParametersBar(props: {
   );
 
   const setParams = props.setParams;
-  const [renderHeightMap, setRenderHeightMap] = useState(false);
-  const [isCameraControlMode, setIsCameraControlMode] = useState(false);
+  const [renderHeightMap, setRenderHeightMap] = useState(
+    props.params.renderHeightMap,
+  );
+  // try to get the render height map from the params first
+  const [isCameraControlMode, setIsCameraControlMode] = useState(
+    props.params.isCameraControlMode,
+  );
 
   useEffect(() => {
     setParams((prev) => {
@@ -198,7 +203,7 @@ export default function ParametersBar(props: {
           controlDifficulty === ControlDifficulty.Expert && <></>
         }
         {/* add controls to be shown to both here */}
-        <SimulationColour setParams={props.setParams} />
+        <SimulationColour params={props.params} setParams={props.setParams} />
 
         <Row gutter={16}>
           <ParameterLabel title="Rendering mode"></ParameterLabel>
@@ -285,12 +290,19 @@ export default function ParametersBar(props: {
 
 // allows the user to change the colour of the simulation
 function SimulationColour(props: {
+  params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
 }): React.ReactElement {
   const setParams = props.setParams;
-
-  const [colorLow, setColorLow] = useState<Color | string>('#0000FF');
-  const [colorHigh, setColorHigh] = useState<Color | string>('#FF0000');
+  // turn the colours into strings for the colour picker
+  const initialColorLow = props.params.densityLowColour.getHexString();
+  const initialColorHigh = props.params.densityHighColour.getHexString();
+  const [colorLow, setColorLow] = useState<Color | string>(
+    '#' + initialColorLow,
+  );
+  const [colorHigh, setColorHigh] = useState<Color | string>(
+    '#' + initialColorHigh,
+  );
 
   const colorLowString = useMemo(
     () => (typeof colorLow === 'string' ? colorLow : colorLow.toHexString()),
