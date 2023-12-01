@@ -23,15 +23,35 @@ import { type SpaceSize } from 'antd/es/space';
 import ParameterButton from './ParameterComponents/ParameterButton';
 import ParameterLabel from './ParameterComponents/ParameterLabel';
 
-const Container = styled(Space)`
+interface Visible {
+  isHidden: boolean;
+}
+
+const Pane = styled.div<Visible>`
+  width: 22rem;
+  height: calc(100% - 5rem);
+
+  font-size: 2rem;
+  position: absolute;
+  display: flex;
+
+  text-align: left;
+
+  @media (max-width: 760px) {
+    display: none;
+  }
+  z-index: 1;
+`;
+const Container = styled(Space)<Visible>`
   background-color: #797979;
   color: #fff;
 
   width: 20rem;
-  height: calc(100% - 6rem);
+  height: calc(100% - 25px);
 
   font-size: 2rem;
   position: absolute;
+  left: ${(props) => (props.isHidden ? '-20rem' : '0')};
   display: flex;
 
   text-align: left;
@@ -44,12 +64,10 @@ const Container = styled(Space)`
   @media (max-width: 760px) {
     display: none;
   }
-`;
-
-const ButtonDiv = styled.span`
-  top: calc(6rem - 5px);
-  position: absolute;
-  left: 10px;
+  visibility: ${(props) => (props.isHidden ? 'hidden' : 'visible')};
+  transition:
+    left 0.5s linear,
+    visibility 0.5s linear;
 `;
 
 const Title = styled.span`
@@ -69,15 +87,20 @@ const Category = styled(Card)`
   color: #ffffff;
 `;
 
-const BackButton = styled.button`
-  width: 40px;
-  height: 40px;
+const BackButton = styled.button<Visible>`
+  position: absolute;
+  top: 0.5rem;
+  left: ${(props) => (props.isHidden ? '0.5rem' : '22.5rem')};
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   background-color: #d9d9d9;
   color: #464646;
   font-size: 16px;
   border: none;
   cursor: pointer;
+  z-index: 100;
+  transition: left 0.5s linear;
 `;
 
 const DropdownMenu = styled.a`
@@ -95,6 +118,7 @@ function ShowHideButton(props: {
 
   return (
     <BackButton
+      isHidden={!isVisible}
       onClick={() => {
         setVisible(!isVisible);
       }}
@@ -133,7 +157,7 @@ export default function ParametersBar(props: {
   params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
 }): React.ReactElement {
-  const [isPaneVisible, setPaneVisible] = useState<boolean>(true);
+  const [containerVisible, setContainerVisible] = useState<boolean>(true);
   const space: [SpaceSize, SpaceSize] = ['large', 'small'];
 
   // for ease of development, we'll default to expert mode for now
@@ -160,16 +184,15 @@ export default function ParametersBar(props: {
     });
   }, [renderHeightMap, isCameraControlMode, setParams]);
 
-  if (isPaneVisible) {
-    return (
-      <Container direction="vertical" size={space}>
+  return (
+    <Pane isHidden={!containerVisible}>
+      <ShowHideButton
+        isVisible={containerVisible}
+        setVisible={setContainerVisible}
+      />
+      <Container direction="vertical" size={space} isHidden={!containerVisible}>
         {/* hide button */}
-        <Row justify="end">
-          <ShowHideButton
-            isVisible={isPaneVisible}
-            setVisible={setPaneVisible}
-          />
-        </Row>
+        <Row justify="end"></Row>
 
         {/* header */}
         <Title>Parameters</Title>
@@ -276,14 +299,8 @@ export default function ParametersBar(props: {
           </DropdownMenu>
         </Dropdown>
       </Container>
-    );
-  } else {
-    return (
-      <ButtonDiv>
-        <ShowHideButton isVisible={isPaneVisible} setVisible={setPaneVisible} />
-      </ButtonDiv>
-    );
-  }
+    </Pane>
+  );
 }
 
 // CATEGORIES
