@@ -31,7 +31,7 @@ class SimulationParams {
 // we can pass the parameter object directly
 interface Renderable {
   params: SimulationParams;
-  outputSubs: Array<(density: Float32Array) => void>;
+  outputSubs: Array<(density: Float32Array[]) => void>;
   worker: Worker;
   disableInteraction: boolean;
 }
@@ -97,8 +97,6 @@ function DiffusionPlane(
     shaderMat.fragmentShader = applyConfigToShader(fragmentShader as string);
     shaderMat.side = t.DoubleSide;
 
-    // provide a dummy density field first
-
     // TODO: until we standardise parameters a bit more we'll hardcode
     // an advection size of 32*32
     const initDensity = new Float32Array(new Array(64 * 64).fill(0));
@@ -138,14 +136,15 @@ function DiffusionPlane(
   const { outputSubs, worker } = props;
 
   useEffect(() => {
-    outputSubs.push((density: Float32Array) => {
+    console.log('[renderer] [event] Creating worker');
+    outputSubs.push((density: Float32Array[]) => {
       output(density);
     });
 
     // SUBSCRIPTIONS
     // update the density uniforms every time
     // output is received
-    function output(data: Float32Array): void {
+    function output(data: Float32Array[]): void {
       // create a copy to prevent modifying original data
       data = data.slice(0);
       const param: Record<string, number> = {
@@ -153,19 +152,79 @@ function DiffusionPlane(
         densityRangeLow: parseFloat(renderConfig.densityRangeLow),
         densityRangeSize: parseFloat(renderConfig.densityRangeSize),
       };
-      // texture float value are required to be in range [0.0, 1.0],
-      // so we have to convert this in js
-      for (let i = 0; i < data.length; i++) {
-        let density = Math.min(data[i], param.densityRangeHigh);
-        density = Math.max(density, param.densityRangeLow);
-        density = density / param.densityRangeSize;
-        data[i] = density;
+
+      function updateTexture(data: Float32Array): void {
+        // texture float value is required to be in range [0.0, 1.0],
+        // so we have to convert this in js
+        for (let i = 0; i < data.length; i++) {
+          let density = Math.min(data[i], param.densityRangeHigh);
+          density = Math.max(density, param.densityRangeLow);
+          density = density / param.densityRangeSize;
+          data[i] = density;
+        }
+        const tex = new t.DataTexture(data, 64, 64, t.RedFormat, t.FloatType);
+        tex.needsUpdate = true;
+        shaderMat.uniforms.density.value = tex;
       }
-      const tex = new t.DataTexture(data, 64, 64, t.RedFormat, t.FloatType);
-      tex.needsUpdate = true;
-      shaderMat.uniforms.density.value = tex;
+      // calculate the fps
+      console.log(`[renderer] [event] Received output, fps: ${data.length}`);
+      if (data.length < 30) {
+        console.log(
+          `[renderer] [event] FPS is low: ${data.length}, interpolation in progress`,
+        );
+        // interpolate based on current frame rate
+        // calc the interplot multiplier
+        const interpMul = Math.ceil((30 - 1) / data.length - 1);
+        console.log(
+          `[renderer] [event] Interpolation multiplier: ${interpMul}`,
+        );
+        // create the interpolated data
+        const interpData: Float32Array[] = [];
+        // interpolate
+        for (let i = 0; i < data.length; i++) {
+          // start with the first original frame, then interpolate interpMul times with linear interpolation,
+          // then add the next original frame
+          console.log(
+            `[renderer] [event] Interpolating frame ${i + 1}/${data.length}`,
+          );
+          interpData.push(data[i]);
+          if (i + 1 < data.length) {
+            const start = data[i];
+            const end = data[i + 1];
+            for (let j = 0; j < interpMul; j++) {
+              const interp = new Float32Array(start.length);
+              for (let k = 0; k < start.length; k++) {
+                interp[k] =
+                  start[k] + ((end[k] - start[k]) * (j + 1)) / (interpMul + 1);
+              }
+              interpData.push(interp);
+            }
+          }
+        }
+
+        console.log(
+          `[renderer] [event] Interpolation complete, fps: ${interpData.length}`,
+        );
+        let i = 0;
+        // start the interpolation
+        setInterval(
+          () => {
+            if (i >= interpData.length) return;
+            updateTexture(interpData[i]);
+            i++;
+          },
+          1000 / (data.length * interpMul),
+        );
+      } else {
+        let i = 0;
+        setInterval(() => {
+          if (i >= data.length) return;
+          updateTexture(data[i]);
+          i++;
+        }, 1000 / data.length);
+      }
     }
-  }, [shaderMat, outputSubs]);
+  }, []);
 
   const { disableInteraction } = props;
   let pointMoved = false;
@@ -209,8 +268,8 @@ function DiffusionPlane(
     worker.postMessage({
       func: RunnerFunc.UPDATE_FORCE,
       args: {
-        force: forceDelta,
-        position: loc,
+        forceDelta,
+        loc,
       } satisfies UpdateForceArgs,
     });
   }, forceInterval);
