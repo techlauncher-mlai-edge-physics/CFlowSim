@@ -224,7 +224,7 @@ function DiffusionPlane(
         }, 1000 / data.length);
       }
     }
-  }, []);
+  }, [outputSubs, shaderMat.uniforms.density]);
 
   const { disableInteraction } = props;
   let pointMoved = false;
