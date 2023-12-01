@@ -217,7 +217,7 @@ function bindCallback(
   setInterval(() => {
     console.log('cache', cache);
     if (cache.length > 0) {
-      event.postMessage({ type: 'output', density: cache.slice() });
+      event.postMessage({ type: 'output', density: cache });
       cache.splice(0, cache.length);
     }
   }, 1000);
