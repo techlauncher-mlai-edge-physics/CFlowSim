@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import { type IncomingMessage } from '../../workers/modelWorkerMessage';
+import {
+  type IncomingMessage,
+  RunnerFunc,
+} from '../../workers/modelWorkerMessage';
 import type React from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
@@ -28,11 +31,10 @@ export default function LocalFileRestore(
     reader.onload = (e) => {
       console.log(e.target?.result);
       const result = e.target?.result;
-      // TODO: add json validation
       if (typeof result === 'string') {
         const msg: IncomingMessage = {
-          func: 'deserialize',
-          args: result,
+          func: RunnerFunc.DESERIALIZE,
+          args: { savedState: result },
         };
         worker.postMessage(msg);
       }

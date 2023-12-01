@@ -1,24 +1,51 @@
 // a worker that can control the modelService via messages
 
-import { type Vector2 } from 'three';
 import {
-  type ModelService,
-  type ModelSave,
   createModelService,
+  type ModelSave,
   modelSerialize,
-  // modelDeserialize
+  type ModelService,
 } from '../services/model/modelService';
-import { type IncomingMessage } from './modelWorkerMessage';
+import {
+  type DeserializeArgs,
+  type IncomingMessage,
+  type InitArgs,
+  type UpdateForceArgs,
+  RunnerFunc,
+} from './modelWorkerMessage';
 import AutoSaveService from '../services/autoSave/autoSaveService';
+import Ajv, { type JSONSchemaType } from 'ajv';
 
 let modelService: ModelService | null = null;
 let autoSaveService: AutoSaveService | null = null;
 let modelUrl: string = '';
 
-interface UpdateForceArgs {
-  loc: Vector2;
-  forceDelta: Vector2;
-}
+const modelSaveSchema: JSONSchemaType<ModelSave> = {
+  type: 'object',
+  properties: {
+    modelType: { type: 'string' },
+    modelUrl: { type: 'string' },
+    time: { type: 'string' },
+    inputTensor: {
+      type: 'array',
+      items: {
+        type: 'array',
+        items: {
+          type: 'array',
+          items: {
+            type: 'array',
+            items: { type: 'number' },
+          },
+        },
+      },
+    },
+    mass: { type: 'number' },
+  },
+  required: ['modelType', 'modelUrl', 'inputTensor', 'mass'],
+  additionalProperties: false,
+};
+const ajv = new Ajv();
+const modelSaveSchemaValidator = ajv.compile(modelSaveSchema);
 
 export function onmessage(
   this: DedicatedWorkerGlobalScope,
@@ -28,20 +55,17 @@ export function onmessage(
   if (data == null) {
     throw new Error('data is null');
   }
-  if (data.func == null) {
-    throw new Error('data.type is null');
-  }
   console.log('worker received message', data);
   switch (data.func) {
-    case 'init':
+    case RunnerFunc.INIT:
       if (modelService == null) {
-        const [dataPath, modelurl] = data.args as [string, string];
-        modelUrl = modelurl;
-        getServiceFromInitCond(this, dataPath, modelurl)
+        const { modelPath, initConditionPath } = data.args as InitArgs;
+        modelUrl = modelPath;
+        getServiceFromInitCond(this, initConditionPath, modelPath)
           .then((service) => {
             modelService = service;
             autoSaveService = new AutoSaveService(() => {
-              return modelSerialize(modelurl, modelService);
+              return modelSerialize(modelPath, modelService);
             });
             this.postMessage({ type: 'init', success: true });
           })
@@ -50,7 +74,7 @@ export function onmessage(
           });
       }
       break;
-    case 'start':
+    case RunnerFunc.START:
       if (modelService == null) {
         throw new Error('modelService is null');
       }
@@ -71,7 +95,7 @@ export function onmessage(
         }
       }
       break;
-    case 'pause':
+    case RunnerFunc.PAUSE:
       if (modelService == null) {
         throw new Error('modelService is null');
       }
@@ -80,29 +104,24 @@ export function onmessage(
         autoSaveService.pauseAutoSave();
       }
       break;
-    case 'updateForce':
+    case RunnerFunc.UPDATE_FORCE:
       updateForce(data.args as UpdateForceArgs);
       break;
-    case 'getInputTensor':
-      if (modelService == null) {
-        throw new Error('modelService is null');
-      }
-      this.postMessage({
-        type: 'inputTensor',
-        tensor: modelService.getInputTensor(),
-      });
-      break;
-    case 'serialize':
+    case RunnerFunc.SERIALIZE:
       this.postMessage({
         type: 'modelSave',
         save: workerSerialize(),
       });
       break;
-    case 'deserialize': {
+    case RunnerFunc.DESERIALIZE: {
       // if (modelService == null) throw new Error('modelService is null');
       // modelService.pauseSimulation();
-      const modelSave = JSON.parse(data.args as string) as ModelSave;
-      getServiceFromSave(this, modelSave)
+      const { savedState } = data.args as DeserializeArgs;
+      const possibleSave = JSON.parse(savedState);
+      if (!modelSaveSchemaValidator(possibleSave)) {
+        throw new Error(`invalid schema for the input json file ${savedState}`);
+      }
+      getServiceFromSave(this, possibleSave)
         .then((ms) => {
           modelService = ms;
           console.log('successfully restored model service with', ms);
@@ -113,10 +132,9 @@ export function onmessage(
         });
       break;
     }
-    default:
-      throw new Error(`unknown func ${data.func}`);
   }
 }
+
 function updateForce(args: UpdateForceArgs): void {
   if (modelService == null) {
     throw new Error('modelService is null');
@@ -131,9 +149,7 @@ export function workerSerialize(): ModelSave {
   // return a modelsave with the current model
   if (modelService == null)
     throw new Error('modelService is null, cannot serialise');
-  // TODO: implement a way to change the model path
-  const modelPath = modelUrl;
-  const save = modelSerialize(modelPath, modelService);
+  const save = modelSerialize(modelUrl, modelService);
   if (save == null)
     throw new Error('something went wrong during model serialisation');
   return save;

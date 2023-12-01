@@ -2,6 +2,10 @@ import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { type ModelSave } from '../services/model/modelService';
 import { useEffect } from 'react';
+import {
+  RunnerFunc,
+  type IncomingMessage,
+} from '../workers/modelWorkerMessage.ts';
 
 export const ControlBarContainer = styled(Space)`
   position: absolute;
@@ -89,7 +93,9 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
     <>
       <SaveBtn
         onClick={() => {
-          worker.postMessage({ func: 'serialize' });
+          worker.postMessage({
+            func: RunnerFunc.SERIALIZE,
+          } satisfies IncomingMessage);
         }}
       >
         Save Model
@@ -105,25 +111,23 @@ export default function ControlBar(props: ControlBarProps): React.ReactElement {
       <ControlBarContainer size="small" direction="horizontal">
         <Button
           onClick={() => {
-            worker.postMessage({ func: 'start' });
+            worker.postMessage({
+              func: RunnerFunc.START,
+            } satisfies IncomingMessage);
           }}
         >
           Play
         </Button>
         <Button
           onClick={() => {
-            worker.postMessage({ func: 'pause' });
+            worker.postMessage({
+              func: RunnerFunc.PAUSE,
+            } satisfies IncomingMessage);
           }}
         >
           Pause
         </Button>
-        <Button
-          onClick={() => {
-            worker.postMessage({ func: 'stop' });
-          }}
-        >
-          Stop
-        </Button>
+        <Button onClick={() => {}}>Stop</Button>
         <Button
           onClick={() => {
             worker.terminate();
