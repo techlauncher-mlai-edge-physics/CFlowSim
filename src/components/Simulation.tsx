@@ -9,6 +9,10 @@ import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import vertexShaderForHeightMap from '../shaders/vert_height.glsl';
 import fragmentShader from '../shaders/frag.glsl';
+import {
+  RunnerFunc,
+  type UpdateForceArgs,
+} from '../workers/modelWorkerMessage.ts';
 
 // WebGPU imports
 import WebGPU from 'three/addons/capabilities/WebGPU.js';
@@ -203,11 +207,11 @@ function DiffusionPlane(
     console.log('[event] Applying force', forceDelta, 'at', loc);
     // call model with param
     worker.postMessage({
-      func: 'updateForce',
+      func: RunnerFunc.UPDATE_FORCE,
       args: {
-        loc,
-        forceDelta,
-      },
+        force: forceDelta,
+        position: loc,
+      } satisfies UpdateForceArgs,
     });
   }, forceInterval);
 

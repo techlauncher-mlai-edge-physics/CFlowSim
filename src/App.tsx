@@ -7,7 +7,11 @@ import './App.css';
 import Home from './pages';
 import AboutPage from './pages/about';
 import { SimulationParams } from './components/Simulation';
-import { type IncomingMessage } from './workers/modelWorkerMessage';
+import {
+  type IncomingMessage,
+  type InitArgs,
+  RunnerFunc,
+} from './workers/modelWorkerMessage';
 
 const Main = styled.main`
   position: absolute;
@@ -35,7 +39,7 @@ function App(): React.ReactElement {
     new SimulationParams(),
   );
 
-  const [lightTheme, setlightTheme] = useState<boolean>(false);
+  const [lightTheme, setLightTheme] = useState<boolean>(false);
   // TODO: implement auto theme ui switch
   const [curThemeMode, setCurThemeMode] = useState<string>('auto'); // 'dark' or 'light' or 'auto'
 
@@ -46,11 +50,11 @@ function App(): React.ReactElement {
       );
       darkModeMediaQuery.addEventListener('change', (e) => {
         const newColorScheme = e.matches ? 'dark' : 'light';
-        setlightTheme(newColorScheme === 'light');
+        setLightTheme(newColorScheme === 'light');
       });
-      setlightTheme(darkModeMediaQuery.matches);
+      setLightTheme(darkModeMediaQuery.matches);
     } else {
-      setlightTheme(curThemeMode === 'light');
+      setLightTheme(curThemeMode === 'light');
     }
   }, [curThemeMode]);
 
@@ -66,16 +70,17 @@ function App(): React.ReactElement {
 
     return () => {
       worker.terminate();
-    }
+    };
   }, []);
 
   useEffect(() => {
     const message: IncomingMessage = {
-      func: 'init',
-      args: [
-        '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
-        '/model/bno_small_new_web/model.json',
-      ],
+      func: RunnerFunc.INIT,
+      args: {
+        modelPath: '/model/bno_small_new_web/model.json',
+        initConditionPath:
+          '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
+      } satisfies InitArgs,
     };
     if (simWorker === null) return;
     simWorker.postMessage(message);

@@ -1,11 +1,14 @@
 import styled from 'styled-components';
-import { type IncomingMessage } from '../../workers/modelWorkerMessage';
+import {
+  type DeserializeArgs,
+  type IncomingMessage,
+  RunnerFunc
+} from "../../workers/modelWorkerMessage";
 import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Divider, List, Typography } from 'antd';
 
 import { type RestoreProps } from './RestoreProps';
-
-import { useEffect, useState } from 'react';
 
 const Container = styled.div`
   width: 100%;
@@ -45,6 +48,7 @@ export default function IndexedDBRestore(
       const dbKeys = await getDBEntry();
       setKeys(dbKeys);
     }
+
     void fetchKeys();
   }, []);
 
@@ -65,8 +69,8 @@ export default function IndexedDBRestore(
         const value = (event.target as IDBRequest).result;
         if (value !== undefined) {
           const message: IncomingMessage = {
-            func: 'deserialize',
-            args: value,
+            func: RunnerFunc.DESERIALIZE,
+            args: { savedState: JSON.parse(value) as unknown as string } satisfies DeserializeArgs,
           };
           worker.postMessage(message);
         }

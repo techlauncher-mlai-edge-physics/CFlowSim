@@ -22,6 +22,7 @@
     "@tensorflow/tfjs": "^4.13.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.11.0",
     "@vitejs/plugin-react": "^4.1.0",
+    "ajv": "^8.12.0",
     "antd": "^5.8.4",
     "onnxruntime-web": "^1.16.0",
     "react": "^18.2.0",

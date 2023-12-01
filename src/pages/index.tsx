@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   type IncomingMessage,
   type OutgoingMessage,
+  RunnerFunc,
 } from '../workers/modelWorkerMessage';
 import { type ModelSave } from '../services/model/modelService';
 import { OrbitControls } from '@react-three/drei';
@@ -19,8 +20,8 @@ const SimulatorContainer = styled.div`
   position: relative;
   left: 21rem;
   top: 1rem;
-  width: calc(100vw - 22rem);
-  height: calc(100vh - 7rem);
+  width: calc(100% - 22rem);
+  height: calc(100% - 7rem);
   z-index: 0;
   @media (max-width: 760px) {
     position: relative;
@@ -78,7 +79,7 @@ export default function Home(props: IndexProp): React.ReactElement {
           case 'init':
             console.log('worker initialised');
             worker.postMessage({
-              func: 'start',
+              func: RunnerFunc.START,
             } satisfies IncomingMessage);
             break;
           case 'output':
