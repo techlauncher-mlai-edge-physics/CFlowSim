@@ -89,13 +89,14 @@
 
 ### Refactor
 - **NavBar:** refactor the header style & add new button styles
-- **NavBar:** refactor the theme_btn style
 - **NavBar:** change the alt text for the logo
+- **NavBar:** refactor the theme_btn style
 - **PhysicsCore:** refactor PhysicsCore to modelService with TS ([#3](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/3))
 - **app:** use vite + reactjs instead of nextjs ([#23](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/23))
 - **components:** relocate the components from the pages folder to the root folder
 - **index:** remove the unused imports and variables
 - **modelService:** refactor the normalization function ([#8](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/8))
+- **paraBar:** use CSS to implement hide/show function ([#212](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/212))
 - **parameter-pane:** implement the new parameter pane ([#82](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/82))
 - **project:** add type delcaretion for functions
 - **styles:** remove deprecated style sheets ([#53](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/53))
