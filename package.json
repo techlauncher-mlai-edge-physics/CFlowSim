@@ -33,7 +33,7 @@
     "vite": "^4.5.0"
   },
   "devDependencies": {
-    "@axe-core/react": "^4.7.3",
+    "@axe-core/react": "^4.8.2",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@types/react": "^18.2.23",
