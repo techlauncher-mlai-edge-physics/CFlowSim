@@ -61,7 +61,7 @@ export default function Home(props: IndexProp): React.ReactElement {
   // to distribute the worker messages across different components
   // we utilise an observer pattern where components can subscribe
   // their functions to different message types
-  const outputSubs: Array<(density: Float32Array) => void> = useMemo(
+  const outputSubs: Array<(density: Float32Array[]) => void> = useMemo(
     () => [],
     [],
   );

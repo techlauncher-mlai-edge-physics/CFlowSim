@@ -205,12 +205,21 @@ function bindCallback(
   event: DedicatedWorkerGlobalScope,
   modelService: ModelService,
 ): void {
+  const cache: Float32Array[] = [];
   const outputCallback = (output: Float32Array): void => {
+    console.log('outputCallback', output);
     const density = new Float32Array(output.length / 3);
     for (let i = 0; i < density.length; i++) {
       density[i] = output[i * 3];
     }
-    event.postMessage({ type: 'output', density });
+    cache.push(density);
   };
+  setInterval(() => {
+    console.log('cache', cache);
+    if (cache.length > 0) {
+      event.postMessage({ type: 'output', density: cache });
+      cache.splice(0, cache.length);
+    }
+  }, 1000);
   modelService.bindOutput(outputCallback);
 }
