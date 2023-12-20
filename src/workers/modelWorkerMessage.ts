@@ -31,7 +31,7 @@ export interface UpdateForceArgs {
 
 export interface OutgoingMessage {
   type: string;
-  density?: Float32Array;
+  density?: Float32Array[];
   success: boolean;
   matrix?: Float32Array;
   save?: ModelSave;
