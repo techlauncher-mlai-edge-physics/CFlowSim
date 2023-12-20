@@ -3,7 +3,7 @@
 
 
 <a name="Unreleased"></a>
-## Unreleased - 2023-12-10
+## Unreleased - 2023-12-20
 ### Ci
 - **actions:** create github action files ([#24](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/24))
 - **changelog:** fix pull issue ([#182](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/182))
@@ -67,9 +67,9 @@
 ### Fix
 - **ControlBar:** optimize model saving process in ControlBar component ([#177](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/177))
 - **NavBar:** change the position of the logo
-- **Simulator:** hotfix for previous commit
 - **Simulator:** remove bands on renderer
 - **Simulator:** remove bands on renderer ([#15](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/15))
+- **Simulator:** hotfix for previous commit
 - **about:** add types declaration, replace <a> with <Link>
 - **component:** use a uniform style for components
 - **eslint:** resolve eslint issues with parameter-pane & webgpu declaration ([#125](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/125))
@@ -79,6 +79,7 @@
 - **modelService:** fix not restoring the simulation after hit fps limit
 - **modelService:** fix a error blocks model running
 - **modelWorker:** fix a bug that may prevent message passing
+- **modelWorkerMessage:** update density property to accept an array ([#219](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/219))
 - **onnxruntime:** bump wasm version to 1.16.0 ([#127](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/127))
 - **package.json:** fix issue prevent dynamic reloading before
 - **parBar:** fix parameters bar rerender issue ([#207](https://github.com/techlauncher-mlai-edge-physics/physics_in_the_browser/issues/207))
