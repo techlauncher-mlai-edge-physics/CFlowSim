@@ -2,14 +2,16 @@
 // to IndexedDB
 
 import { type ModelSave } from '../model/modelService';
+import { openDB, type IDBPDatabase } from 'idb';
 
 export default class AutoSaveService {
   saveInterval: number;
   intervalObj: ReturnType<typeof setInterval> | undefined;
   maxAutoSaves: number;
   getModelSerialized: () => ModelSave;
-  db!: IDBDatabase;
+  db!: IDBPDatabase;
   ready = false;
+
   constructor(
     getModelSerialized: () => ModelSave,
     saveInterval = 10000,
@@ -19,25 +21,22 @@ export default class AutoSaveService {
     this.maxAutoSaves = maxAutoSaves;
     this.getModelSerialized = getModelSerialized;
     this.intervalObj = undefined;
-    const dbRequest = indexedDB.open('modelAutoSave', 1);
-    dbRequest.onupgradeneeded = () => {
-      const db = dbRequest.result;
-      this.db = db;
-      const objectStore = this.db.createObjectStore('modelSave', {
-        autoIncrement: true,
+
+    openDB('modelAutoSave', 1, {
+      upgrade(db) {
+        db.createObjectStore('modelSave', {
+          keyPath: 'time',
+          autoIncrement: true,
+        });
+      },
+    })
+      .then((db) => {
+        this.db = db;
+        this.ready = true;
+      })
+      .catch(() => {
+        throw new Error('Failed to open IndexedDB');
       });
-      objectStore.transaction.oncomplete = () => {
-        console.log('Successfully created object store');
-      };
-    };
-    dbRequest.onsuccess = () => {
-      console.log('Successfully opened IndexedDB');
-      this.db = dbRequest.result;
-      this.ready = true;
-    };
-    dbRequest.onerror = () => {
-      throw new Error('Failed to open IndexedDB');
-    };
   }
 
   startAutoSave(): void {
@@ -47,52 +46,25 @@ export default class AutoSaveService {
     if (!this.ready) {
       throw new Error('IndexedDB not ready');
     }
-    this.intervalObj = setInterval(() => {
+    this.intervalObj = setInterval(async () => {
       const serialisationData = this.getModelSerialized();
-      const modelSaveString = JSON.stringify(serialisationData);
-      console.log('saving model');
-      const transaction = this.db.transaction(['modelSave'], 'readwrite');
-      transaction.onerror = () => {
-        throw new Error('Failed to open transaction');
-      };
-      const objectStore = transaction.objectStore('modelSave');
-      const request = objectStore.add(modelSaveString);
-      request.onsuccess = () => {
-        console.log('successfully saved model');
-      };
-      request.onerror = () => {
-        throw new Error('Failed to save model');
-      };
-      const request2 = objectStore.count();
-      request2.onsuccess = () => {
-        const count = request2.result;
-        console.log('count', count);
-        if (count > this.maxAutoSaves) {
-          console.log('deleting old model');
-          // use while loop to delete all but the last 5 models
-          const request3 = objectStore.getAllKeys();
-          request3.onsuccess = () => {
-            const keys = request3.result;
-            console.log('keys', keys);
-            const keysToDelete = keys.slice(0, count - this.maxAutoSaves);
-            console.log('keysToDelete', keysToDelete);
-            keysToDelete.forEach((key) => {
-              const request4 = objectStore.delete(key);
-              request4.onsuccess = () => {
-                console.log('successfully deleted model');
-              };
-              request4.onerror = () => {
-                throw new Error('Failed to delete model');
-              };
-            });
-          }
-        }
-      };
-      request2.onerror = () => {
-        throw new Error('Failed to count models');
-      };
-      transaction.oncomplete = () => {
-        console.log('Successfully saved model and possibly deleted old models');
+      console.log(
+        '🚀 ~ file: autoSaveService.ts:51 ~ AutoSaveService ~ this.intervalObj=setInterval ~ serialisationData:',
+        serialisationData,
+      );
+      // Save the model to the database
+      await this.db.add('modelSave', serialisationData);
+      // Check if the total count exceeds maxAutoSaves
+      const count = await this.db.count('modelSave');
+      if (count > this.maxAutoSaves) {
+        // Get the earliest model according to the time (index)
+        const earliestModel = await this.db.getAllKeys('modelSave', null, 10);
+        console.log( 
+          '🚀 ~ file: autoSaveService.ts:63 ~ AutoSaveService ~ this.intervalObj=setInterval ~ earliestModel:',
+          earliestModel,
+        );
+        // Delete the earliest model
+        await this.db.delete('modelSave', earliestModel[0]);
       }
     }, this.saveInterval);
   }
