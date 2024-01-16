@@ -2,40 +2,20 @@ import styled from 'styled-components';
 import {
   type DeserializeArgs,
   type IncomingMessage,
-  RunnerFunc
-} from "../../workers/modelWorkerMessage";
+  RunnerFunc,
+} from '../../workers/modelWorkerMessage';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { Divider, List, Typography } from 'antd';
-
+import { openDB } from 'idb';
 import { type RestoreProps } from './RestoreProps';
+import { type ModelSave } from '../../services/model/modelService';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
   z-index: 100;
 `;
-
-async function getDBEntry(): Promise<string[]> {
-  return await new Promise((resolve, reject) => {
-    const request = window.indexedDB.open('modelAutoSave', 1);
-    request.onerror = (event) => {
-      reject(event);
-    };
-    request.onsuccess = (event: Event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      const transaction = db.transaction('modelSave', 'readonly');
-      const objectStore = transaction.objectStore('modelSave');
-      const getAllKeysRequest = objectStore.getAllKeys();
-      getAllKeysRequest.onsuccess = (event) => {
-        const keys = (event.target as IDBRequest).result;
-        if (Array.isArray(keys)) {
-          resolve(keys);
-        }
-      };
-    };
-  });
-}
 
 export default function IndexedDBRestore(
   props: RestoreProps,
@@ -45,8 +25,11 @@ export default function IndexedDBRestore(
 
   useEffect(() => {
     async function fetchKeys(): Promise<void> {
-      const dbKeys = await getDBEntry();
-      setKeys(dbKeys);
+      const db = await openDB('modelAutoSave', 1);
+      const transaction = db.transaction('modelSave', 'readonly');
+      const objectStore = transaction.objectStore('modelSave');
+      const allKeys = await objectStore.getAllKeys();
+      setKeys(allKeys.map((key) => String(key)));
     }
 
     void fetchKeys();
@@ -70,7 +53,9 @@ export default function IndexedDBRestore(
         if (value !== undefined) {
           const message: IncomingMessage = {
             func: RunnerFunc.DESERIALIZE,
-            args: { savedState: JSON.parse(value) as unknown as string } satisfies DeserializeArgs,
+            args: {
+              savedState: value as ModelSave,
+            } satisfies DeserializeArgs,
           };
           worker.postMessage(message);
         }
