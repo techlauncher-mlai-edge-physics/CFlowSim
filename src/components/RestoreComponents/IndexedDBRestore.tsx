@@ -29,7 +29,7 @@ export default function IndexedDBRestore(
       const transaction = db.transaction('modelSave', 'readonly');
       const objectStore = transaction.objectStore('modelSave');
       const allKeys = await objectStore.getAllKeys();
-      setKeys(allKeys.map(key => String(key)));
+      setKeys(allKeys.map((key) => String(key)));
     }
 
     void fetchKeys();

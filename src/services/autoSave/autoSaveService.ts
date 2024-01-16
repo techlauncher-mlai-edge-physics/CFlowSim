@@ -59,7 +59,7 @@ export default class AutoSaveService {
       if (count > this.maxAutoSaves) {
         // Get the earliest model according to the time (index)
         const earliestModel = await this.db.getAllKeys('modelSave', null, 10);
-        console.log( 
+        console.log(
           '🚀 ~ file: autoSaveService.ts:63 ~ AutoSaveService ~ this.intervalObj=setInterval ~ earliestModel:',
           earliestModel,
         );
