@@ -153,7 +153,6 @@ export class TfjsService implements ModelService {
     if (this.isPaused) {
       return;
     }
-    this.curFrameCountbyLastSecond += 1;
     const input = this.getInput();
     const energy = this.velocity.square().sum();
     // const output = this.model?.predict(input);
