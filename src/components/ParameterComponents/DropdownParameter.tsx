@@ -17,7 +17,7 @@ export default function DropdownParameter(props: {
   onChange: (value: string) => void;
   values: string[];
   initValue?: string;
-}): React.ReactElement {
+}): JSX.Element {
   const [value, setValue] = useState(props.values[0]);
   if (props.initValue !== undefined) {
     setValue(props.initValue);
@@ -30,8 +30,10 @@ export default function DropdownParameter(props: {
         props.onChange(e.target.value);
       }}
     >
-      {props.values.map((val, i) => (
-        <option key={i} value={val}>
+      {props.values.map((val) => (
+        // use value as key, this asserts that the values are unique
+        // CAUTION: this is true when I wrote this, but may not be true in the future
+        <option key={val} value={val}>
           {val}
         </option>
       ))}

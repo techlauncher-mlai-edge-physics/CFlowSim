@@ -3,7 +3,6 @@ import {
   type IncomingMessage,
   RunnerFunc,
 } from '../../workers/modelWorkerMessage';
-import type React from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Upload } from 'antd';
@@ -18,9 +17,7 @@ const DragandDrop = styled.div`
   z-index: 100;
 `;
 
-export default function LocalFileRestore(
-  props: RestoreProps,
-): React.ReactElement {
+export default function LocalFileRestore(props: RestoreProps): JSX.Element {
   const { worker } = props;
 
   const getBeforeUpload = (worker: Worker) => (file: RcFile) => {

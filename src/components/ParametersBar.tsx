@@ -24,7 +24,7 @@ import ParameterButton from './ParameterComponents/ParameterButton';
 import ParameterLabel from './ParameterComponents/ParameterLabel';
 
 interface Visible {
-  isHidden: boolean;
+  hidden: boolean;
 }
 
 const Pane = styled.div<Visible>`
@@ -51,7 +51,7 @@ const Container = styled(Space)<Visible>`
 
   font-size: 2rem;
   position: absolute;
-  left: ${(props) => (props.isHidden ? '-20rem' : '0')};
+  left: ${(props) => (props.hidden ? '-20rem' : '0')};
   display: flex;
 
   text-align: left;
@@ -64,7 +64,7 @@ const Container = styled(Space)<Visible>`
   @media (max-width: 760px) {
     display: none;
   }
-  visibility: ${(props) => (props.isHidden ? 'hidden' : 'visible')};
+  visibility: ${(props) => (props.hidden ? 'hidden' : 'visible')};
   transition:
     left 0.5s linear,
     visibility 0.5s linear;
@@ -90,7 +90,7 @@ const Category = styled(Card)`
 const BackButton = styled.button<Visible>`
   position: absolute;
   top: 0.5rem;
-  left: ${(props) => (props.isHidden ? '0.5rem' : '22.5rem')};
+  left: ${(props) => (props.hidden ? '0.5rem' : '22.5rem')};
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
@@ -112,13 +112,13 @@ const DropdownMenu = styled.a`
 function ShowHideButton(props: {
   isVisible: boolean;
   setVisible: (inp: boolean) => void;
-}): React.ReactElement {
+}): JSX.Element {
   const isVisible = props.isVisible;
   const setVisible = props.setVisible;
 
   return (
     <BackButton
-      isHidden={!isVisible}
+      hidden={!isVisible}
       onClick={() => {
         setVisible(!isVisible);
       }}
@@ -156,7 +156,7 @@ const items: MenuProps['items'] = [
 export default function ParametersBar(props: {
   params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
-}): React.ReactElement {
+}): JSX.Element {
   const [containerVisible, setContainerVisible] = useState<boolean>(true);
   const space: [SpaceSize, SpaceSize] = ['large', 'small'];
 
@@ -185,12 +185,12 @@ export default function ParametersBar(props: {
   }, [renderHeightMap, isCameraControlMode, setParams]);
 
   return (
-    <Pane isHidden={!containerVisible}>
+    <Pane hidden={!containerVisible}>
       <ShowHideButton
         isVisible={containerVisible}
         setVisible={setContainerVisible}
       />
-      <Container direction="vertical" size={space} isHidden={!containerVisible}>
+      <Container direction="vertical" size={space} hidden={!containerVisible}>
         {/* hide button */}
         <Row justify="end"></Row>
 
@@ -218,12 +218,12 @@ export default function ParametersBar(props: {
         {/* render the correct pane based on current control difficulty */}
         {
           // add all easy controls here
-          controlDifficulty === ControlDifficulty.Easy && <></>
+          controlDifficulty === ControlDifficulty.Easy && null
         }
 
         {
           // add all expert controls here
-          controlDifficulty === ControlDifficulty.Expert && <></>
+          controlDifficulty === ControlDifficulty.Expert && null
         }
         {/* add controls to be shown to both here */}
         <SimulationColour params={props.params} setParams={props.setParams} />
@@ -309,7 +309,7 @@ export default function ParametersBar(props: {
 function SimulationColour(props: {
   params: SimulationParams;
   setParams: React.Dispatch<React.SetStateAction<SimulationParams>>;
-}): React.ReactElement {
+}): JSX.Element {
   const setParams = props.setParams;
   // turn the colours into strings for the colour picker
   const initialColorLow = props.params.densityLowColour.getHexString();

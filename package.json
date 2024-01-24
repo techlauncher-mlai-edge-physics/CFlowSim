@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src tests --report-unused-disable-directives --max-warnings 0",
-    "lint-fix": "eslint src tests --report-unused-disable-directives --max-warnings 0 --fix",
     "commit": "git-cz",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -16,12 +15,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.5",
+    "@ant-design/icons": "^5.2.6",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.15.11",
     "@tensorflow/tfjs": "^4.13.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.14.0",
-    "@vitejs/plugin-react": "^4.1.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "ajv": "^8.12.0",
     "antd": "^5.8.4",
     "idb": "^8.0.0",
@@ -31,38 +30,38 @@
     "rehype-sanitize": "^6.0.0",
     "styled-components": "^6.0.8",
     "three": "^0.160.0",
-    "vite": "^4.5.0"
+    "vite": "^5.0.12"
   },
   "devDependencies": {
-    "@axe-core/react": "^4.7.3",
-    "@commitlint/cli": "^17.7.2",
-    "@commitlint/config-conventional": "^17.7.0",
-    "@types/react": "^18.2.23",
-    "@types/react-dom": "^18.2.10",
+    "@axe-core/react": "^4.8.3",
+    "@commitlint/cli": "^17.8.1",
+    "@commitlint/config-conventional": "^17.8.1",
+    "@eslint-react/eslint-plugin": "^0.10.12",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "@types/three": "^0.160.0",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "@vitejs/plugin-react-swc": "^3.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.53.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-config-standard-with-typescript": "^43.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-n": "^16.1.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "lint-staged": "^14.0.1",
-    "prettier": "^3.2.2",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.2.2",
+    "prettier": "^3.2.4",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3",
     "vite-plugin-glsl": "^1.2.1",
-    "vite-plugin-remark-rehype": "^1.1.0"
+    "vite-plugin-markdown": "^2.2.0"
   },
   "config": {
     "commitizen": {
@@ -70,6 +69,6 @@
     }
   },
   "volta": {
-    "node": "18.17.1"
+    "node": "20.10.0"
   }
 }

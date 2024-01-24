@@ -5,14 +5,17 @@ previously *Physics in the Browser*
 
 **Deployed at [GitHub Pages](https://techlauncher-mlai-edge-physics.github.io)**
 
-This project is a web application that allows users to simulate the fluid dynamics of a 2D fluid system enhanced by machine learning. The application is built using [React](https://reactjs.org/) and [Three.js](https://threejs.org/). The machine learning model is built using [PyTorch](https://pytorch.org/) and converted to [ONNX](https://onnx.ai/) format for inference in the browser using [onnxruntime-web](https://npmjs.com/package/onnxruntime-web).
+This project is a web application that allows users to simulate the fluid dynamics of a 2D fluid system enhanced by machine learning. The application is built using [React](https://reactjs.org/) and [Three.js](https://threejs.org/). 
+The machine learning model is built using [PyTorch](https://pytorch.org/) and converted to [ONNX](https://onnx.ai/) format for inference in the browser using [onnxruntime-web](https://npmjs.com/package/onnxruntime-web).
+We have also port the model to [TensorFlow](https://www.tensorflow.org/) so we could use [TensorFlow.js](https://www.tensorflow.org/js) to run the model in the browser,
+especially we could benefit from the **WebGL** backend and **WebGPU** backend to speed up the inference.
 
 ## About the project
 
 Welcome to our interactive online neural physics emulation engine! What you're seeing is a simulation of computational fluid dynamics, powered by cutting-edge neural network technology.
 
 Computational fluid dynamics is an important area of study that helps us understand how fluids behave in various scenarios, from the flow of air around an airplane to the movement of water in a river. It's a complex field, requiring specialised hardware and software to perform accurate simulations.
-However, with the development of neural physics emulation, we can now simulate fluid dynamics using neural networks - a type of machine learning algorithm inspired by the human brain. This approach has the potential to be much faster and more efficient than traditional methods, allowing us to explore complex scenarios and gain new insights into the behaviour of fluids.
+However, with the development of neural physics emulation, we can now simulate fluid dynamics using neural networks — a type of machine learning algorithm inspired by the human brain. This approach has the potential to be much faster and more efficient than traditional methods, allowing us to explore complex scenarios and gain new insights into the behaviour of fluids.
 
 ### Applications
 
@@ -36,9 +39,7 @@ Our interactive online neural physics emulation engine is based on the research 
 
 This project was developed in collaboration with team from ANU TechLauncher, a student industry collaboration program at the Australian National University.
 
-The team is led by students of ANU college of Engineering, Computing and Cybernetics. Students with different levels of expertise in coding, design, content creation, and project management actively collaborate to create this website that presents a user-friendly simulation platform to the public.
-
-As this project is open source, we are open to contributions from the general public. Please see our contribution guide if you would like to lend a hand with our efforts.
+The team is led by students of ANU College of Engineering, Computing and Cybernetics. Students with different levels of expertise in coding, design, content creation, and project management actively collaborate to create this website that presents a user-friendly simulation platform to the public.
 
 ## Getting Started
 

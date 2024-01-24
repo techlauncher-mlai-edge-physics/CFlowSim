@@ -43,29 +43,36 @@ export default class AutoSaveService {
     if (this.intervalObj !== null && this.intervalObj !== undefined) {
       throw new Error('Auto save already started');
     }
-    if (!this.ready) {
-      throw new Error('IndexedDB not ready');
-    }
-    this.intervalObj = setInterval(async () => {
-      const serialisationData = this.getModelSerialized();
-      console.log(
-        '🚀 ~ file: autoSaveService.ts:51 ~ AutoSaveService ~ this.intervalObj=setInterval ~ serialisationData:',
-        serialisationData,
-      );
-      // Save the model to the database
-      await this.db.add('modelSave', serialisationData);
-      // Check if the total count exceeds maxAutoSaves
-      const count = await this.db.count('modelSave');
-      if (count > this.maxAutoSaves) {
-        // Get the earliest model according to the time (index)
-        const earliestModel = await this.db.getAllKeys('modelSave', null, 10);
+    const autoSave = async (): Promise<void> => {
+      try {
+        const serialisationData = this.getModelSerialized();
         console.log(
-          '🚀 ~ file: autoSaveService.ts:63 ~ AutoSaveService ~ this.intervalObj=setInterval ~ earliestModel:',
-          earliestModel,
+          '🚀 ~ file: autoSaveService.ts:51 ~ AutoSaveService ~ this.intervalObj=setInterval ~ serialisationData:',
+          serialisationData,
         );
-        // Delete the earliest model
-        await this.db.delete('modelSave', earliestModel[0]);
+        // Save the model to the database
+        await this.db.add('modelSave', serialisationData);
+        // Check if the total count exceeds maxAutoSaves
+        const count = await this.db.count('modelSave');
+        if (count > this.maxAutoSaves) {
+          // Get the earliest model according to the time (index)
+          const earliestModel = await this.db.getAllKeys('modelSave', null, 10);
+          console.log(
+            '🚀 ~ file: autoSaveService.ts:63 ~ AutoSaveService ~ this.intervalObj=setInterval ~ earliestModel:',
+            earliestModel,
+          );
+          // Delete the earliest model
+          await this.db.delete('modelSave', earliestModel[0]);
+        }
+      } catch (error) {
+        console.error(error);
       }
+    };
+
+    this.intervalObj = setInterval(() => {
+      autoSave().catch((error) => {
+        console.error(error);
+      });
     }, this.saveInterval);
   }
 

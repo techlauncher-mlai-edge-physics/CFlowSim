@@ -44,7 +44,7 @@ interface IndexProp {
   worker: Worker;
 }
 
-export default function Home(props: IndexProp): React.ReactElement {
+export default function Home(props: IndexProp): JSX.Element {
   const { simulationParams, setSimulationParams, worker } = props;
   useEffect(() => {
     const confirmExit = (e: BeforeUnloadEvent): void => {

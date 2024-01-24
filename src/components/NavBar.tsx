@@ -197,9 +197,7 @@ export default function NavBar(props: NavBarProps): React.ReactElement {
             Dark
           </ThemeButton>
         </ExtendContainer>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </Header>
   );
 }

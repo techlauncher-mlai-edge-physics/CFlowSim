@@ -4,7 +4,6 @@ import {
   type ThreeElements,
   type ThreeEvent,
 } from '@react-three/fiber';
-import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import vertexShader from '../shaders/vert.glsl';
 import vertexShaderForHeightMap from '../shaders/vert_height.glsl';
@@ -69,7 +68,7 @@ function colToVec3(col: t.Color): t.Vector3 {
 
 function DiffusionPlane(
   props: ThreeElements['mesh'] & Renderable,
-): React.ReactElement {
+): JSX.Element {
   // INITIALISATION
 
   // WebGPU capability test

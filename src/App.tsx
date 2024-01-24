@@ -1,4 +1,3 @@
-import type React from 'react';
 import { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import styled, { ThemeProvider } from 'styled-components';
@@ -31,7 +30,7 @@ const NavBarContainer = styled.div`
   font-family: 'Titillium Web', sans-serif;
 `;
 
-function App(): React.ReactElement {
+function App(): JSX.Element {
   // save the current page in state
   // 0 = home(index,simulation) 1 = about
   const [page, setPage] = useState(0);
@@ -77,7 +76,7 @@ function App(): React.ReactElement {
     const message: IncomingMessage = {
       func: RunnerFunc.INIT,
       args: {
-        modelPath: '/model/bno_small_new_web/model.json',
+        modelPath: '/model/bno_small_001.onnx',
         initConditionPath:
           '/initData/pvf_incomp_44_nonneg/pvf_incomp_44_nonneg_0.json',
       } satisfies InitArgs,

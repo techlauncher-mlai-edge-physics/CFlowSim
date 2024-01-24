@@ -105,6 +105,7 @@ export default class ONNXService implements ModelService {
     const metaUrl = new URL(import.meta.url);
     console.log('metaUrl', metaUrl);
     // only keep the path part
+    // specify the wasm path for onnxruntime-web, because the website could not find the wasm file installed by npm
     ort.env.wasm.wasmPaths = metaUrl.protocol + '//' + metaUrl.host + '/';
     this.session = await ort.InferenceSession.create(modelPath, {
       executionProviders: [backend],
@@ -158,38 +159,44 @@ export default class ONNXService implements ModelService {
     );
     const feeds: Record<string, ort.Tensor> = {};
     feeds[this.session.inputNames[0]] = inputTensor;
+    console.log(feeds);
     this.session
       .run(feeds)
       .then((outputs) => {
         // check if the output canbe downcasted to Float32Array
-        if (outputs.Output.data instanceof Float32Array) {
-          const outputData = this.constrainOutput(
-            outputs.Output.data,
-            inputEnergy,
-          );
-          this.outputCallback(outputData);
-          this.curFrameCountbyLastSecond++;
-          console.log(
-            'curFrameCountbyLastSecond',
-            this.curFrameCountbyLastSecond,
-          );
-          this.copyOutputToMatrix(outputData);
-          setTimeout(() => {
-            if (!this.isPaused) {
-              if (this.curFrameCountbyLastSecond > this.fpsLimit) {
-                this.isPaused = true;
-                console.log(
-                  'fps limit reached, pause simulation, fpsLimit:',
-                  this.fpsLimit,
-                  'curFrameCountbyLastSecond:',
-                  this.curFrameCountbyLastSecond,
-                );
-              } else {
-                this.iterate();
-              }
-            }
-          });
+        if (
+          outputs[this.session!.outputNames[0]] === undefined ||
+          !(outputs[this.session!.outputNames[0]].data instanceof Float32Array)
+        ) {
+          throw new Error('output data is not Float32Array');
         }
+
+        const outputData = this.constrainOutput(
+          outputs[this.session!.outputNames[0]].data as Float32Array,
+          inputEnergy,
+        );
+        this.outputCallback(outputData);
+        this.curFrameCountbyLastSecond++;
+        console.log(
+          'curFrameCountbyLastSecond',
+          this.curFrameCountbyLastSecond,
+        );
+        this.copyOutputToMatrix(outputData);
+        setTimeout(() => {
+          if (!this.isPaused) {
+            if (this.curFrameCountbyLastSecond > this.fpsLimit) {
+              this.isPaused = true;
+              console.log(
+                'fps limit reached, pause simulation, fpsLimit:',
+                this.fpsLimit,
+                'curFrameCountbyLastSecond:',
+                this.curFrameCountbyLastSecond,
+              );
+            } else {
+              this.iterate();
+            }
+          }
+        });
       })
       .catch((e) => {
         console.error('error in session.run', e);
