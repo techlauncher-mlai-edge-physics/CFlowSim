@@ -21,7 +21,7 @@ export interface InitArgs {
 }
 
 export interface DeserializeArgs {
-  savedState: string; // need ajv validation
+  savedState: string | ModelSave;
 }
 
 export interface UpdateForceArgs {
