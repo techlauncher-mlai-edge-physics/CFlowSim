@@ -117,9 +117,14 @@ export function onmessage(
       // if (modelService == null) throw new Error('modelService is null');
       // modelService.pauseSimulation();
       const { savedState } = data.args as DeserializeArgs;
-      const possibleSave = JSON.parse(savedState);
-      if (!modelSaveSchemaValidator(possibleSave)) {
-        throw new Error(`invalid schema for the input json file ${savedState}`);
+      let possibleSave: ModelSave;
+      if (typeof savedState === 'string') {
+        possibleSave = JSON.parse(savedState);
+        if (!modelSaveSchemaValidator(possibleSave)) {
+          throw new Error('invalid modelSave');
+        }
+      } else {
+        possibleSave = savedState;
       }
       getServiceFromSave(this, possibleSave)
         .then((ms) => {
