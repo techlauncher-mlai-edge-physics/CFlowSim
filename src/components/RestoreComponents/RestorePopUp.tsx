@@ -1,5 +1,4 @@
 import { Divider, Menu } from 'antd';
-import type React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import LocalFileRestore from './LocalFileRestore';
@@ -77,7 +76,7 @@ const MenuContainer = styled(Menu)`
   border: none;
 `;
 
-export default function RestorePopup(props: RestoreProps): React.ReactElement {
+export default function RestorePopup(props: RestoreProps): JSX.Element {
   const setRestorePopupVisible = props.setRestorePopupVisible;
   const [selectedItem, setSelectedItem] = useState('');
 

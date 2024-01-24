@@ -51,7 +51,7 @@ interface ControlBarProps {
   setRestorePopupVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ControlBar(props: ControlBarProps): React.ReactElement {
+export default function ControlBar(props: ControlBarProps): JSX.Element {
   const { modelSaveSubs, worker, setRestorePopupVisible } = props;
 
   useEffect(() => {

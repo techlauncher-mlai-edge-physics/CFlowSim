@@ -7,24 +7,29 @@ module.exports = {
     'standard-with-typescript',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:react/recommended',
     'prettier',
     'plugin:jsx-a11y/recommended',
-    'plugin:react/jsx-runtime',
+    'plugin:@eslint-react/recommended-type-checked-legacy',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: true,
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: true,
     tsconfigRootDir: __dirname,
   },
-  plugins: ['react-refresh', 'react', 'jsx-a11y'],
+  plugins: ['react-refresh', '@eslint-react', 'react-hooks', 'jsx-a11y'],
   settings: {
-    react: {
-      version: 'detect',
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+      },
+      node: true,
     },
   },
+  ignorePatterns: ['dist', '.eslintrc.js'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
@@ -40,12 +45,6 @@ module.exports = {
         allowNullish: true,
       },
     ],
-    'react/no-unknown-property': [
-      'error',
-      {
-        ignore: ['material', 'args'],
-      },
-    ],
+    'import/no-named-as-default': 'off',
   },
 };
-

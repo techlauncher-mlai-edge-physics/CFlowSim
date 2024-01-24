@@ -44,25 +44,23 @@ export default function SliderParameter(props: {
   lowerBound: number;
   upperBound: number;
   initValue?: number;
-}): React.ReactElement {
+}): JSX.Element {
   const [value, setValue] = useState(props.lowerBound);
   if (props.initValue !== undefined) {
     setValue(props.initValue);
   }
 
   return (
-    <>
-      <Slider
-        type="range"
-        min={props.lowerBound}
-        max={props.upperBound}
-        defaultValue={value}
-        onChange={(e) => {
-          const val = parseFloat(e.target.value);
-          setValue(val);
-          props.onChange(val);
-        }}
-      />
-    </>
+    <Slider
+      type="range"
+      min={props.lowerBound}
+      max={props.upperBound}
+      defaultValue={value}
+      onChange={(e) => {
+        const val = parseFloat(e.target.value);
+        setValue(val);
+        props.onChange(val);
+      }}
+    />
   );
 }

@@ -26,7 +26,7 @@ export default function ChoiceParameter(props: {
   onChange: (value: string) => void;
   values: string[];
   initValue?: string;
-}): React.ReactElement {
+}): JSX.Element {
   const [value, setValue] = useState(props.values[0]);
   if (props.initValue !== undefined) {
     setValue(props.initValue);
@@ -39,10 +39,11 @@ export default function ChoiceParameter(props: {
 
   return (
     <Container>
-      {rows.map((row, i) => (
-        <Row key={`row-${i}`}>
-          {row.map((val, i) => (
-            <Col key={`col-${i}`}>
+      {rows.map((row, rowIndex) => (
+        // eslint-disable-next-line @eslint-react/jsx/no-array-index-key
+        <Row key={`row-${rowIndex}-${row.join('-')}`}>
+          {row.map((val) => (
+            <Col key={`col-${val}`}>
               <Button
                 data-value={val}
                 onClick={() => {

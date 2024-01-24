@@ -79,7 +79,9 @@ export function modelSerialize(
   model: ModelService | null,
 ): ModelSave {
   if (model == null) {
-    throw new Error('model is null, cannot serialise, check model is initialised or not');
+    throw new Error(
+      'model is null, cannot serialise, check model is initialised or not',
+    );
   }
   // export a JSON as ModelSave
 

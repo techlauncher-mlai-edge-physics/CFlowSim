@@ -59,10 +59,10 @@ test("serialise valid model", async() => {
     const output = ser(url, model)
 
     expect(output).toBeTruthy()
-    expect(output!.modelType).toBe("mock")
-    expect(output!.modelUrl).toBe(url)
-    expect(output!.mass).toBe(mass)
-    assertTensorsCloseTo(output!.inputTensor, shapedTensor, shape)
+    expect(output.modelType).toBe("mock")
+    expect(output.modelUrl).toBe(url)
+    expect(output.mass).toBe(mass)
+    assertTensorsCloseTo(output.inputTensor, shapedTensor, shape)
 })
 
 // deserialise tests

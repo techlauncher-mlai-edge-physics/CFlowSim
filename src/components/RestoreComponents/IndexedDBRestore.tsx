@@ -4,7 +4,6 @@ import {
   type IncomingMessage,
   RunnerFunc,
 } from '../../workers/modelWorkerMessage';
-import type React from 'react';
 import { useEffect, useState } from 'react';
 import { Divider, List, Typography } from 'antd';
 import { openDB } from 'idb';
@@ -17,9 +16,7 @@ const Container = styled.div`
   z-index: 100;
 `;
 
-export default function IndexedDBRestore(
-  props: RestoreProps,
-): React.ReactElement {
+export default function IndexedDBRestore(props: RestoreProps): JSX.Element {
   const { worker } = props;
   const [keys, setKeys] = useState<string[]>([]);
 

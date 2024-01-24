@@ -44,6 +44,7 @@ const modelSaveSchema: JSONSchemaType<ModelSave> = {
   required: ['modelType', 'modelUrl', 'inputTensor', 'mass'],
   additionalProperties: false,
 };
+
 const ajv = new Ajv();
 const modelSaveSchemaValidator = ajv.compile(modelSaveSchema);
 
@@ -196,7 +197,8 @@ async function getServiceFromInitCond(
     throw new Error(`invalid content type ${contentType}`);
   }
   const data = await response.json();
-  modelService.loadDataArray(data);
+  // assert that data is formatted correctly
+  modelService.loadDataArray(data as number[][][][]);
   return modelService;
 }
 
