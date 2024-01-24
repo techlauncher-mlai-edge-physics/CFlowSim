@@ -18,7 +18,7 @@
     "@ant-design/icons": "^5.2.6",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.15.11",
-    "@tensorflow/tfjs": "^4.13.0",
+    "@tensorflow/tfjs": "^4.16.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "ajv": "^8.12.0",
